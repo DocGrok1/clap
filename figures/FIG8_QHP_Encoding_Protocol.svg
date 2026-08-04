@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900" font-family="Arial, sans-serif">
+  <rect width="900" height="900" fill="#0a0a12"/>
+  <text x="450" y="36" font-size="15" font-weight="bold" fill="#c0c8ff" text-anchor="middle">FIG. 8 — QHP CONSTITUTIONAL ENCODING PROTOCOL</text>
+  <text x="450" y="56" font-size="10" fill="#6070b0" text-anchor="middle">QUIRQ_SVG_CIRCUIT_v1 · FNV-1a Base-36 Checksum · 43-character Payload · LCHC-2048 Anchored</text>
+  <line x1="40" y1="66" x2="860" y2="66" stroke="#2a2a50" stroke-width="1"/>
+
+  <!-- Input stage -->
+  <rect x="60" y="90" width="780" height="80" rx="6" fill="#0d1a2e" stroke="#4a90d9" stroke-width="2"/>
+  <text x="450" y="114" font-size="11" fill="#4a90d9" text-anchor="middle" font-weight="bold">INPUT — QUANTUM CIRCUIT OR GOVERNANCE STATE</text>
+  <text x="450" y="132" font-size="9" fill="#6090c0" text-anchor="middle">Arbitrary quantum circuit (Cirq/Qiskit) · Governance telemetry · Constitutional boundary event</text>
+  <text x="450" y="150" font-size="8" fill="#4060a0" text-anchor="middle">n qubits · gate sequence · MC290 classification · Q_L conservation value · Lyapunov V(e)</text>
+
+  <!-- Arrow -->
+  <line x1="450" y1="170" x2="450" y2="196" stroke="#4a90d9" stroke-width="2" marker-end="url(#arr_b2)"/>
+
+  <!-- Encoding stages -->
+  <text x="450" y="218" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="bold">QUIRQ_SVG_CIRCUIT_v1 ENCODING PIPELINE</text>
+
+  <!-- Stage 1: Normalization -->
+  <rect x="80" y="228" width="340" height="80" rx="6" fill="#0a1020" stroke="#4a90d9" stroke-width="1.5"/>
+  <text x="250" y="250" font-size="10" fill="#4a90d9" text-anchor="middle" font-weight="bold">STAGE 1 — NORMALIZATION</text>
+  <text x="250" y="268" font-size="8" fill="#4060a0" text-anchor="middle">Serialize circuit/state to canonical form</text>
+  <text x="250" y="282" font-size="8" fill="#4060a0" text-anchor="middle">UTF-8 encoding · whitespace normalization</text>
+  <text x="250" y="296" font-size="8" fill="#4a90d9" text-anchor="middle">deterministic ordering · JSON canonical</text>
+
+  <!-- Stage 2: FNV-1a -->
+  <rect x="480" y="228" width="340" height="80" rx="6" fill="#0a1020" stroke="#ffaa00" stroke-width="1.5"/>
+  <text x="650" y="250" font-size="10" fill="#ffaa00" text-anchor="middle" font-weight="bold">STAGE 2 — FNV-1a HASH</text>
+  <text x="650" y="268" font-size="8" fill="#806020" text-anchor="middle">FNV-1a 32-bit non-cryptographic hash</text>
+  <text x="650" y="282" font-size="8" fill="#806020" text-anchor="middle">offset_basis = 2166136261</text>
+  <text x="650" y="296" font-size="8" fill="#ffaa00" text-anchor="middle">fnv_prime = 16777619 · XOR fold</text>
+
+  <line x1="420" y1="268" x2="480" y2="268" stroke="#888888" stroke-width="1.5" marker-end="url(#arr_gray)"/>
+
+  <!-- Arrow -->
+  <line x1="250" y1="308" x2="250" y2="330" stroke="#4a90d9" stroke-width="1.5" marker-end="url(#arr_b2)"/>
+  <line x1="650" y1="308" x2="650" y2="330" stroke="#ffaa00" stroke-width="1.5" marker-end="url(#arr_y2)"/>
+
+  <!-- Stage 3: Base-36 -->
+  <rect x="80" y="330" width="340" height="80" rx="6" fill="#0a1020" stroke="#cc44cc" stroke-width="1.5"/>
+  <text x="250" y="352" font-size="10" fill="#cc44cc" text-anchor="middle" font-weight="bold">STAGE 3 — BASE-36 ENCODE</text>
+  <text x="250" y="370" font-size="8" fill="#803080" text-anchor="middle">Convert FNV hash to base-36 string</text>
+  <text x="250" y="384" font-size="8" fill="#803080" text-anchor="middle">charset: 0-9 A-Z (36 chars)</text>
+  <text x="250" y="398" font-size="8" fill="#cc44cc" text-anchor="middle">zero-padded to 7 characters</text>
+
+  <!-- Stage 4: Constitutional prefix -->
+  <rect x="480" y="330" width="340" height="80" rx="6" fill="#0a1020" stroke="#00cc44" stroke-width="1.5"/>
+  <text x="650" y="352" font-size="10" fill="#00cc44" text-anchor="middle" font-weight="bold">STAGE 4 — CONSTITUTIONAL PREFIX</text>
+  <text x="650" y="370" font-size="8" fill="#408040" text-anchor="middle">Prepend governance metadata header</text>
+  <text x="650" y="384" font-size="8" fill="#408040" text-anchor="middle">Format: QHP·{domain}·{class}·{checksum}</text>
+  <text x="650" y="398" font-size="8" fill="#00cc44" text-anchor="middle">domain: QARM/GCB/ALZ/GTSR/CHIA</text>
+
+  <line x1="420" y1="370" x2="480" y2="370" stroke="#888888" stroke-width="1.5" marker-end="url(#arr_gray)"/>
+  <line x1="250" y1="410" x2="450" y2="440" stroke="#cc44cc" stroke-width="1.5" marker-end="url(#arr_p)"/>
+  <line x1="650" y1="410" x2="450" y2="440" stroke="#00cc44" stroke-width="1.5" marker-end="url(#arr_g2)"/>
+
+  <!-- 43-char payload -->
+  <rect x="220" y="440" width="460" height="80" rx="8" fill="#0a1a18" stroke="#00cc44" stroke-width="2.5"/>
+  <text x="450" y="464" font-size="11" fill="#00cc44" text-anchor="middle" font-weight="bold">43-CHARACTER BASE-36 PAYLOAD</text>
+  <text x="450" y="484" font-size="11" fill="#ffffff" text-anchor="middle" font-family="Courier New, monospace">QHP·QARM·A3·7F2K91X·MC290·LCHC</text>
+  <text x="450" y="504" font-size="8" fill="#40a060" text-anchor="middle">transport-agnostic · URI-safe · human-readable · constitutional</text>
+
+  <!-- Arrow -->
+  <line x1="450" y1="520" x2="450" y2="545" stroke="#00cc44" stroke-width="2" marker-end="url(#arr_g2)"/>
+
+  <!-- LCHC-2048 anchor -->
+  <rect x="160" y="545" width="580" height="70" rx="6" fill="#081808" stroke="#00cc44" stroke-width="2"/>
+  <text x="450" y="568" font-size="11" fill="#00cc44" text-anchor="middle" font-weight="bold">LCHC-2048 ANCHOR — StructuralMemory.writeDelta()</text>
+  <text x="450" y="586" font-size="8" fill="#40a060" text-anchor="middle">payload hashed into LCHC-2048 chain · prevHash linkage · timestamp · inventor provenance</text>
+  <text x="450" y="602" font-size="8" fill="#40a060" text-anchor="middle">appended to delta-ledger.json · Saturn Ring 4 audit · immutable constitutional record</text>
+
+  <!-- Arrow -->
+  <line x1="450" y1="615" x2="450" y2="640" stroke="#00cc44" stroke-width="2" marker-end="url(#arr_g2)"/>
+
+  <!-- Output destinations -->
+  <rect x="60" y="640" width="780" height="110" rx="6" fill="#080808" stroke="#2a2a50" stroke-width="1"/>
+  <text x="450" y="662" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">OUTPUT DESTINATIONS</text>
+  <rect x="80" y="672" width="160" height="60" rx="4" fill="#0d1a2e" stroke="#4a90d9" stroke-width="1.5"/>
+  <text x="160" y="694" font-size="8" fill="#4a90d9" text-anchor="middle" font-weight="bold">CIRQ BRIDGE</text>
+  <text x="160" y="708" font-size="7" fill="#304080" text-anchor="middle">QUIRQ™ circuit</text>
+  <text x="160" y="720" font-size="7" fill="#304080" text-anchor="middle">quantum execution</text>
+  <rect x="258" y="672" width="160" height="60" rx="4" fill="#1a1200" stroke="#f0a030" stroke-width="1.5"/>
+  <text x="338" y="694" font-size="8" fill="#f0a030" text-anchor="middle" font-weight="bold">MC290 ENGINE</text>
+  <text x="338" y="708" font-size="7" fill="#806020" text-anchor="middle">invention ledger</text>
+  <text x="338" y="720" font-size="7" fill="#806020" text-anchor="middle">coin minting</text>
+  <rect x="436" y="672" width="160" height="60" rx="4" fill="#0a0a14" stroke="#6060cc" stroke-width="1.5"/>
+  <text x="516" y="694" font-size="8" fill="#6060cc" text-anchor="middle" font-weight="bold">PATENT VAULT</text>
+  <text x="516" y="708" font-size="7" fill="#404090" text-anchor="middle">USPTO filing ref</text>
+  <text x="516" y="720" font-size="7" fill="#404090" text-anchor="middle">Vercel KV store</text>
+  <rect x="614" y="672" width="210" height="60" rx="4" fill="#0d0a14" stroke="#cc44cc" stroke-width="1.5"/>
+  <text x="719" y="694" font-size="8" fill="#cc44cc" text-anchor="middle" font-weight="bold">DOCGROKHEALTH</text>
+  <text x="719" y="708" font-size="7" fill="#803080" text-anchor="middle">telemetry ingest</text>
+  <text x="719" y="720" font-size="7" fill="#803080" text-anchor="middle">Saturn Ring 4 / Pluto</text>
+
+  <!-- Footer -->
+  <text x="450" y="784" font-size="9" fill="#4a90d9" text-anchor="middle" font-weight="bold">QUIRQ_SVG_CIRCUIT_v1 · FNV-1a Base-36 · 43-char constitutional payload</text>
+  <text x="450" y="800" font-size="8" fill="#404060" text-anchor="middle">DCGP.AI · Joshua L. Lopez · Patent Pending · USPTO Customer Nos. 222625 &amp; 226575</text>
+  <text x="450" y="816" font-size="8" fill="#404060" text-anchor="middle">Reduction to practice: polaritron_mc290_echo_circuit.py · structuralMemory.js · June 8–20, 2026</text>
+
+  <defs>
+    <marker id="arr_b2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4a90d9"/></marker>
+    <marker id="arr_y2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#ffaa00"/></marker>
+    <marker id="arr_g2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00cc44"/></marker>
+    <marker id="arr_p" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#cc44cc"/></marker>
+    <marker id="arr_gray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#888888"/></marker>
+  </defs>
+</svg>
