@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QUIRQ™ Intake Gateway</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, Arial, sans-serif;
+        background: #040812;
+        color: #e8efff;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.7rem;
+      }
+      .sub {
+        margin: 0 0 16px;
+        color: #a7b8e6;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 14px;
+      }
+      .card {
+        border: 1px solid #243463;
+        background: #0d162d;
+        border-radius: 10px;
+        padding: 14px;
+      }
+      label {
+        display: block;
+        font-size: 0.82rem;
+        color: #afc2f6;
+        margin-bottom: 6px;
+      }
+      input,
+      textarea,
+      select,
+      button {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #2c3f73;
+        background: #081127;
+        color: #e7edff;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+      button {
+        background: #1d4de0;
+        border-color: #3462f6;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .muted {
+        color: #90a3d8;
+        font-size: 0.86rem;
+      }
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.78rem;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>QUIRQ™ Intake Gateway</h1>
+      <p class="sub">
+        Single public entrypoint for intake routing. Business, hospital, and other channels pass through
+        QUIRQ™ policy/authority checks before handoff to downstream modules.
+      </p>
+
+      <div class="grid">
+        <section class="card">
+          <h2>Intake request</h2>
+          <label for="domain">Domain/source</label>
+          <input id="domain" placeholder="example: aura115.ai" />
+
+          <label for="channel">Channel</label>
+          <input id="channel" value="public-web" />
+
+          <label for="requestType">Request type</label>
+          <select id="requestType">
+            <option value="business">business</option>
+            <option value="hospital">hospital</option>
+            <option value="other" selected>other</option>
+          </select>
+
+          <label for="intent">Intent</label>
+          <input id="intent" value="intake_message" />
+
+          <label for="message">Message payload</label>
+          <textarea id="message">Route this through QUIRQ™ intake.</textarea>
+
+          <label for="operatorKey">Operator key (required for protected paths; optional otherwise)</label>
+          <input id="operatorKey" placeholder="x-aura-operator-key" />
+
+          <div class="actions">
+            <button id="submit">Run intake router</button>
+            <button id="status">Load status</button>
+          </div>
+          <p class="muted">
+            Tip: add <code>forward: true</code> by checking "Forward to downstream API".
+          </p>
+          <label><input id="forward" type="checkbox" /> Forward to downstream API</label>
+        </section>
+
+        <section class="card">
+          <h2>Router response</h2>
+          <pre id="response">Waiting for request…</pre>
+        </section>
+
+        <section class="card">
+          <h2>Intake contract</h2>
+          <pre id="contract">Loading contract…</pre>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const responseEl = document.getElementById("response");
+      const contractEl = document.getElementById("contract");
+
+      const domainEl = document.getElementById("domain");
+      if (!domainEl.value) {
+        domainEl.value = window.location.host || "";
+      }
+
+      async function fetchStatus() {
+        const res = await fetch("/api/cirq-intake-router");
+        const data = await res.json();
+        contractEl.textContent = JSON.stringify(data.contract || data.intakeContract || data, null, 2);
+        responseEl.textContent = JSON.stringify(data, null, 2);
+      }
+
+      async function submit() {
+        const payload = {
+          domain: document.getElementById("domain").value,
+          channel: document.getElementById("channel").value,
+          requestType: document.getElementById("requestType").value,
+          intent: document.getElementById("intent").value,
+          message: document.getElementById("message").value,
+          forward: document.getElementById("forward").checked
+        };
+
+        const operatorKey = document.getElementById("operatorKey").value.trim();
+        const headers = { "Content-Type": "application/json" };
+        if (operatorKey) headers["x-aura-operator-key"] = operatorKey;
+
+        const res = await fetch("/api/cirq-intake-router", {
+          method: "POST",
+          headers,
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        responseEl.textContent = JSON.stringify(data, null, 2);
+      }
+
+      document.getElementById("submit").addEventListener("click", submit);
+      document.getElementById("status").addEventListener("click", fetchStatus);
+      fetchStatus().catch((error) => {
+        responseEl.textContent = JSON.stringify(
+          {
+            ok: false,
+            error: "Failed to load intake contract status",
+            details: String(error && error.message ? error.message : error)
+          },
+          null,
+          2
+        );
+      });
+    </script>
+    <script src="/aura-embodiment-bootstrap.js"></script>
+  <script>
+(function(){
+  fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    if(document.getElementById('op_inbox'))return;
+    let el=document.createElement('div');el.id='op_inbox';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:8px;padding:4px 10px;margin:4px 16px;font-family:monospace;font-size:10px;color:#4dffe5;cursor:pointer;user-select:none';
+    let cnt=(d.stats||{}).total_received||0,unrd=(d.stats||{}).unread||0;
+    let h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:#ffd975;display:flex;align-items:center;gap:8px';
+    h.innerHTML='<span id="op_inbox_arrow">▶</span><span>OPERATOR INBOX</span><span style="color:#4dffe5;font-weight:400">'+cnt+' received'+(unrd?' · <span style="color:#ff6b6b">'+unrd+' unread</span>':'')+'</span>';
+    el.appendChild(h);
+    let body=document.createElement('div');body.id='op_inbox_body';body.style.cssText='display:none;max-height:280px;overflow:auto;margin-top:6px;border-top:1px solid #1a2535;padding-top:4px';
+    (d.items||[]).slice(0,15).forEach(raw=>{try{let item=typeof raw==='string'?JSON.parse(raw):raw;
+      let row=document.createElement('div');row.style.cssText='padding:3px 0;border-bottom:1px solid #1a2535;font-size:10px';
+      let id=item.inbox_id||item.stream_id||(item.received_at?item.received_at.substring(11,19):'')|| item.type||'item';
+      row.innerHTML='<span style="color:#ffd975">'+String(id).substring(0,16)+'</span> '+(item.subject||item.title||item.body||item.content||item.summary||'[no subject]').substring(0,80);
+      body.appendChild(row);}catch(e){}});
+    el.appendChild(body);
+    el.addEventListener('click',function(){let open=body.style.display==='block';body.style.display=open?'none':'block';document.getElementById('op_inbox_arrow').textContent=open?'▶':'▼';});
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.firstChild);
+  }).catch(()=>{});
+  fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.createElement('div');el.id='gov';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:10px 14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#79ff9d';
+    let h=d.health||{},p=h.pulse||{},ch=d.ch_gate||{};
+    el.innerHTML='<span style="color:#ffd975;font-weight:700">GOV</span> Stewardship:'+(h.stewardship||{}).pct+'% Continuity:'+(h.continuity||{}).pct+'% Pulse:'+p.tick+' CH:'+(ch.drift||0).toFixed(4);
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.children[0]||null);
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>
