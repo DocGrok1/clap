@@ -3,386 +3,427 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>CLAP Circuit Builder — Build. Fire. Own.</title>
+<title>CLAP Circuit Builder — Build. Encode. Fire. Own.</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#02040c;--panel:#050e1d;--card:#07111f;--line:#1a2e47;--accent:#48ffe0;--text:#e8f4ff;--muted:#6a85a8;--green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--purple:#c792ff}
+:root{--bg:#02040c;--panel:#050e1d;--card:#07111f;--line:#1a2e47;--accent:#48ffe0;--text:#e8f4ff;--muted:#6a85a8;--green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--purple:#c792ff;--blue:#7db7ff;--dim:#3a506b}
 body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden}
-a{color:var(--accent);text-decoration:none}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
-.topbar{position:sticky;top:0;z-index:50;background:rgba(5,9,20,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(72,255,224,.18);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.topbar h1{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.2px;text-transform:uppercase;flex:1}
-.pill{font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(72,255,224,.08);color:var(--accent);border:1px solid rgba(72,255,224,.25)}
-.tb-link{font-size:9px;color:var(--muted);padding:3px 6px;border:1px solid var(--line);border-radius:3px}
+/* Topbar */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(5,9,20,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(72,255,224,.18);padding:8px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.topbar h1{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1.2px;text-transform:uppercase;flex:1}
+.pill{font-size:7px;font-weight:700;padding:2px 5px;border-radius:3px;background:rgba(72,255,224,.08);color:var(--accent);border:1px solid rgba(72,255,224,.25)}
+.tl{font-size:8px;color:var(--muted);padding:2px 5px;border:1px solid var(--line);border-radius:3px}
 
-.main{max-width:900px;margin:0 auto;padding:16px}
+/* Gov bar */
+.gov-bar{padding:6px 14px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;font-size:9px;flex-wrap:wrap}
+.gm{color:var(--dim)}.gv{color:var(--green);font-weight:600}
+
+/* Main */
+.main{max-width:960px;margin:0 auto;padding:12px 14px}
+
+/* Name + controls */
+.name-row{display:flex;gap:6px;margin-bottom:8px;align-items:center}
+.name-row input{flex:1;background:var(--card);border:1px solid var(--line);color:var(--gold);padding:6px 10px;border-radius:4px;font-family:inherit;font-size:11px;font-weight:700}
+.name-row input:focus{outline:none;border-color:var(--gold)}
+.ctrl{display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.ctrl label{font-size:8px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.ctrl input,.ctrl select{background:var(--card);border:1px solid var(--line);color:var(--text);padding:3px 6px;border-radius:3px;font-family:inherit;font-size:9px;width:50px}
+.ctrl select{width:auto}
 
 /* Toolbox */
-.toolbox{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
-.tool-btn{padding:6px 12px;background:var(--card);border:1px solid var(--line);border-radius:4px;color:var(--text);font-family:inherit;font-size:10px;cursor:pointer;transition:.15s;user-select:none}
-.tool-btn:hover{border-color:var(--accent);color:var(--accent)}
-.tool-btn.active{border-color:var(--accent);background:rgba(72,255,224,.08);color:var(--accent)}
-.tool-btn.h-gate{border-color:#1d9e75;color:#5dcaa5}
-.tool-btn.rz-gate{border-color:#ba7517;color:#ffd975}
-.tool-btn.rx-gate{border-color:#993c1d;color:#f0997b}
-.tool-btn.cnot-gate{border-color:var(--accent);color:var(--accent)}
-.tool-btn.cz-gate{border-color:var(--purple);color:var(--purple)}
-.tool-btn.seal{border-color:#e24b4a;color:#ff6b80}
-.tool-btn.action{border-color:var(--green);color:var(--green)}
-.tool-btn.danger{border-color:var(--red);color:var(--red)}
-
-.sep{width:1px;height:24px;background:var(--line);margin:0 4px}
-
-/* Controls row */
-.controls{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
-.controls label{font-size:9px;color:var(--muted);display:flex;align-items:center;gap:4px}
-.controls input,.controls select{background:var(--card);border:1px solid var(--line);color:var(--text);padding:4px 8px;border-radius:4px;font-family:inherit;font-size:10px;width:60px}
-.controls input:focus,.controls select:focus{outline:none;border-color:var(--accent)}
-.controls select{width:auto}
+.tb{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.tb-btn{padding:4px 8px;background:var(--card);border:1px solid var(--line);border-radius:3px;color:var(--text);font-family:inherit;font-size:9px;cursor:pointer;transition:.12s;user-select:none}
+.tb-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tb-btn.h{border-color:#1d9e7560;color:#5dcaa5}
+.tb-btn.rz{border-color:#ba751760;color:#ffd975}
+.tb-btn.rx{border-color:#993c1d60;color:#f0997b}
+.tb-btn.cn{border-color:rgba(72,255,224,.3);color:var(--accent)}
+.tb-btn.cz{border-color:rgba(199,146,255,.3);color:var(--purple)}
+.tb-btn.seal{border-color:#e24b4a60;color:#ff6b80}
+.tb-btn.act{border-color:rgba(121,255,157,.3);color:var(--green)}
+.tb-btn.del{border-color:rgba(255,45,85,.3);color:var(--red)}
+.sep{width:1px;height:20px;background:var(--line)}
 
 /* Canvas */
-.canvas-wrap{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:12px;min-height:200px;position:relative;overflow-x:auto}
-#circuitSvg{width:100%;min-height:180px}
+.cv{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:8px;min-height:160px;overflow-x:auto}
+#cSvg{width:100%;min-height:140px}
 
-/* Info panel */
-.info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-@media(max-width:500px){.info{grid-template-columns:1fr}}
-.info-card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px}
-.info-card .label{font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
-.info-card .value{font-size:14px;color:var(--accent);font-weight:700;margin-top:2px}
-.info-card .value.gold{color:var(--gold)}
-.info-card .value.green{color:var(--green)}
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px}
+@media(max-width:500px){.stats{grid-template-columns:repeat(2,1fr)}}
+.st{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:6px 8px}
+.st .l{font-size:7px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.st .v{font-size:13px;color:var(--accent);font-weight:700;margin-top:1px}
+.st .v.g{color:var(--gold)}.st .v.gr{color:var(--green)}.st .v.r{color:var(--red)}
 
-/* Name input */
-.name-row{display:flex;gap:8px;margin-bottom:12px;align-items:center}
-.name-row input{flex:1;background:var(--card);border:1px solid var(--line);color:var(--gold);padding:8px 12px;border-radius:6px;font-family:inherit;font-size:12px;font-weight:700}
-.name-row input:focus{outline:none;border-color:var(--gold)}
-.name-row input::placeholder{color:var(--muted);font-weight:400}
+/* CCTP */
+.cctp-box{background:#02040c;border:1px solid var(--gold);border-radius:4px;padding:8px;margin-bottom:8px;font-size:8px;word-break:break-all}
+.cctp-box .l{color:var(--muted);letter-spacing:.1em;margin-bottom:3px}
+.cctp-box .p{color:var(--gold);font-weight:600}
+.cctp-box .h{color:var(--dim);margin-top:3px}
 
-/* Hash display */
-.hash-box{background:#02040c;border:1px dashed var(--gold);border-radius:6px;padding:10px;margin-bottom:12px;text-align:center}
-.hash-box .label{font-size:8px;color:var(--muted);letter-spacing:.15em}
-.hash-box .hash{font-size:9px;color:var(--gold);word-break:break-all;margin-top:4px}
+/* Actions */
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px}
+@media(max-width:500px){.acts{grid-template-columns:1fr}}
+.ab{padding:8px;background:transparent;border:1px solid var(--green);color:var(--green);border-radius:4px;font-family:inherit;font-size:9px;font-weight:600;cursor:pointer;transition:.12s;text-align:center}
+.ab:hover{background:rgba(121,255,157,.06)}
+.ab.fire{border-color:var(--red);color:var(--red)}.ab.fire:hover{background:rgba(255,45,85,.06)}
+.ab.dl{border-color:var(--gold);color:var(--gold)}.ab.dl:hover{background:rgba(255,211,117,.06)}
+.ab.enc{border-color:var(--purple);color:var(--purple)}.ab.enc:hover{background:rgba(199,146,255,.06)}
+.ab.buy{border-color:var(--accent);color:var(--accent)}.ab.buy:hover{background:rgba(72,255,224,.06)}
 
-/* Action buttons */
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.act-btn{flex:1;min-width:120px;padding:10px;background:transparent;border:1px solid var(--green);color:var(--green);border-radius:6px;font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.05em;transition:.15s}
-.act-btn:hover{background:rgba(121,255,157,.08)}
-.act-btn.fire{border-color:var(--red);color:var(--red)}
-.act-btn.fire:hover{background:rgba(255,45,85,.08)}
-.act-btn.download{border-color:var(--gold);color:var(--gold)}
-.act-btn.download:hover{background:rgba(255,217,117,.08)}
+/* ComCard tiers */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px}
+@media(max-width:600px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--card);border:1px solid rgba(255,217,117,.15);border-radius:6px;padding:10px;cursor:pointer;transition:.15s}
+.tier:hover{border-color:var(--gold)}
+.tier .tn{font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.tier .tp{font-size:18px;font-weight:900;color:var(--text);margin:2px 0}
+.tier .tp span{font-size:9px;color:var(--muted);font-weight:400}
+.tier .tt{font-size:8px;color:var(--accent)}
+.tier .tb2{font-size:7px;color:var(--dim);margin-top:3px}
 
-.footer{text-align:center;padding:20px;font-size:8px;color:var(--muted)}
-.footer .sig{color:var(--gold);opacity:.6}
+/* Navigation mega-grid */
+.sl{font-size:8px;font-weight:700;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.nav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:3px;margin-bottom:8px}
+.nc{display:block;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:6px 8px;transition:.12s;font-size:8px;color:var(--text)}
+.nc:hover{border-color:var(--accent);text-decoration:none;color:var(--accent)}
+.nc .nd{font-size:7px;color:var(--dim);margin-top:2px}
+
+.footer{text-align:center;padding:16px;font-size:7px;color:var(--dim);border-top:1px solid var(--line)}
+.footer .s{color:var(--gold);opacity:.6}
 </style>
 </head>
 <body>
 
 <div class="topbar">
 <h1>CLAP Circuit Builder</h1>
-<span class="pill">π/φ</span>
+<span class="pill">CWWE</span>
 <span class="pill">P3^Q</span>
-<a href="/launchpad/" class="tb-link">Launchpad</a>
-<a href="/operator/" class="tb-link">Operator</a>
-<a href="/clap/" class="tb-link">CLAP</a>
+<span class="pill">CCTP</span>
+<a href="/operator/" class="tl">Operator</a>
+<a href="/clap/" class="tl">CLAP</a>
+<a href="/launchpad/" class="tl">Launch</a>
+<a href="/storefront/" class="tl">Store</a>
+<a href="/quirq-svg-circuit-simulation/" class="tl">QUIRQ</a>
+<a href="/contact-hamiltonian/" class="tl">CH Gate</a>
+<a href="/simulations/" class="tl">Sims</a>
+<a href="/guard/" class="tl">Guard</a>
+</div>
+
+<div class="gov-bar" id="govBar">
+<span class="gm">GOV</span>
+<span class="gv" id="gSteward">—</span>
+<span class="gm">CH</span>
+<span class="gv" id="gDrift">—</span>
+<span class="gm">Pulse</span>
+<span class="gv" id="gPulse">—</span>
+<span class="gm">Inbox</span>
+<span class="gv" id="gInbox">—</span>
 </div>
 
 <div class="main">
 
 <div class="name-row">
-<input type="text" id="circuitName" placeholder="Name your circuit..." value="My Circuit">
+<input type="text" id="cName" placeholder="Name your circuit..." value="My Circuit">
 </div>
 
-<div class="controls">
-<label>Qubits <input type="number" id="numQubits" value="4" min="2" max="20"></label>
-<label>GOV <input type="text" id="govAngle" value="π/φ" style="width:50px" readonly></label>
+<div class="ctrl">
+<label>Qubits <input type="number" id="nQ" value="4" min="2" max="33"></label>
+<label>GOV <input type="text" value="π/φ" style="width:40px" readonly></label>
 <label>Shots <select id="shots"><option>100</option><option selected>1000</option><option>10000</option></select></label>
+<label>Encoding <select id="enc"><option>CCTP</option><option>CEO</option><option>CVP</option><option>QS1</option></select></label>
 </div>
 
-<div class="toolbox">
-<button class="tool-btn h-gate" onclick="addGate('H')">H</button>
-<button class="tool-btn rz-gate" onclick="addGate('Rz')">Rz π/φ</button>
-<button class="tool-btn rx-gate" onclick="addGate('Rx')">Rx</button>
-<button class="tool-btn rx-gate" onclick="addGate('Ry')">Ry</button>
+<div class="tb">
+<button class="tb-btn h" onclick="ag('H')">H</button>
+<button class="tb-btn rz" onclick="ag('Rz')">Rz π/φ</button>
+<button class="tb-btn rx" onclick="ag('Rx')">Rx</button>
+<button class="tb-btn rx" onclick="ag('Ry')">Ry</button>
 <span class="sep"></span>
-<button class="tool-btn cnot-gate" onclick="addGate('CNOT')">CNOT</button>
-<button class="tool-btn cz-gate" onclick="addGate('CZ')">CZ</button>
+<button class="tb-btn cn" onclick="ag('CNOT')">CNOT</button>
+<button class="tb-btn cz" onclick="ag('CZ')">CZ</button>
 <span class="sep"></span>
-<button class="tool-btn seal" onclick="addGate('SEAL')">P3^Q Seal</button>
-<button class="tool-btn" onclick="addGate('TRI')">△ Triangle</button>
+<button class="tb-btn seal" onclick="ag('SEAL')">P3^Q Seal</button>
+<button class="tb-btn" onclick="ag('TRI')">△ Triangle</button>
+<button class="tb-btn act" onclick="ag('CWWE')">CWWE Full</button>
+<button class="tb-btn act" onclick="ag('LUNA')">Luna Bridge</button>
 <span class="sep"></span>
-<button class="tool-btn action" onclick="addGate('CWWE')">CWWE Full</button>
-<button class="tool-btn danger" onclick="clearCircuit()">Clear</button>
-<button class="tool-btn" onclick="undoGate()">Undo</button>
+<button class="tb-btn del" onclick="gates=[];render()">Clear</button>
+<button class="tb-btn" onclick="gates.pop();render()">Undo</button>
 </div>
 
-<div class="canvas-wrap">
-<svg id="circuitSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+<div class="cv"><svg id="cSvg" xmlns="http://www.w3.org/2000/svg"></svg></div>
+
+<div class="stats">
+<div class="st"><div class="l">Gates</div><div class="v" id="sGates">0</div></div>
+<div class="st"><div class="l">Entangling</div><div class="v g" id="sEnt">0</div></div>
+<div class="st"><div class="l">Depth</div><div class="v gr" id="sDepth">0</div></div>
+<div class="st"><div class="l">Qubits × Shots</div><div class="v" id="sTotal">0</div></div>
 </div>
 
-<div class="info">
-<div class="info-card"><div class="label">Gates</div><div class="value" id="gateCount">0</div></div>
-<div class="info-card"><div class="label">Entangling Gates</div><div class="value gold" id="entCount">0</div></div>
-<div class="info-card"><div class="label">Circuit Depth</div><div class="value green" id="depthCount">0</div></div>
-<div class="info-card"><div class="label">Governed Qubits × Shots</div><div class="value" id="totalQubits">0</div></div>
+<div class="cctp-box">
+<div class="l">CCTP ENCODED PAYLOAD</div>
+<div class="p" id="cctpPayload">Build a circuit to generate CCTP payload</div>
+<div class="h" id="cctpMeta"></div>
 </div>
 
-<div class="hash-box">
-<div class="label">SHA-256 PROOF — ECHO OPERATOR RECOVERABLE</div>
-<div class="hash" id="proofHash">Build a circuit to generate proof</div>
+<div class="acts">
+<button class="ab dl" onclick="dlSVG()">Download SVG Card</button>
+<button class="ab enc" onclick="window.open('/quirq-svg-circuit-simulation/')">Encode → QUIRQ</button>
+<button class="ab" onclick="dlJSON()">Export JSON</button>
+<button class="ab" onclick="window.open('/simulations/')">Browse 124 Sims</button>
+<button class="ab fire" onclick="window.open('https://github.com/DocGrok1/Aura115/actions/workflows/fire-circuit.yml')">Fire on QPU Metal</button>
+<button class="ab buy" onclick="window.open('/storefront/')">Get ComCard → Fire</button>
 </div>
 
-<div class="actions">
-<button class="act-btn" onclick="downloadSVG()">Download SVG Card</button>
-<button class="act-btn download" onclick="exportJSON()">Export Circuit JSON</button>
-<button class="act-btn fire" onclick="fireCircuit()">Fire on Metal</button>
+<!-- ComCard / QuamCard Tiers -->
+<div class="sl">Purchase Tokens — Free on Graviton, Credit Card for QPU</div>
+<div class="tiers">
+<div class="tier" onclick="window.open('/storefront/')">
+<div class="tn">ComCard CC-50</div><div class="tp">$50</div><div class="tt">500K governed tokens</div><div class="tb2">The card IS the license</div>
 </div>
+<div class="tier" onclick="window.open('/storefront/')">
+<div class="tn">QuamCard QC-50</div><div class="tp">$50</div><div class="tt">500K quantum-minted tokens</div><div class="tb2">5-qubit entangled chain</div>
+</div>
+<div class="tier" onclick="window.open('/storefront/')">
+<div class="tn">QuamCard QC-250</div><div class="tp">$250</div><div class="tt">25M tokens — Cepheus 107Q</div><div class="tb2">Full QPU origin proof</div>
+</div>
+</div>
+
+<!-- Pre-built circuits -->
+<div class="sl">Pre-Built Circuits — One Click Load</div>
+<div class="nav-grid" id="prebuilt"></div>
+
+<!-- Fire workflows -->
+<div class="sl">Fire Workflows — QPU Metal</div>
+<div class="nav-grid" id="workflows"></div>
+
+<!-- All simulations -->
+<div class="sl">124 Governed Simulations</div>
+<div class="nav-grid" id="sims"></div>
+
+<!-- Planet engines -->
+<div class="sl">Planet Constellation</div>
+<div class="nav-grid" id="planets"></div>
+
+<!-- Infrastructure -->
+<div class="sl">Infrastructure — Operator Console</div>
+<div class="nav-grid" id="infra"></div>
+
+<!-- CIRQ / QUIRQ -->
+<div class="sl">CIRQ + QUIRQ Runtime</div>
+<div class="nav-grid" id="cirq"></div>
+
+<!-- Circuits / Coins -->
+<div class="sl">Circuit Coin Pages</div>
+<div class="nav-grid" id="coins"></div>
 
 </div>
 
 <div class="footer">
-<p>Joshua Lopez · DCGP.AI LLC · USPTO 19/555,951 | 19/657,064</p>
-<p class="sig">Every coin is a circuit. Build yours. Fire it. Own it.</p>
-<p class="sig">Where there is a gap, there is a gate.</p>
+<p>Joshua Lopez · DCGP.AI LLC · USPTO 19/555,951 | 19/657,064 | 19/730,900 | 19/731,016 | 19/732,119</p>
+<p class="s">DCGP introduces AGI. AURA Governed Intelligence.</p>
+<p class="s">Every coin is a circuit. Build yours. Fire it. Own it. Where there is a gap, there is a gate.</p>
 </div>
 
 <script>
-const GOV_ANGLE = Math.PI / ((1 + Math.sqrt(5)) / 2);
-let gates = [];
-let nq = 4;
+const GOV=Math.PI/((1+Math.sqrt(5))/2);
+let gates=[],nq=4;
 
-function getQubits() {
-  nq = parseInt(document.getElementById('numQubits').value) || 4;
-  return nq;
-}
+// Live API connections
+fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+  const h=d.health||{},p=h.pulse||{},ch=d.ch_gate||{};
+  document.getElementById('gSteward').textContent=(h.stewardship||{}).pct+'%';
+  document.getElementById('gDrift').textContent=(ch.drift||0).toFixed(4);
+  document.getElementById('gPulse').textContent=p.tick||'—';
+}).catch(()=>{});
+fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+  document.getElementById('gInbox').textContent=(d.stats||{}).total_received||0;
+}).catch(()=>{});
 
-function addGate(type) {
-  getQubits();
-  if (type === 'CWWE') {
-    // Full CWWE: H on all, Rz gov on q0, triangle, phase ramp, teleport
-    for (let q = 0; q < Math.min(nq, 4); q++) gates.push({type:'H', target:q});
-    gates.push({type:'Rz', target:0});
-    if (nq >= 3) {
-      gates.push({type:'CNOT', control:0, target:1});
-      gates.push({type:'CNOT', control:1, target:2});
-      gates.push({type:'CNOT', control:2, target:0});
-      gates.push({type:'Rz', target:0, label:'1/9'});
-      gates.push({type:'Rz', target:1, label:'4/9'});
-      gates.push({type:'Rz', target:2, label:'9/9'});
-    }
-    if (nq >= 4) {
-      gates.push({type:'H', target:3});
-      gates.push({type:'CNOT', control:2, target:3});
-      gates.push({type:'CZ', control:1, target:3});
-      gates.push({type:'CZ', control:0, target:3});
-      gates.push({type:'Rz', target:3, label:'seal'});
-    }
-  } else if (type === 'TRI') {
-    if (nq >= 3) {
-      gates.push({type:'CNOT', control:0, target:1});
-      gates.push({type:'CNOT', control:1, target:2});
-      gates.push({type:'CNOT', control:2, target:0});
-      gates.push({type:'Rz', target:0, label:'1/9'});
-      gates.push({type:'Rz', target:1, label:'4/9'});
-      gates.push({type:'Rz', target:2, label:'9/9'});
-      gates.push({type:'CZ', control:0, target:2});
-    }
-  } else if (type === 'SEAL') {
-    for (let q = 0; q < nq; q++) gates.push({type:'Rz', target:q, label:'seal'});
-    if (nq >= 2) gates.push({type:'CNOT', control:0, target:1});
-    if (nq >= 3) gates.push({type:'CZ', control:0, target:nq-1});
-  } else if (type === 'CNOT' || type === 'CZ') {
-    let c = 0, t = Math.min(1, nq-1);
-    if (gates.length > 0) {
-      const last = gates[gates.length-1];
-      c = (last.target !== undefined ? last.target : 0);
-      t = (c + 1) % nq;
-    }
-    gates.push({type, control:c, target:t});
-  } else {
-    let t = 0;
-    if (gates.length > 0) {
-      const last = gates[gates.length-1];
-      t = ((last.target !== undefined ? last.target : 0) + 1) % nq;
-    }
-    gates.push({type, target:t});
-  }
+function gQ(){nq=parseInt(document.getElementById('nQ').value)||4;return nq}
+
+function ag(t){
+  gQ();
+  if(t==='CWWE'){for(let q=0;q<Math.min(nq,4);q++)gates.push({t:'H',q:q});gates.push({t:'Rz',q:0});if(nq>=3){gates.push({t:'CNOT',c:0,q:1});gates.push({t:'CNOT',c:1,q:2});gates.push({t:'CNOT',c:2,q:0});gates.push({t:'Rz',q:0,l:'1/9'});gates.push({t:'Rz',q:1,l:'4/9'});gates.push({t:'Rz',q:2,l:'9/9'})}if(nq>=4){gates.push({t:'H',q:3});gates.push({t:'CNOT',c:2,q:3});gates.push({t:'CZ',c:1,q:3});gates.push({t:'CZ',c:0,q:3});gates.push({t:'Rz',q:3,l:'seal'})}}
+  else if(t==='LUNA'){for(let q=0;q<Math.min(nq,6);q++)gates.push({t:'H',q:q});gates.push({t:'Rz',q:1});gates.push({t:'CNOT',c:0,q:1});if(nq>=3){gates.push({t:'CNOT',c:0,q:1});gates.push({t:'CNOT',c:1,q:2});gates.push({t:'CNOT',c:2,q:0});gates.push({t:'Rz',q:0,l:'1/9'});gates.push({t:'Rz',q:1,l:'4/9'});gates.push({t:'Rz',q:2,l:'9/9'});gates.push({t:'CZ',c:0,q:2})}if(nq>=6){gates.push({t:'H',q:3});gates.push({t:'Rz',q:3});gates.push({t:'H',q:4});gates.push({t:'CNOT',c:2,q:4});gates.push({t:'CZ',c:2,q:4});gates.push({t:'CNOT',c:0,q:5});gates.push({t:'CNOT',c:3,q:5});gates.push({t:'CNOT',c:4,q:5});gates.push({t:'Rz',q:5,l:'seal'})}}
+  else if(t==='TRI'){if(nq>=3){gates.push({t:'CNOT',c:0,q:1});gates.push({t:'CNOT',c:1,q:2});gates.push({t:'CNOT',c:2,q:0});gates.push({t:'Rz',q:0,l:'1/9'});gates.push({t:'Rz',q:1,l:'4/9'});gates.push({t:'Rz',q:2,l:'9/9'});gates.push({t:'CZ',c:0,q:2})}}
+  else if(t==='SEAL'){for(let q=0;q<nq;q++)gates.push({t:'Rz',q:q,l:'seal'});if(nq>=2)gates.push({t:'CNOT',c:0,q:1});if(nq>=3)gates.push({t:'CZ',c:0,q:nq-1})}
+  else if(t==='CNOT'||t==='CZ'){let c=0,tg=Math.min(1,nq-1);if(gates.length>0){c=gates[gates.length-1].q||0;tg=(c+1)%nq}gates.push({t:t,c:c,q:tg})}
+  else{let tg=0;if(gates.length>0)tg=((gates[gates.length-1].q||0)+1)%nq;gates.push({t:t,q:tg})}
   render();
 }
 
-function clearCircuit() { gates = []; render(); }
-function undoGate() { gates.pop(); render(); }
-
-function render() {
-  getQubits();
-  const svg = document.getElementById('circuitSvg');
-  const wireGap = 28;
-  const gateW = 24;
-  const startX = 50;
-  const startY = 30;
-  const h = startY + nq * wireGap + 20;
-  
-  // Assign columns to gates
-  let cols = [];
-  let colX = startX + 20;
-  gates.forEach((g, i) => {
-    cols.push(colX);
-    colX += gateW + 8;
+function render(){
+  gQ();const svg=document.getElementById('cSvg');const wg=24,gw=20,sx=45,sy=26;
+  const h=sy+nq*wg+16;let cx=sx+15;
+  gates.forEach(()=>{cx+=gw+6});const w=Math.max(380,cx+50);
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.style.minHeight=h+'px';
+  let html='';let ent=0;let col=sx+15;
+  for(let q=0;q<nq;q++){const y=sy+q*wg;html+=`<line x1="30" y1="${y}" x2="${w-16}" y2="${y}" stroke="#1a2e47" stroke-width="0.5"/>`;html+=`<text x="24" y="${y}" text-anchor="end" fill="#48ffe0" font-family="monospace" font-size="7" dominant-baseline="central">q${q}</text>`;const mx=w-28;html+=`<rect x="${mx}" y="${y-6}" width="12" height="12" rx="2" fill="#07111f" stroke="#1a2e47" stroke-width="0.4"/><path d="M${mx+2} ${y+1} A3.5 3.5 0 0 1 ${mx+10} ${y+1}" fill="none" stroke="#6a85a8" stroke-width="0.5"/><line x1="${mx+6}" y1="${y+1}" x2="${mx+8}" y2="${y-3}" stroke="#6a85a8" stroke-width="0.5"/>`}
+  gates.forEach((g,i)=>{const x=col;col+=gw+6;
+    if(g.t==='H'){const y=sy+g.q*wg;html+=`<rect x="${x}" y="${y-7}" width="${gw}" height="14" rx="2" fill="#1d9e7520" stroke="#5dcaa5" stroke-width="0.4"/><text x="${x+gw/2}" y="${y}" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="7" dominant-baseline="central">H</text>`}
+    else if(g.t==='Rz'){const y=sy+g.q*wg;const lb=g.l||'π/φ';const sc=g.l==='seal';html+=`<rect x="${x}" y="${y-7}" width="${gw}" height="14" rx="2" fill="${sc?'#e24b4a15':'#ba751715'}" stroke="${sc?'#ff6b80':'#ffd975'}" stroke-width="0.4"/><text x="${x+gw/2}" y="${y}" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="5" dominant-baseline="central">${lb}</text>`}
+    else if(g.t==='Rx'||g.t==='Ry'){const y=sy+g.q*wg;html+=`<rect x="${x}" y="${y-7}" width="${gw}" height="14" rx="2" fill="#993c1d15" stroke="#f0997b" stroke-width="0.4"/><text x="${x+gw/2}" y="${y}" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">${g.t}</text>`}
+    else if(g.t==='CNOT'){ent++;const cy=sy+g.c*wg,ty=sy+g.q*wg;html+=`<circle cx="${x+gw/2}" cy="${cy}" r="2.5" fill="#e8f4ff"/><line x1="${x+gw/2}" y1="${Math.min(cy,ty)+3}" x2="${x+gw/2}" y2="${Math.max(cy,ty)-4}" stroke="#e8f4ff" stroke-width="0.4"/><circle cx="${x+gw/2}" cy="${ty}" r="5" fill="none" stroke="#e8f4ff" stroke-width="0.4"/><line x1="${x+gw/2-3}" y1="${ty}" x2="${x+gw/2+3}" y2="${ty}" stroke="#e8f4ff" stroke-width="0.4"/><line x1="${x+gw/2}" y1="${ty-3}" x2="${x+gw/2}" y2="${ty+3}" stroke="#e8f4ff" stroke-width="0.4"/>`}
+    else if(g.t==='CZ'){ent++;const cy=sy+g.c*wg,ty=sy+g.q*wg;html+=`<circle cx="${x+gw/2}" cy="${cy}" r="2.5" fill="#c792ff"/><line x1="${x+gw/2}" y1="${Math.min(cy,ty)+3}" x2="${x+gw/2}" y2="${Math.max(cy,ty)-3}" stroke="#c792ff" stroke-width="0.4"/><circle cx="${x+gw/2}" cy="${ty}" r="2.5" fill="#c792ff"/>`}
   });
-  const w = Math.max(400, colX + 60);
-  
-  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-  svg.style.minHeight = h + 'px';
-  
-  let html = '';
-  
-  // Wires
-  for (let q = 0; q < nq; q++) {
-    const y = startY + q * wireGap;
-    html += `<line x1="30" y1="${y}" x2="${w-20}" y2="${y}" stroke="#1a2e47" stroke-width="0.5"/>`;
-    html += `<text x="22" y="${y+1}" text-anchor="end" fill="#48ffe0" font-family="monospace" font-size="8" dominant-baseline="central">q${q}</text>`;
-    // Measurement at end
-    const mx = w - 35;
-    html += `<rect x="${mx}" y="${y-7}" width="14" height="14" rx="2" fill="#07111f" stroke="#1a2e47" stroke-width="0.5"/>`;
-    html += `<path d="M${mx+3} ${y+2} A4 4 0 0 1 ${mx+11} ${y+2}" fill="none" stroke="#6a85a8" stroke-width="0.7"/>`;
-    html += `<line x1="${mx+7}" y1="${y+2}" x2="${mx+9}" y2="${y-3}" stroke="#6a85a8" stroke-width="0.7"/>`;
-  }
-  
-  // Gates
-  let entCount = 0;
-  gates.forEach((g, i) => {
-    const x = cols[i];
-    if (g.type === 'H') {
-      const y = startY + g.target * wireGap;
-      html += `<rect x="${x}" y="${y-8}" width="${gateW}" height="16" rx="2" fill="#1d9e7530" stroke="#5dcaa5" stroke-width="0.5"/>`;
-      html += `<text x="${x+gateW/2}" y="${y+1}" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="8" dominant-baseline="central">H</text>`;
-    } else if (g.type === 'Rz') {
-      const y = startY + g.target * wireGap;
-      const lbl = g.label || 'π/φ';
-      html += `<rect x="${x}" y="${y-8}" width="${gateW}" height="16" rx="2" fill="${g.label==='seal'?'#e24b4a30':'#ba751730'}" stroke="${g.label==='seal'?'#ff6b80':'#ffd975'}" stroke-width="0.5"/>`;
-      html += `<text x="${x+gateW/2}" y="${y+1}" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">${lbl}</text>`;
-    } else if (g.type === 'Rx' || g.type === 'Ry') {
-      const y = startY + g.target * wireGap;
-      html += `<rect x="${x}" y="${y-8}" width="${gateW}" height="16" rx="2" fill="#993c1d30" stroke="#f0997b" stroke-width="0.5"/>`;
-      html += `<text x="${x+gateW/2}" y="${y+1}" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="7" dominant-baseline="central">${g.type}</text>`;
-    } else if (g.type === 'CNOT') {
-      entCount++;
-      const cy = startY + g.control * wireGap;
-      const ty = startY + g.target * wireGap;
-      html += `<circle cx="${x+gateW/2}" cy="${cy}" r="3" fill="#e8f4ff"/>`;
-      html += `<line x1="${x+gateW/2}" y1="${Math.min(cy,ty)+3}" x2="${x+gateW/2}" y2="${Math.max(cy,ty)-5}" stroke="#e8f4ff" stroke-width="0.5"/>`;
-      html += `<circle cx="${x+gateW/2}" cy="${ty}" r="6" fill="none" stroke="#e8f4ff" stroke-width="0.5"/>`;
-      html += `<line x1="${x+gateW/2-4}" y1="${ty}" x2="${x+gateW/2+4}" y2="${ty}" stroke="#e8f4ff" stroke-width="0.5"/>`;
-      html += `<line x1="${x+gateW/2}" y1="${ty-4}" x2="${x+gateW/2}" y2="${ty+4}" stroke="#e8f4ff" stroke-width="0.5"/>`;
-    } else if (g.type === 'CZ') {
-      entCount++;
-      const cy = startY + g.control * wireGap;
-      const ty = startY + g.target * wireGap;
-      html += `<circle cx="${x+gateW/2}" cy="${cy}" r="3" fill="#c792ff"/>`;
-      html += `<line x1="${x+gateW/2}" y1="${Math.min(cy,ty)+3}" x2="${x+gateW/2}" y2="${Math.max(cy,ty)-3}" stroke="#c792ff" stroke-width="0.5"/>`;
-      html += `<circle cx="${x+gateW/2}" cy="${ty}" r="3" fill="#c792ff"/>`;
-    }
+  svg.innerHTML=html;
+  document.getElementById('sGates').textContent=gates.length;
+  document.getElementById('sEnt').textContent=ent;
+  document.getElementById('sDepth').textContent=gates.length;
+  const sh=parseInt(document.getElementById('shots').value)||1000;
+  document.getElementById('sTotal').textContent=(nq*sh).toLocaleString();
+  updateCCTP();
+}
+
+function updateCCTP(){
+  const name=document.getElementById('cName').value||'unnamed';
+  const sh=document.getElementById('shots').value;
+  const encoding=document.getElementById('enc').value;
+  const data={name,qubits:nq,gates:gates.length,entangling:gates.filter(g=>g.t==='CNOT'||g.t==='CZ').length,shots:parseInt(sh),gov_angle:GOV,encoding,inventor:'Joshua Lopez',entity:'DCGP.AI LLC'};
+  const payload=JSON.stringify(data);
+  // Client-side CCTP encoding (simplified - real encoding runs server-side through lib/ceo-compress.js)
+  let h=0;for(let i=0;i<payload.length;i++)h=((h<<5)-h+payload.charCodeAt(i))|0;
+  const hash=Math.abs(h).toString(16).padStart(12,'0').slice(0,12);
+  const cctp=`CCTP|${hash}|${payload}`;
+  document.getElementById('cctpPayload').textContent=cctp;
+  document.getElementById('cctpMeta').textContent=`${encoding} · ${payload.length} bytes · ${name} · ${nq}Q × ${sh} shots · GOV π/φ`;
+}
+
+function dlSVG(){
+  const name=document.getElementById('cName').value||'circuit';
+  const svg=document.getElementById('cSvg');
+  const vb=svg.getAttribute('viewBox')||'0 0 400 200';
+  const d=`<?xml version="1.0"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="800">\n<rect width="100%" height="100%" fill="#07111f"/>\n<text x="50%" y="14" text-anchor="middle" fill="#ffd975" font-family="monospace" font-size="11" font-weight="700">${name}</text>\n${svg.innerHTML}\n<text x="50%" y="${vb.split(' ')[3]-6}" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="6">Joshua Lopez · DCGP.AI · GOV=π/φ · QHP SEALED · ${document.getElementById('cctpPayload').textContent.slice(0,40)}...</text>\n</svg>`;
+  const b=new Blob([d],{type:'image/svg+xml'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name.replace(/\s+/g,'-').toLowerCase()+'.svg';a.click();URL.revokeObjectURL(u);
+}
+
+function dlJSON(){
+  const name=document.getElementById('cName').value||'circuit';
+  const sh=parseInt(document.getElementById('shots').value)||1000;
+  const d={name,qubits:nq,shots:sh,gov_angle:GOV,gates,cctp:document.getElementById('cctpPayload').textContent,inventor:'Joshua Lopez',entity:'DCGP.AI LLC',patents:['19/555,951','19/730,900','19/731,016','19/732,119']};
+  const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name.replace(/\s+/g,'-').toLowerCase()+'.json';a.click();URL.revokeObjectURL(u);
+}
+
+// Pre-built circuits
+const prebuilt=[
+  {n:'CWWE Stage 1',p:'/circuits/cwwe_circuit.py',d:'Sequential 5Q'},
+  {n:'CWWE Compiled',p:'/circuits/cwwe_compiled.py',d:'Triangle + gravity'},
+  {n:'Luna Bridge',p:'/circuits/luna_bridge_circuit.py',d:'6Q launch sequence'},
+  {n:'Au-197 Gold',p:'/circuits/au197/',d:'Z=79 delivery'},
+  {n:'GaN-38',p:'/circuits/gan38/',d:'Light scaffold'},
+  {n:'Te-52',p:'/circuits/te52/',d:'Temporal encryption'},
+  {n:'Og-118',p:'/circuits/og118/',d:'Noble closure'},
+  {n:'Proverbs 27',p:'/circuits/proverbs27/',d:'Iron sharpens iron'},
+  {n:'Bell Pair',p:'/circuits/bell-pair/',d:'(|00⟩+|11⟩)/√2'},
+  {n:'GHZ State',p:'/circuits/ghz-state/',d:'N-qubit entanglement'},
+  {n:'Wardenclyffe',p:'/circuits/wardenclyffe/',d:'Seal of origin'},
+  {n:'ZK-SNARK',p:'/circuits/zk-snark/',d:'Zero knowledge'},
+  {n:'Cavitation',p:'/circuits/cavitation/',d:'Bubble priming'},
+  {n:'Turbine',p:'/circuits/turbine/',d:'Coherence engine'},
+  {n:'Alzheimer\'s',p:'/circuits/alzheimer/',d:'Tau protein'},
+  {n:'MS Agent',p:'/circuits/ms-agent/',d:'Myelin repair'},
+  {n:'PARP',p:'/circuits/parp/',d:'DNA repair inhibition'},
+  {n:'SLFN11',p:'/circuits/slfn11/',d:'Chemo sensitivity'},
+  {n:'Crohn\'s',p:'/circuits/crohn/',d:'Gut targeting'},
+  {n:'Echo Operator',p:'/circuits/echo_operator_apply.py',d:'E:Σ*→S*'},
+];
+const workflows=[
+  {n:'Fire Circuit — Any QPU',p:'https://github.com/DocGrok1/Aura115/actions/workflows/fire-circuit.yml',d:'Gated template'},
+  {n:'Master Fire — All QPUs',p:'https://github.com/DocGrok1/Aura115/actions/workflows/master-fire-cron.yml',d:'Full constellation'},
+  {n:'Aquila 256Q Mint',p:'https://github.com/DocGrok1/Aura115/actions/workflows/aquila-mc290-mint.yml',d:'Neutral atom'},
+  {n:'4 Coins — Cepheus 107Q',p:'https://github.com/DocGrok1/Aura115/actions/workflows/four-coins-fire.yml',d:'Rigetti'},
+  {n:'Proverbs 27 — Emerald',p:'https://github.com/DocGrok1/Aura115/actions/workflows/proverbs27-emerald-fire.yml',d:'Stockholm 54Q'},
+  {n:'Z=120 Doubly Magic',p:'https://github.com/DocGrok1/Aura115/actions/workflows/z120-doubly-magic-fire.yml',d:'Cepheus 107Q'},
+  {n:'CWWE 33Q Graviton',p:'https://github.com/DocGrok1/Aura115/actions/workflows/fire-cwwe-33q.yml',d:'164GB ARM64'},
+  {n:'Jupiter Swarm',p:'https://github.com/DocGrok1/Aura115/actions/workflows/fire-cwwe-swarm.yml',d:'1000 parallel'},
+  {n:'Echo Operator',p:'https://github.com/DocGrok1/Aura115/actions/workflows/fire-echo-operator.yml',d:'Reconstruction'},
+  {n:'Pharma Free Graviton',p:'https://github.com/DocGrok1/Aura115/actions/workflows/operator-fire-pharma-proverbs27-free.yml',d:'Free'},
+  {n:'QHP Fraud Protection',p:'https://github.com/DocGrok1/Aura115/actions/workflows/qhp-quantum-fraud-protection-graviton.yml',d:'Live demo'},
+  {n:'Rescue + Echo All',p:'https://github.com/DocGrok1/Aura115/actions/workflows/rescue-echo-fire.yml',d:'All QPUs'},
+];
+const planets=['Jupiter','Saturn','Moon','Neptune','Earth','Mercury','Venus','Mars','Pluto','Uranus'];
+const infra=[
+  {n:'Operator Console',p:'/operator/',d:'250+ items'},
+  {n:'Guard',p:'/guard/',d:'Governance app'},
+  {n:'Command Wall',p:'/command-wall/',d:'Full console'},
+  {n:'Command Deck',p:'/command-deck/',d:'Deck view'},
+  {n:'Cron Dashboard',p:'/cron-dashboard/',d:'73 workflows'},
+  {n:'Storefront',p:'/storefront/',d:'ComCard + QuamCard'},
+  {n:'CLAP Dashboard',p:'/clap/',d:'Admission gate'},
+  {n:'Launchpad',p:'/launchpad/',d:'Fire any circuit'},
+  {n:'CCTP Delta Print',p:'/cctp-delta-print/',d:'Transport protocol'},
+  {n:'DocGrokHealth',p:'/docgrokhealth/',d:'System health'},
+  {n:'Owner Lane',p:'/owner-lane/',d:'Operator view'},
+  {n:'Intelligence Report',p:'/intelligence-report/',d:'Daily intel'},
+  {n:'Mining Reports',p:'/mining-reports/',d:'Token mining'},
+  {n:'Patent Vault',p:'/patent-vault/',d:'IP repository'},
+  {n:'Recognition',p:'/recognition/',d:'Acknowledgments'},
+  {n:'Doctrine',p:'/doctrine/',d:'Constitutional law'},
+  {n:'Freedom Audit',p:'/freedom-audit/',d:'Recognition runway'},
+];
+const cirqPages=[
+  {n:'CIRQ Orchestrator',p:'/cirq-orchestrator/',d:'Runtime control'},
+  {n:'CIRQ Aura Bridge',p:'/cirq-aura-bridge/',d:'Bridge layer'},
+  {n:'CIRQ QHP Sim',p:'/cirq-qhp-simulation/',d:'QHP circuits'},
+  {n:'CIRQ Runtime',p:'/cirq-runtime-simulation/',d:'Runtime sim'},
+  {n:'CIRQ Index',p:'/cirq-index/',d:'Circuit index'},
+  {n:'QUIRQ SVG Encoder',p:'/quirq-svg-circuit-simulation/',d:'SVG ↔ payload'},
+  {n:'QUIRQ Nano Echo',p:'/quirq-nano-echo/',d:'Nano encoding'},
+  {n:'GHZ State Demo',p:'/ghz-state-demo/',d:'N-qubit GHZ'},
+  {n:'Contact Hamiltonian',p:'/contact-hamiltonian/',d:'Live CH gate + AQIS'},
+  {n:'Governed TSP',p:'/governed-tsp/',d:'Travelling salesman'},
+  {n:'Bell Pair Circuit',p:'/bell-pair-circuit/',d:'Entanglement'},
+  {n:'Decoherence Defense',p:'/decoherence-defense/',d:'Error mitigation'},
+  {n:'Equilibrium',p:'/equilibrium/',d:'Manifold stability'},
+  {n:'Shor\'s RP',p:'/unified-shors-rp-simulation/',d:'Governed factoring'},
+  {n:'Sonoluminescence',p:'/sonoluminescence-simulation/',d:'Cavitation sim'},
+  {n:'Quantum Test 137',p:'/quantum-test-137/',d:'Fine structure'},
+  {n:'QHP Gravity Demo',p:'/qhp-gravity-live-demo.html',d:'Viability manifold'},
+  {n:'P3^Q Evidence',p:'/p3q-evidence.html',d:'Full report'},
+];
+
+function mkGrid(items,id,type){
+  const g=document.getElementById(id);
+  items.forEach(i=>{
+    const c=document.createElement('a');c.className='nc';
+    c.href=i.p||'/'+i.n.toLowerCase().replace(/\s+/g,'-')+'/';
+    if(type==='ext')c.target='_blank';
+    c.innerHTML=`${i.n}<div class="nd">${i.d||''}</div>`;
+    g.appendChild(c);
   });
-  
-  svg.innerHTML = html;
-  
-  // Update stats
-  document.getElementById('gateCount').textContent = gates.length;
-  document.getElementById('entCount').textContent = entCount;
-  document.getElementById('depthCount').textContent = cols.length;
-  const shots = parseInt(document.getElementById('shots').value) || 1000;
-  document.getElementById('totalQubits').textContent = (nq * shots).toLocaleString();
-  
-  // Update proof hash
-  updateHash();
 }
 
-function updateHash() {
-  const name = document.getElementById('circuitName').value || 'unnamed';
-  const shots = document.getElementById('shots').value;
-  const data = JSON.stringify({name, nq, gates: gates.length, gov: GOV_ANGLE, shots});
-  // Simple hash (real SHA-256 would need crypto API)
-  let h = 0;
-  for (let i = 0; i < data.length; i++) {
-    h = ((h << 5) - h + data.charCodeAt(i)) | 0;
-  }
-  const hex = Math.abs(h).toString(16).padStart(8, '0');
-  // Extend to look like SHA-256
-  const proof = (hex + hex + hex + hex + hex + hex + hex + hex).slice(0, 64);
-  document.getElementById('proofHash').textContent = proof;
+mkGrid(prebuilt,'prebuilt');
+mkGrid(workflows,'workflows','ext');
+planets.forEach(p=>{
+  const g=document.getElementById('planets');
+  const c=document.createElement('a');c.className='nc';c.href='/'+p.toLowerCase()+'/';
+  c.innerHTML=`${p}<div class="nd">Planet engine</div>`;g.appendChild(c);
+});
+for(let i=1;i<=124;i++){
+  const g=document.getElementById('sims');
+  const c=document.createElement('a');c.className='nc';c.href=`/simulations/sim-${String(i).padStart(4,'0')}.html`;
+  c.innerHTML=`SIM-${String(i).padStart(4,'0')}<div class="nd">Governed</div>`;g.appendChild(c);
 }
-
-function downloadSVG() {
-  const name = document.getElementById('circuitName').value || 'circuit';
-  const svg = document.getElementById('circuitSvg');
-  const svgData = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" ${svg.getAttribute('viewBox') ? 'viewBox="'+svg.getAttribute('viewBox')+'"' : ''} width="800">
-<rect width="100%" height="100%" fill="#07111f"/>
-<text x="50%" y="16" text-anchor="middle" fill="#ffd975" font-family="monospace" font-size="12" font-weight="700">${name}</text>
-${svg.innerHTML}
-<text x="50%" y="${parseInt(svg.getAttribute('viewBox').split(' ')[3])-8}" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="7">Joshua Lopez · DCGP.AI LLC · GOV = π/φ · QHP SEALED</text>
-</svg>`;
-  const blob = new Blob([svgData], {type: 'image/svg+xml'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name.replace(/\s+/g, '-').toLowerCase() + '.svg';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function exportJSON() {
-  const name = document.getElementById('circuitName').value || 'circuit';
-  const shots = parseInt(document.getElementById('shots').value) || 1000;
-  const data = {
-    name, qubits: nq, shots, gov_angle: GOV_ANGLE,
-    gates: gates,
-    inventor: "Joshua Lopez", entity: "DCGP.AI LLC",
-    patents: ["19/555,951", "19/730,900", "19/731,016", "19/732,119"]
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name.replace(/\s+/g, '-').toLowerCase() + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function fireCircuit() {
-  window.open('https://github.com/DocGrok1/Aura115/actions/workflows/fire-circuit.yml');
-}
-
-// Click on SVG to select gate targets
-document.getElementById('circuitSvg').addEventListener('click', function(e) {
-  const rect = this.getBoundingClientRect();
-  const viewBox = this.getAttribute('viewBox').split(' ').map(Number);
-  const scaleY = viewBox[3] / rect.height;
-  const y = (e.clientY - rect.top) * scaleY;
-  const wireGap = 28;
-  const startY = 30;
-  const clickedQubit = Math.round((y - startY) / wireGap);
-  if (clickedQubit >= 0 && clickedQubit < nq && gates.length > 0) {
-    const last = gates[gates.length - 1];
-    if (last.type === 'CNOT' || last.type === 'CZ') {
-      // Second click sets target
-      if (last._needsTarget) {
-        last.target = clickedQubit;
-        delete last._needsTarget;
-        render();
-      }
-    }
-  }
+mkGrid(infra,'infra');
+mkGrid(cirqPages,'cirq');
+const coinIds=['au197','gan38','te52','og118','sn50','pb82','ca20','ni28','alzheimer','ms-agent','crohn','parp','slfn11','proverbs27','bell-pair','ghz-state','wardenclyffe','zk-snark','cavitation','turbine'];
+coinIds.forEach(id=>{
+  const g=document.getElementById('coins');
+  const c=document.createElement('a');c.className='nc';c.href=`/circuits/${id}/`;
+  c.innerHTML=`${id}<div class="nd">Circuit coin</div>`;g.appendChild(c);
 });
 
-// Listen for changes
-document.getElementById('numQubits').addEventListener('input', render);
-document.getElementById('circuitName').addEventListener('input', updateHash);
-document.getElementById('shots').addEventListener('change', function() { updateHash(); render(); });
-
-// Initial render
+document.getElementById('nQ').addEventListener('input',render);
+document.getElementById('cName').addEventListener('input',updateCCTP);
+document.getElementById('shots').addEventListener('change',()=>{updateCCTP();render()});
+document.getElementById('enc').addEventListener('change',updateCCTP);
 render();
 </script>
 </body>
