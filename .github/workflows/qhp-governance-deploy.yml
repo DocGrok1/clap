@@ -16,6 +16,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 # Core Security Principle Configuration: Mandate explicit permissions for OIDC JWT Token Exchange
 permissions:
   id-token: write      # Required to request the dynamic OIDC JSON Web Token (JWT) from GitHub
