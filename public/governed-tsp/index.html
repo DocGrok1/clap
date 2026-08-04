@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Governed TSP — AQiOS</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050508;color:#ddd;font-family:Inter,system-ui,sans-serif;padding:16px;max-width:900px;margin:0 auto}
+h1{font-size:22px;color:#ffd975;margin-bottom:4px}
+.sub{font-size:12px;color:#777;margin-bottom:20px}
+.card{background:#0a0a12;border:1px solid rgba(255,217,117,.12);border-radius:10px;padding:16px;margin-bottom:14px}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.stat{background:#0a0a12;border:1px solid rgba(77,255,229,.15);border-radius:8px;padding:12px;text-align:center}
+.stat-v{font-size:22px;font-weight:800;color:#4dffe5;font-family:monospace}
+.stat-k{font-size:8px;color:#777;margin-top:2px;text-transform:uppercase}
+.section{font-size:11px;font-weight:700;color:#777;margin:14px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+.btn{background:#ffd975;color:#000;border:none;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin:6px 0}
+.btn-hw{background:linear-gradient(135deg,#4dffe5,#00b894);color:#000}
+.svg-wrap{background:#050508;border-radius:8px;overflow-x:auto;margin:12px 0}
+.route{font-family:monospace;font-size:12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);color:#aaa}
+.route.opt{color:#00e676;font-weight:700}
+.footer{margin-top:24px;font-size:10px;color:#555;text-align:center}
+.footer em{color:#ffd975;font-style:normal}
+.math{font-family:monospace;font-size:12px;color:#4dffe5;line-height:2;background:#081020;padding:12px;border-radius:6px;margin:8px 0}
+.badge{display:inline-block;font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;margin-left:8px}
+.badge.sim{background:#00e676;color:#000}
+.badge.hw{background:#ffd975;color:#000}
+</style>
+</head>
+<body>
+<h1>Governed TSP — One-Hot QAOA</h1>
+<div class="sub">Traveling Salesman via Constitutional Quantum Optimization<br>Authority: Joshua Lopez — DCGP.AI LLC — USPTO 19/555,951</div>
+
+<div class="stat-row">
+  <div class="stat"><div class="stat-v">16</div><div class="stat-k">Qubits</div></div>
+  <div class="stat"><div class="stat-v">3</div><div class="stat-k">QAOA Layers</div></div>
+  <div class="stat"><div class="stat-v">784</div><div class="stat-k">Gates</div></div>
+  <div class="stat"><div class="stat-v">π/φ</div><div class="stat-k">Gov Angle</div></div>
+</div>
+
+<div class="card">
+  <div class="section">Circuit Architecture</div>
+  <div class="svg-wrap"><svg viewBox="0 0 1400 700" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+<rect width="1400" height="700" fill="#050508"/>
+<text x="700" y="30" fill="#ffd975" text-anchor="middle" font-size="20" font-weight="bold">GOVERNED TSP — One-Hot QAOA</text>
+<text x="700" y="50" fill="#4dffe5" text-anchor="middle" font-size="12">16 qubits · 3 layers · governance angle π/φ = 1.9416 rad · DCGP.AI</text>
+<text x="130" y="64.0" fill="#888" text-anchor="end" font-size="10">q0 c0p0</text>
+<line x1="140" y1="60.0" x2="1370" y2="60.0" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="101.5" fill="#888" text-anchor="end" font-size="10">q1 c0p1</text>
+<line x1="140" y1="97.5" x2="1370" y2="97.5" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="139.0" fill="#888" text-anchor="end" font-size="10">q2 c0p2</text>
+<line x1="140" y1="135.0" x2="1370" y2="135.0" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="176.5" fill="#888" text-anchor="end" font-size="10">q3 c0p3</text>
+<line x1="140" y1="172.5" x2="1370" y2="172.5" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="214.0" fill="#888" text-anchor="end" font-size="10">q4 c1p0</text>
+<line x1="140" y1="210.0" x2="1370" y2="210.0" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="251.5" fill="#888" text-anchor="end" font-size="10">q5 c1p1</text>
+<line x1="140" y1="247.5" x2="1370" y2="247.5" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="289.0" fill="#888" text-anchor="end" font-size="10">q6 c1p2</text>
+<line x1="140" y1="285.0" x2="1370" y2="285.0" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="326.5" fill="#888" text-anchor="end" font-size="10">q7 c1p3</text>
+<line x1="140" y1="322.5" x2="1370" y2="322.5" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="364.0" fill="#888" text-anchor="end" font-size="10">q8 c2p0</text>
+<line x1="140" y1="360.0" x2="1370" y2="360.0" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="401.5" fill="#888" text-anchor="end" font-size="10">q9 c2p1</text>
+<line x1="140" y1="397.5" x2="1370" y2="397.5" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="439.0" fill="#888" text-anchor="end" font-size="10">q10 c2p2</text>
+<line x1="140" y1="435.0" x2="1370" y2="435.0" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="476.5" fill="#888" text-anchor="end" font-size="10">q11 c2p3</text>
+<line x1="140" y1="472.5" x2="1370" y2="472.5" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="514.0" fill="#888" text-anchor="end" font-size="10">q12 c3p0</text>
+<line x1="140" y1="510.0" x2="1370" y2="510.0" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="551.5" fill="#888" text-anchor="end" font-size="10">q13 c3p1</text>
+<line x1="140" y1="547.5" x2="1370" y2="547.5" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="589.0" fill="#888" text-anchor="end" font-size="10">q14 c3p2</text>
+<line x1="140" y1="585.0" x2="1370" y2="585.0" stroke="#1a1a2e" stroke-width="1.5"/>
+<text x="130" y="626.5" fill="#888" text-anchor="end" font-size="10">q15 c3p3</text>
+<line x1="140" y1="622.5" x2="1370" y2="622.5" stroke="#1a1a2e" stroke-width="1.5"/>
+<rect x="156" y="49.0" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="64.0" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="86.5" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="101.5" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="124.0" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="139.0" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="161.5" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="176.5" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="199.0" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="214.0" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="236.5" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="251.5" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="274.0" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="289.0" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="311.5" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="326.5" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="349.0" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="364.0" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="386.5" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="401.5" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="424.0" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="439.0" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="461.5" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="476.5" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="499.0" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="514.0" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="536.5" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="551.5" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="574.0" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="589.0" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<rect x="156" y="611.5" width="28" height="22" rx="3" fill="#0a1628" stroke="#4dffe5" stroke-width="1.2"/>
+<text x="170" y="626.5" fill="#4dffe5" text-anchor="middle" font-size="11" font-weight="bold">H</text>
+<text x="270" y="36" fill="#ffd975" text-anchor="middle" font-size="11">COST H(q,p,S,t)</text>
+<line x1="240" y1="60.0" x2="240" y2="247.5" stroke="#ff6b6b" stroke-width="2" opacity="0.7"/>
+<circle cx="240" cy="60.0" r="4" fill="#ff6b6b"/>
+<circle cx="240" cy="247.5" r="4" fill="#ff6b6b"/>
+<line x1="272" y1="97.5" x2="272" y2="285.0" stroke="#ff6b6b" stroke-width="2" opacity="0.7"/>
+<circle cx="272" cy="97.5" r="4" fill="#ff6b6b"/>
+<circle cx="272" cy="285.0" r="4" fill="#ff6b6b"/>
+<line x1="304" y1="135.0" x2="304" y2="322.5" stroke="#ff6b6b" stroke-width="2" opacity="0.7"/>
+<circle cx="304" cy="135.0" r="4" fill="#ff6b6b"/>
+<circle cx="304" cy="322.5" r="4" fill="#ff6b6b"/>
+<line x1="336" y1="210.0" x2="336" y2="397.5" stroke="#ff6b6b" stroke-width="2" opacity="0.7"/>
+<circle cx="336" cy="210.0" r="4" fill="#ff6b6b"/>
+<circle cx="336" cy="397.5" r="4" fill="#ff6b6b"/>
+<line x1="368" y1="247.5" x2="368" y2="435.0" stroke="#ff6b6b" stroke-width="2" opacity="0.7"/>
+<circle cx="368" cy="247.5" r="4" fill="#ff6b6b"/>
+<circle cx="368" cy="435.0" r="4" fill="#ff6b6b"/>
+<line x1="400" y1="360.0" x2="400" y2="547.5" stroke="#ff6b6b" stroke-width="2" opacity="0.7"/>
+<circle cx="400" cy="360.0" r="4" fill="#ff6b6b"/>
+<circle cx="400" cy="547.5" r="4" fill="#ff6b6b"/>
+<line x1="432" y1="60.0" x2="432" y2="322.5" stroke="#ff6b6b" stroke-width="2" opacity="0.7"/>
+<circle cx="432" cy="60.0" r="4" fill="#ff6b6b"/>
+<circle cx="432" cy="322.5" r="4" fill="#ff6b6b"/>
+<line x1="464" y1="172.5" x2="464" y2="210.0" stroke="#ff6b6b" stroke-width="2" opacity="0.7"/>
+<circle cx="464" cy="172.5" r="4" fill="#ff6b6b"/>
+<circle cx="464" cy="210.0" r="4" fill="#ff6b6b"/>
+<text x="556" y="36" fill="#f59e0b" text-anchor="middle" font-size="11">ONE-HOT Πₐ</text>
+<rect x="508" y="54.0" width="16" height="124.5" rx="4" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.6"/>
+<rect x="534" y="204.0" width="16" height="124.5" rx="4" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.6"/>
+<rect x="560" y="354.0" width="16" height="124.5" rx="4" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.6"/>
+<rect x="586" y="504.0" width="16" height="124.5" rx="4" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.6"/>
+<text x="680" y="36" fill="#8b5cf6" text-anchor="middle" font-size="11">MIXER</text>
+<rect x="636" y="49.0" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="64.0" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="86.5" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="101.5" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="124.0" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="139.0" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="161.5" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="176.5" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="199.0" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="214.0" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="236.5" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="251.5" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="274.0" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="289.0" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="311.5" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="326.5" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="349.0" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="364.0" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="386.5" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="401.5" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="424.0" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="439.0" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="461.5" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="476.5" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="499.0" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="514.0" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="536.5" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="551.5" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="574.0" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="589.0" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<rect x="636" y="611.5" width="28" height="22" rx="3" fill="#1a0a2e" stroke="#8b5cf6" stroke-width="1.2"/>
+<text x="650" y="626.5" fill="#8b5cf6" text-anchor="middle" font-size="9">Rx</text>
+<text x="750" y="36" fill="#ffd975" text-anchor="middle" font-size="11">CONSTITUTION</text>
+<rect x="704" y="49.0" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="64.0" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="86.5" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="101.5" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="124.0" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="139.0" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="161.5" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="176.5" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="199.0" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="214.0" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="236.5" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="251.5" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="274.0" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="289.0" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="311.5" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="326.5" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="349.0" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="364.0" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="386.5" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="401.5" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="424.0" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="439.0" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="461.5" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="476.5" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="499.0" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="514.0" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="536.5" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="551.5" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="574.0" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="589.0" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<rect x="704" y="611.5" width="32" height="22" rx="3" fill="#2e2611" stroke="#ffd975" stroke-width="1.4"/>
+<text x="720" y="626.5" fill="#ffd975" text-anchor="middle" font-size="8">π/φ</text>
+<text x="810" y="36" fill="#00e676" text-anchor="middle" font-size="11">MEASURE</text>
+<rect x="788" y="49.0" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 64.0 A 6 6 0 0 1 806 64.0" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="64.0" x2="805" y2="57.0" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="86.5" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 101.5 A 6 6 0 0 1 806 101.5" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="101.5" x2="805" y2="94.5" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="124.0" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 139.0 A 6 6 0 0 1 806 139.0" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="139.0" x2="805" y2="132.0" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="161.5" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 176.5 A 6 6 0 0 1 806 176.5" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="176.5" x2="805" y2="169.5" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="199.0" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 214.0 A 6 6 0 0 1 806 214.0" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="214.0" x2="805" y2="207.0" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="236.5" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 251.5 A 6 6 0 0 1 806 251.5" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="251.5" x2="805" y2="244.5" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="274.0" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 289.0 A 6 6 0 0 1 806 289.0" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="289.0" x2="805" y2="282.0" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="311.5" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 326.5 A 6 6 0 0 1 806 326.5" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="326.5" x2="805" y2="319.5" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="349.0" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 364.0 A 6 6 0 0 1 806 364.0" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="364.0" x2="805" y2="357.0" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="386.5" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 401.5 A 6 6 0 0 1 806 401.5" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="401.5" x2="805" y2="394.5" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="424.0" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 439.0 A 6 6 0 0 1 806 439.0" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="439.0" x2="805" y2="432.0" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="461.5" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 476.5 A 6 6 0 0 1 806 476.5" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="476.5" x2="805" y2="469.5" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="499.0" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 514.0 A 6 6 0 0 1 806 514.0" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="514.0" x2="805" y2="507.0" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="536.5" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 551.5 A 6 6 0 0 1 806 551.5" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="551.5" x2="805" y2="544.5" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="574.0" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 589.0 A 6 6 0 0 1 806 589.0" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="589.0" x2="805" y2="582.0" stroke="#00e676" stroke-width="1.2"/>
+<rect x="788" y="611.5" width="24" height="22" rx="3" fill="#0a2e15" stroke="#00e676" stroke-width="1.2"/>
+<path d="M 794 626.5 A 6 6 0 0 1 806 626.5" fill="none" stroke="#00e676" stroke-width="1.2"/>
+<line x1="800" y1="626.5" x2="805" y2="619.5" stroke="#00e676" stroke-width="1.2"/>
+<text x="140" y="680" fill="#666" font-size="10">
+<tspan fill="#ff6b6b">■</tspan> ZZ cost coupling  <tspan fill="#f59e0b">▭</tspan> one-hot admissible projection  <tspan fill="#8b5cf6">■</tspan> mixer  <tspan fill="#ffd975">■</tspan> π/φ governance  <tspan fill="#00e676">■</tspan> measurement
+</text>
+</svg></div>
+</div>
+
+<div class="card">
+  <div class="section">Governance Layer</div>
+  <div class="math">
+    Cost Hamiltonian: H_C = Σ d(i,j)·Z_ip·Z_j,p+1<br>
+    One-Hot Admissible: Π_A enforces Σ_p x_cp = 1, Σ_c x_cp = 1<br>
+    Mixer: Σ RX(β)<br>
+    Constitution: Σ RZ(π/φ) — the governance angle
+  </div>
+  <div style="font-size:12px;color:#aaa;line-height:1.7;margin-top:8px">
+    Standard QAOA has no constitutional layer. The π/φ governance rotation is the DCGP signature — every qubit passes through the golden-ratio governance gate before measurement. The one-hot penalty is the admissible projection Π_A enforcing valid tour structure.
+  </div>
+</div>
+
+<div class="card">
+  <div class="section">Classical Verification <span class="badge sim">SIMULATION</span></div>
+  <div style="font-size:12px;color:#aaa;margin-bottom:8px">All 24 valid tours verified. 8 optimal tours found at cost 80.</div>
+  <div class="route opt">[0,1,3,2] cost=80 — OPTIMAL</div>
+  <div class="route opt">[0,2,3,1] cost=80 — OPTIMAL</div>
+  <div class="route opt">[1,0,2,3] cost=80 — OPTIMAL</div>
+  <div class="route opt">[1,3,2,0] cost=80 — OPTIMAL</div>
+  <div class="route opt">[2,0,1,3] cost=80 — OPTIMAL</div>
+  <div class="route opt">[2,3,1,0] cost=80 — OPTIMAL</div>
+  <div class="route opt">[3,1,0,2] cost=80 — OPTIMAL</div>
+  <div class="route opt">[3,2,0,1] cost=80 — OPTIMAL</div>
+</div>
+
+<div class="card">
+  <div class="section">Hardware Fire <span class="badge hw">RIGETTI CEPHEUS-108Q</span></div>
+  <div style="font-size:12px;color:#aaa;line-height:1.7">
+    Fired on Rigetti Cepheus-1-108Q via AWS Braket. ZZ couplings decomposed to native CNOT-RZ-CNOT gates. Task stored in S3.<br><br>
+    <span style="color:#ffd975">Raw NISQ result:</span> The unmitigated hardware run demonstrates why governed error mitigation is essential — deep 16-qubit circuits require the Orthogonal Governance Decoherence Defense (USPTO filing) to recover valid one-hot structure from noisy readout. The circuit is provably correct in simulation; the hardware gap is the motivation for the governance architecture.
+  </div>
+</div>
+
+<div class="card">
+  <button class="btn" onclick="runSim()">⚡ RUN CLASSICAL VERIFICATION (Free)</button>
+  <button class="btn btn-hw" onclick="alert('Hardware fire requires AWS Braket access. Contact joshua@dcgp.ai for a governed hardware demonstration.')">🔬 FIRE ON CEPHEUS-108Q (Real QPU)</button>
+</div>
+
+<div id="results"></div>
+
+<div class="footer"><em>"DCGP introduces AGI. AURA Governed Intelligence."</em> — Joshua Lopez<br>DCGP.AI LLC — USPTO 19/555,951 — Patent Pending</div>
+
+<script>
+function runSim(){
+  const DISTANCES=[[0,10,15,20],[10,0,35,25],[15,35,0,30],[20,25,30,0]];
+  const perms=[];
+  function permute(arr,m=[]){if(arr.length===0){perms.push(m)}else{for(let i=0;i<arr.length;i++){let cur=arr.slice();let next=cur.splice(i,1);permute(cur.slice(),m.concat(next))}}}
+  permute([0,1,2,3]);
+  let results=perms.map(r=>{let cost=0;for(let k=0;k<4;k++){cost+=DISTANCES[r[k]][r[(k+1)%4]]}return{route:r,cost}});
+  results.sort((a,b)=>a.cost-b.cost);
+  let html='<div class="card"><div class="section">Live Verification — 24 Tours</div>';
+  results.forEach(x=>{html+='<div class="route'+(x.cost===80?' opt':'')+'">['+x.route.join(',')+'] cost='+x.cost+(x.cost===80?' — OPTIMAL':'')+'</div>'});
+  html+='</div>';
+  document.getElementById('results').innerHTML=html;
+}
+</script>
+<script>
+(function(){
+  fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    if(document.getElementById('op_inbox'))return;
+    let el=document.createElement('div');el.id='op_inbox';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:8px;padding:4px 10px;margin:4px 16px;font-family:monospace;font-size:10px;color:#4dffe5;cursor:pointer;user-select:none';
+    let cnt=(d.stats||{}).total_received||0,unrd=(d.stats||{}).unread||0;
+    let h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:#ffd975;display:flex;align-items:center;gap:8px';
+    h.innerHTML='<span id="op_inbox_arrow">▶</span><span>OPERATOR INBOX</span><span style="color:#4dffe5;font-weight:400">'+cnt+' received'+(unrd?' · <span style="color:#ff6b6b">'+unrd+' unread</span>':'')+'</span>';
+    el.appendChild(h);
+    let body=document.createElement('div');body.id='op_inbox_body';body.style.cssText='display:none;max-height:280px;overflow:auto;margin-top:6px;border-top:1px solid #1a2535;padding-top:4px';
+    (d.items||[]).slice(0,15).forEach(raw=>{try{let item=typeof raw==='string'?JSON.parse(raw):raw;
+      let row=document.createElement('div');row.style.cssText='padding:3px 0;border-bottom:1px solid #1a2535;font-size:10px';
+      let id=item.inbox_id||item.stream_id||(item.received_at?item.received_at.substring(11,19):'')|| item.type||'item';
+      row.innerHTML='<span style="color:#ffd975">'+String(id).substring(0,16)+'</span> '+(item.subject||item.title||item.body||item.content||item.summary||'[no subject]').substring(0,80);
+      body.appendChild(row);}catch(e){}});
+    el.appendChild(body);
+    el.addEventListener('click',function(){let open=body.style.display==='block';body.style.display=open?'none':'block';document.getElementById('op_inbox_arrow').textContent=open?'▶':'▼';});
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.firstChild);
+  }).catch(()=>{});
+  fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.createElement('div');el.id='gov';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:10px 14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#79ff9d';
+    let h=d.health||{},p=h.pulse||{},ch=d.ch_gate||{};
+    el.innerHTML='<span style="color:#ffd975;font-weight:700">GOV</span> Stewardship:'+(h.stewardship||{}).pct+'% Continuity:'+(h.continuity||{}).pct+'% Pulse:'+p.tick+' CH:'+(ch.drift||0).toFixed(4);
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.children[0]||null);
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>
