@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CLAP Circuit Launchpad — Fire Any Circuit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#02040c;--panel:#050e1d;--card:#07111f;--line:#1a2e47;--accent:#48ffe0;--text:#e8f4ff;--muted:#6a85a8;--green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--purple:#c792ff;--blue:#7db7ff}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(5,9,20,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(72,255,224,.18);padding:11px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.topbar h1{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.4px;text-transform:uppercase;flex:1}
+.pill{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(72,255,224,.08);color:var(--accent);border:1px solid rgba(72,255,224,.25);letter-spacing:.5px}
+.tb-link{font-size:10px;color:var(--muted);padding:4px 8px;border:1px solid var(--line);border-radius:4px}
+.section{max-width:1200px;margin:0 auto;padding:20px 18px}
+.section-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-bottom:30px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;cursor:pointer;transition:.15s}
+.card:hover{border-color:var(--accent)}
+.card .name{font-size:11px;color:var(--text);font-weight:600;margin-bottom:4px}
+.card .desc{font-size:9px;color:var(--muted);margin-bottom:8px;line-height:1.4}
+.card .meta{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:8px;padding:2px 6px;border-radius:3px;border:1px solid var(--line);color:var(--muted)}
+.tag.fire{color:var(--green);border-color:rgba(121,255,157,.3)}
+.tag.metal{color:var(--gold);border-color:rgba(255,211,117,.3)}
+.tag.free{color:var(--accent);border-color:rgba(72,255,224,.3)}
+.tag.qpu{color:var(--red);border-color:rgba(255,45,85,.3)}
+.fire-btn{background:transparent;border:1px solid var(--green);color:var(--green);padding:6px 12px;border-radius:4px;font-family:inherit;font-size:10px;cursor:pointer;margin-top:8px;transition:.15s;width:100%}
+.fire-btn:hover{background:rgba(121,255,157,.1)}
+.footer{text-align:center;padding:30px 18px;border-top:1px solid var(--line);max-width:1200px;margin:0 auto}
+.footer p{font-size:9px;color:var(--muted);margin:3px 0}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<h1>CLAP Circuit Launchpad</h1>
+<span class="pill">CWWE</span>
+<span class="pill">π/φ</span>
+<a href="/operator/" class="tb-link">Operator</a>
+<a href="/clap/" class="tb-link">CLAP</a>
+<a href="/contact-hamiltonian/" class="tb-link">CH Gate</a>
+<a href="/simulations/" class="tb-link">Sims</a>
+</div>
+
+<div class="section">
+<div class="section-label">CWWE Circuits — Care Wait Weight Emerge</div>
+<div class="grid" id="cwweGrid"></div>
+
+<div class="section-label">Fire Workflows — QPU Metal</div>
+<div class="grid" id="fireGrid"></div>
+
+<div class="section-label">Simulations — 124 Governed Circuits</div>
+<div class="grid" id="simGrid"></div>
+
+<div class="section-label">Planet Engines — Constellation</div>
+<div class="grid" id="planetGrid"></div>
+</div>
+
+<div class="footer">
+<p>Every coin is a circuit. Fire one.</p>
+<p>Free on Graviton ARM64 metal. Credit card for QPU.</p>
+<p>Joshua Lopez · DCGP.AI LLC · USPTO 19/555,951 | 19/657,064</p>
+<p style="color:#ffd975;opacity:.6;margin-top:8px">Where there is a gap, there is a gate.</p>
+</div>
+
+<script>
+const GH = 'https://github.com/DocGrok1/Aura115/actions/workflows';
+const CLAP = 'https://github.com/DocGrok1/clap/tree/main/circuits';
+
+const cwwe = [
+  {name:'CWWE Stage 1 — Sequential',desc:'5 qubits, direct CNOT wiring. The first gate.',tags:['4Q','free','11 circuits'],link:`${CLAP}/cwwe_circuit.py`},
+  {name:'CWWE Stage 2 — GHZ Triad Teleport',desc:'4 qubits, 3-way entanglement teleports to emerge.',tags:['4Q','free','11 circuits'],link:`${CLAP}/cwwe_compiled.py`},
+  {name:'CWWE Stage 3 — Quadratic Triangle',desc:'CNOT cycle q0→q1→q2→q0 + π/φ·(i+1)²/9 phase ramp.',tags:['4Q','free','iron sharpens iron'],link:`${CLAP}/cwwe_compiled.py`},
+  {name:'CWWE Stage 4 — Compiled Escape Engine',desc:'Triangle + GHZ gravity + stabilization. The launch.',tags:['4Q','free','gravity teleport'],link:`${CLAP}/cwwe_compiled.py`},
+  {name:'CWWE 25Q — 8 Triangles',desc:'25 qubits, 8 quadratic triangles, emerge at q24.',tags:['25Q','free','1K shots'],link:`${CLAP}/cwwe_25q_8tri.py`},
+  {name:'CWWE 33Q — 11 Triangles',desc:'33 qubits, 11 triangles, 128GB state vector. Graviton only.',tags:['33Q','164GB','metal'],link:`${CLAP}/cwwe_33q_graviton.py`},
+  {name:'CWWE Jupiter Swarm',desc:'1,000 parallel circuits × 100 shots = 100,000 shots. 33M entangled qubits.',tags:['1000×','free','swarm'],link:`${CLAP}/cwwe_jupiter_swarm.py`},
+  {name:'Luna Bridge — Full Launch Sequence',desc:'6 qubits: ARM, MH66, CAVITATION, TURBINE, ESCAPE, PAYLOAD.',tags:['6Q','free','LEO insertion'],link:`${CLAP}/luna_bridge_circuit.py`},
+  {name:'Echo Operator — Reconstruction',desc:'E(FG,ξ,O) = ΠS*(FG)(ξ)·α(O). Holographic reconstruction from swarm.',tags:['echo','field formation'],link:`${CLAP}/echo_operator_apply.py`},
+];
+
+const fires = [
+  {name:'Fire Circuit — Gated Template',desc:'Any circuit on any QPU. Cepheus, Emerald, Garnet, IBEX.',tags:['qpu','gated'],wf:'fire-circuit.yml'},
+  {name:'Master Constellation Fire',desc:'Full constellation fire across all QPUs. Manual only.',tags:['qpu','metal','all'],wf:'master-fire-cron.yml'},
+  {name:'MC290 Aquila Mint — 256Q Coin',desc:'256-qubit neutral atom coin on QuEra Aquila.',tags:['256Q','qpu','neutral atom'],wf:'aquila-mc290-mint.yml'},
+  {name:'Four Exceptional Coins — Cepheus 107Q',desc:'4 coins fired on Rigetti Cepheus at 107 qubits.',tags:['107Q','qpu','rigetti'],wf:'four-coins-fire.yml'},
+  {name:'Proverbs 27 — Emerald 54Q',desc:'Doubled triangle on IQM Emerald Stockholm.',tags:['54Q','qpu','stockholm'],wf:'proverbs27-emerald-fire.yml'},
+  {name:'Proverbs 27 — Cepheus',desc:'Fire on Rigetti Cepheus us-west-1.',tags:['107Q','qpu','rigetti'],wf:'proverbs27-fire.yml'},
+  {name:'Z=120 Doubly Magic — Cepheus 107Q',desc:'Governed doubly magic nuclear fire.',tags:['107Q','qpu','nuclear'],wf:'z120-doubly-magic-fire.yml'},
+  {name:'GO Scaffold Fire — Cepheus',desc:'Scaffold circuit on Rigetti.',tags:['qpu','scaffold'],wf:'go-scaffold-fire.yml'},
+  {name:'Rescue + Echo — All QPUs',desc:'Rescue operator with Echo reconstruction across all QPUs.',tags:['qpu','echo','all'],wf:'rescue-echo-fire.yml'},
+  {name:'Antikythera — 11:11 + 12:12 Scheduled',desc:'Scheduled fire at 11:11 and 12:12 ET.',tags:['cron','scheduled'],wf:'antikythera-fire-scheduled.yml'},
+  {name:'Pharma Collider → MC290 → Proverbs 27',desc:'Pharma pipeline on free Graviton.',tags:['free','pharma','graviton'],wf:'operator-fire-pharma-proverbs27-free.yml'},
+  {name:'QHP Fraud Protection — Graviton',desc:'Contact Hamiltonian fraud circuit live on Graviton.',tags:['free','graviton','CH'],wf:'qhp-quantum-fraud-protection-graviton.yml'},
+  {name:'CWWE 33Q — Graviton 164GB',desc:'11 triangles on Graviton ARM64.',tags:['33Q','free','graviton'],wf:'fire-cwwe-33q.yml'},
+  {name:'CWWE Jupiter Swarm — Graviton',desc:'1000 parallel instances on Graviton.',tags:['1000×','free','graviton'],wf:'fire-cwwe-swarm.yml'},
+  {name:'Echo Operator — Graviton',desc:'Reconstruct from swarm results.',tags:['echo','free','graviton'],wf:'fire-echo-operator.yml'},
+];
+
+const planets = [
+  {name:'Jupiter',path:'/jupiter/',desc:'Capital engine, swarm orchestrator'},
+  {name:'Saturn',path:'/saturn/',desc:'Ring class intelligence, 11 rings'},
+  {name:'Moon',path:'/moon/',desc:'Luna Bridge, tidal governance'},
+  {name:'Neptune',path:'/neptune/',desc:'Deep field, Cepheus target'},
+  {name:'Earth',path:'/earth/',desc:'Earthwide lane registry'},
+  {name:'Mercury',path:'/mercury/',desc:'Fast orbit, QHP channel'},
+  {name:'Venus',path:'/venus/',desc:'Brain engine, runtime agent'},
+  {name:'Mars',path:'/mars/',desc:'Mission simulation, red circuit'},
+  {name:'Pluto',path:'/pluto/',desc:'Far lane, deep governance'},
+  {name:'Uranus',path:'/uranus/',desc:'Tilt axis, orthogonal circuit'},
+];
+
+function makeCard(item, grid, type) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  let tags = (item.tags||[]).map(t => {
+    let cls = 'tag';
+    if(t.includes('free')||t.includes('graviton')) cls += ' free';
+    if(t.includes('qpu')||t.includes('metal')) cls += ' qpu';
+    if(t.includes('Q')||t.includes('swarm')) cls += ' fire';
+    if(t.includes('echo')||t.includes('gold')) cls += ' metal';
+    return `<span class="${cls}">${t}</span>`;
+  }).join('');
+  
+  let btn = '';
+  if(type === 'cwwe') btn = `<button class="fire-btn" onclick="window.open('${item.link}')">View Circuit</button>`;
+  if(type === 'fire') btn = `<button class="fire-btn" onclick="window.open('${GH}/${item.wf}')">Fire Workflow</button>`;
+  if(type === 'planet') btn = `<button class="fire-btn" onclick="window.location='${item.path}'">Enter</button>`;
+  if(type === 'sim') btn = `<button class="fire-btn" onclick="window.location='${item.path}'">Open</button>`;
+  
+  card.innerHTML = `<div class="name">${item.name}</div><div class="desc">${item.desc||''}</div><div class="meta">${tags}</div>${btn}`;
+  grid.appendChild(card);
+}
+
+cwwe.forEach(c => makeCard(c, document.getElementById('cwweGrid'), 'cwwe'));
+fires.forEach(f => makeCard(f, document.getElementById('fireGrid'), 'fire'));
+planets.forEach(p => makeCard(p, document.getElementById('planetGrid'), 'planet'));
+
+// Simulations
+const simGrid = document.getElementById('simGrid');
+for(let i = 1; i <= 124; i++) {
+  const num = String(i).padStart(4,'0');
+  makeCard({name:`SIM-${num}`,path:`/simulations/sim-${num}.html`,tags:['governed','π/φ']}, simGrid, 'sim');
+}
+</script>
+</body>
+</html>
