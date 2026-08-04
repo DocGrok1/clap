@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QUIRQ™ SVG Circuit Simulation</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #050a16;
+      --panel: #0f1b33;
+      --line: rgba(126, 174, 255, 0.3);
+      --text: #e9f3ff;
+      --muted: #a8bfdc;
+      --accent: #59f4ff;
+      --ok: #75ffb6;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, rgba(89,244,255,.15), transparent 45%), var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      padding: 20px;
+    }
+    .shell {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+    }
+    h1 { margin: 0 0 6px; font-size: clamp(24px, 4vw, 34px); }
+    p { margin: 0; color: var(--muted); line-height: 1.55; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(4,8,18,.6);
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: .06em;
+      font-weight: 700;
+    }
+    textarea, input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(4,8,18,.82);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px;
+      font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    textarea { min-height: 160px; resize: vertical; }
+    .row { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+    button, a {
+      border: 1px solid rgba(89,244,255,.4);
+      background: rgba(89,244,255,.12);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 8px 12px;
+      text-decoration: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover, a:hover { background: rgba(89,244,255,.2); }
+    pre {
+      margin: 10px 0 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      max-height: 360px;
+      overflow: auto;
+      background: rgba(4,8,18,.82);
+      font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #d6eaff;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      border: 1px solid rgba(117,255,182,.38);
+      background: rgba(117,255,182,.12);
+      color: var(--ok);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .render-box {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      min-height: 180px;
+      background: #fff;
+      padding: 8px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <h1>QUIRQ™ SVG Circuit Simulation</h1>
+    <p>Structural memory simulation lane for SVG ↔ circuit ↔ SMS payload workflows (advisory/QHP simulation only).</p>
+    <div class="badge">Mode: QHP Simulation · Runtime execution disabled</div>
+
+    <div class="grid">
+      <section class="panel">
+        <label for="svgInput">SVG Input (encode)</label>
+        <textarea id="svgInput"><svg width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="60" cy="60" r="50" fill="red"/>
+  <rect x="30" y="30" width="60" height="60" fill="blue"/>
+</svg></textarea>
+        <div class="row">
+          <button type="button" id="encodeBtn">Encode SVG → Payload</button>
+          <a href="/api/quirq-svg-circuit-simulation" target="_blank" rel="noreferrer">API Status</a>
+        </div>
+        <label for="payloadInput" style="margin-top:10px">SMS Payload (decode)</label>
+        <input id="payloadInput" type="text" placeholder="QS1|..." />
+        <div class="row">
+          <button type="button" id="decodeBtn">Decode Payload → SVG</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <label>Decoded SVG Render</label>
+        <div id="renderBox" class="render-box"></div>
+        <label style="margin-top:10px">API Output</label>
+        <pre id="output">Ready.</pre>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+      const svgInput = document.getElementById("svgInput");
+      const payloadInput = document.getElementById("payloadInput");
+      const output = document.getElementById("output");
+      const renderBox = document.getElementById("renderBox");
+      const encodeBtn = document.getElementById("encodeBtn");
+      const decodeBtn = document.getElementById("decodeBtn");
+
+      function sanitizeSvg(svgMarkup) {
+        const clean = String(svgMarkup || "").trim();
+        if (!clean.startsWith("<svg")) return null;
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(clean, "image/svg+xml");
+        const root = doc.documentElement;
+        if (!root || root.nodeName.toLowerCase() !== "svg") return null;
+
+        const allowedTags = new Set(["svg", "circle", "rect", "path", "line", "ellipse", "polygon", "polyline", "g"]);
+        const walker = doc.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+        const toRemove = [];
+        while (walker.nextNode()) {
+          const el = walker.currentNode;
+          const tag = el.nodeName.toLowerCase();
+          if (!allowedTags.has(tag)) {
+            toRemove.push(el);
+            continue;
+          }
+          const attrs = Array.from(el.attributes || []);
+          for (const attr of attrs) {
+            const name = attr.name.toLowerCase();
+            const value = String(attr.value || "").toLowerCase();
+            if (name.startsWith("on") || value.includes("javascript:")) {
+              el.removeAttribute(attr.name);
+            }
+          }
+        }
+        toRemove.forEach((node) => node.parentNode && node.parentNode.removeChild(node));
+        return new XMLSerializer().serializeToString(root);
+      }
+
+      function renderSvg(svgMarkup) {
+        const safe = sanitizeSvg(svgMarkup);
+        if (!safe) {
+          renderBox.textContent = "No SVG to render.";
+          return;
+        }
+        renderBox.innerHTML = safe;
+      }
+
+      async function post(body) {
+        const response = await fetch("/api/quirq-svg-circuit-simulation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        const data = await response.json();
+        output.textContent = JSON.stringify(data, null, 2);
+        if (data && data.ok && data.decodedSvg) {
+          renderSvg(data.decodedSvg);
+        }
+        if (data && data.ok && data.encoded && data.encoded.payload) {
+          payloadInput.value = data.encoded.payload;
+        }
+      }
+
+      async function encode() {
+        encodeBtn.disabled = true;
+        output.textContent = "Encoding…";
+        try {
+          await post({ svg: svgInput.value || "" });
+        } catch (error) {
+          output.textContent = JSON.stringify({ ok: false, error: error.message || "encode_failed" }, null, 2);
+        } finally {
+          encodeBtn.disabled = false;
+        }
+      }
+
+      async function decode() {
+        decodeBtn.disabled = true;
+        output.textContent = "Decoding…";
+        try {
+          await post({ payload: payloadInput.value || "" });
+        } catch (error) {
+          output.textContent = JSON.stringify({ ok: false, error: error.message || "decode_failed" }, null, 2);
+        } finally {
+          decodeBtn.disabled = false;
+        }
+      }
+
+      encodeBtn.addEventListener("click", encode);
+      decodeBtn.addEventListener("click", decode);
+      encode();
+    })();
+  </script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+</body>
+</html>
