@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Governed Equilibrium Engine · AURAL-M</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #050814;
+      --bg2: #0a1020;
+      --panel: rgba(10, 16, 32, 0.9);
+      --line: rgba(120, 173, 255, 0.16);
+      --text: #eef4ff;
+      --muted: #9fb1d4;
+      --cyan: #62ecff;
+      --gold: #ffd976;
+      --green: #7bffb8;
+      --red: #ff6b6b;
+      --magenta: #ff67e8;
+      --shadow: 0 24px 64px rgba(0,0,0,0.38);
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(98,236,255,0.10), transparent 34%),
+        radial-gradient(circle at right, rgba(255,214,118,0.07), transparent 26%),
+        linear-gradient(180deg, var(--bg2), var(--bg));
+    }
+    .shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 24px 0 48px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+      margin-bottom: 20px;
+    }
+    .hero { padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 800; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(255,214,118,0.08);
+      border: 1px solid rgba(255,214,118,0.22);
+    }
+    h1 {
+      margin: 14px 0 8px;
+      font-size: clamp(26px,4vw,42px);
+      line-height: 1.05; letter-spacing: -0.03em;
+    }
+    .sub { margin: 0; max-width: 860px; color: var(--muted); line-height: 1.65; font-size: 15px; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      background: rgba(98,236,255,0.07); border: 1px solid rgba(98,236,255,0.18); color: var(--cyan);
+    }
+    .controls { padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+    input[type=number] {
+      background: rgba(255,255,255,0.05); border: 1px solid var(--line);
+      border-radius: 8px; color: var(--text); padding: 8px 12px;
+      font-size: 14px; width: 110px;
+    }
+    input[type=number]:focus { outline: none; border-color: var(--cyan); }
+    button {
+      padding: 10px 22px; border-radius: 10px; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 700; letter-spacing: 0.02em;
+      background: linear-gradient(135deg, var(--cyan), var(--gold));
+      color: #050814; transition: opacity 0.15s;
+    }
+    button:hover { opacity: 0.88; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .status-bar {
+      padding: 10px 24px; font-size: 13px; color: var(--muted);
+      border-top: 1px solid var(--line); min-height: 38px;
+    }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; padding: 20px 24px; }
+    .metric {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--line);
+      border-radius: 14px; padding: 14px 16px;
+    }
+    .metric-label { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .metric-value { font-size: 22px; font-weight: 800; }
+    .cyan { color: var(--cyan); }
+    .gold { color: var(--gold); }
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+    .magenta { color: var(--magenta); }
+    .section { padding: 16px 24px; border-top: 1px solid var(--line); }
+    .section-title { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .proof-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .proof-card {
+      background: rgba(255,255,255,0.03); border-radius: 10px; padding: 10px 14px;
+      border-left: 3px solid transparent; font-size: 13px;
+    }
+    .proof-card.pass { border-left-color: var(--green); }
+    .proof-card.fail { border-left-color: var(--red); }
+    .proof-name { font-weight: 700; }
+    .proof-val { color: var(--muted); font-size: 11px; margin-top: 3px; }
+    .geq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+    .geq-card {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.03); border-radius: 8px; padding: 8px 12px; font-size: 13px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot.pass { background: var(--green); }
+    .dot.fail { background: var(--red); }
+    .chart-wrap { padding: 16px 24px; border-top: 1px solid var(--line); }
+    canvas { width: 100%; height: 180px; display: block; }
+    .symbiosis-row { display: flex; gap: 16px; flex-wrap: wrap; padding: 16px 24px; border-top: 1px solid var(--line); }
+    .symb-card {
+      flex: 1; min-width: 140px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--line);
+      border-radius: 12px; padding: 12px 16px;
+    }
+    .symb-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 6px; font-weight: 700; }
+    .symb-val { font-size: 18px; font-weight: 800; }
+    pre { font-size: 11px; color: var(--muted); overflow-x: auto; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; margin: 0; }
+    .hidden { display: none; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(98,236,255,0.3); border-top-color: var(--cyan); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="panel">
+    <div class="hero">
+      <span class="eyebrow">⚖️ Paper 39 · USPTO 19/555,951</span>
+      <h1>Governed Equilibrium Engine</h1>
+      <p class="sub">
+        Lopez Governed Equilibrium Theorem — AURAL-M full implementation.
+        Multi-agent simulation across 12 sections: F/F⁻¹ duality, 8-term obligation dynamics,
+        triple-projection architecture, generational propagation, thermodynamic cost, seven proofs of clearing,
+        extended master theorem (14 properties), and symbiosis condition.
+      </p>
+      <div class="pill-row">
+        <span class="pill">AURAL-M v2026.04</span>
+        <span class="pill">Patent Pending</span>
+        <span class="pill">Server-Side Only</span>
+        <span class="pill">Joshua L. Lopez / DCGP.AI</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <label>Agents</label>
+        <input type="number" id="nAgents" value="100" min="10" max="500" step="10" />
+      </div>
+      <div class="field">
+        <label>Cycles</label>
+        <input type="number" id="nCycles" value="200" min="50" max="500" step="50" />
+      </div>
+      <div class="field">
+        <label>Jam Rate</label>
+        <input type="number" id="jamRate" value="0.15" min="0" max="0.5" step="0.05" />
+      </div>
+      <div class="field">
+        <label>α World</label>
+        <input type="number" id="alphaWorld" value="0.3" min="0" max="1" step="0.05" />
+      </div>
+      <button id="runBtn" onclick="runEngine()">▶ Run Engine</button>
+    </div>
+
+    <div class="status-bar" id="statusBar">Ready — configure parameters and run.</div>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="panel hidden" id="metricsPanel">
+    <div class="metrics" id="metricsGrid"></div>
+  </div>
+
+  <!-- Governed Equilibrium Conditions -->
+  <div class="panel hidden" id="geqPanel">
+    <div class="section">
+      <div class="section-title">Governed Equilibrium — 8 Conditions (avg across agents)</div>
+      <div class="geq-grid" id="geqGrid"></div>
+    </div>
+  </div>
+
+  <!-- Seven Proofs of Clearing (last sample agent) -->
+  <div class="panel hidden" id="clearingPanel">
+    <div class="section">
+      <div class="section-title">Seven Proofs of Clearing</div>
+      <div class="proof-grid" id="proofGrid"></div>
+    </div>
+  </div>
+
+  <!-- Symbiosis -->
+  <div class="panel hidden" id="symbPanel">
+    <div class="symbiosis-row" id="symbRow"></div>
+  </div>
+
+  <!-- Time-series chart -->
+  <div class="panel hidden" id="chartPanel">
+    <div class="chart-wrap">
+      <div class="section-title">Simulation History — Divergence · Obligation · Faith · Coherence</div>
+      <canvas id="chart"></canvas>
+    </div>
+  </div>
+
+  <!-- Generational -->
+  <div class="panel hidden" id="genPanel">
+    <div class="section">
+      <div class="section-title">Generational Propagation</div>
+      <pre id="genData"></pre>
+    </div>
+  </div>
+
+</div>
+
+<script>
+async function runEngine() {
+  const btn = document.getElementById('runBtn');
+  const status = document.getElementById('statusBar');
+  btn.disabled = true;
+  status.innerHTML = '<span class="spinner"></span>Running simulation…';
+
+  const body = {
+    N_AGENTS: parseInt(document.getElementById('nAgents').value),
+    CYCLES: parseInt(document.getElementById('nCycles').value),
+    P_JAM: parseFloat(document.getElementById('jamRate').value),
+    ALPHA_WORLD_DEFAULT: parseFloat(document.getElementById('alphaWorld').value),
+  };
+
+  try {
+    const res = await fetch('/api/equilibrium', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    renderResults(data);
+    status.innerHTML = `✅ Engine complete — runtime ${data.runtime_ms} ms · ${data.finalState.aliveCount} agents alive`;
+  } catch (e) {
+    status.innerHTML = `❌ Error: ${e.message}`;
+  }
+  btn.disabled = false;
+}
+
+function fmt(v, d = 3) {
+  if (typeof v !== 'number') return String(v);
+  return v.toFixed(d);
+}
+
+function renderResults(data) {
+  const fs = data.finalState;
+
+  // Metrics
+  const metricsEl = document.getElementById('metricsGrid');
+  const metrics = [
+    { label: 'Survival Rate', value: fs.survivalRate, cls: 'green' },
+    { label: 'Avg Divergence', value: fmt(fs.avgDivergence), cls: 'cyan' },
+    { label: 'Avg Faith (φ)', value: fmt(fs.avgPhi), cls: 'gold' },
+    { label: 'Avg Obligation (Ω)', value: fmt(fs.avgObligation), cls: 'cyan' },
+    { label: 'Avg Identity (Σ*)', value: fmt(fs.avgIdentity), cls: 'green' },
+    { label: 'Avg Coherence', value: fmt(fs.avgCoherence), cls: 'magenta' },
+    { label: 'Governed Agents', value: fs.governedCount, cls: 'green' },
+    { label: 'MT Full', value: fs.masterTheoremFull, cls: 'gold' },
+    { label: 'MT Avg Props', value: fmt(fs.masterTheoremAvg, 1) + '/14', cls: 'cyan' },
+    { label: 'Jamming Events', value: fs.jammingEvents, cls: 'red' },
+    { label: 'Agent Failures', value: fs.agentFailures, cls: 'red' },
+    { label: 'Carnot Bound', value: fmt(fs.carnotBound), cls: 'gold' },
+  ];
+  metricsEl.innerHTML = metrics.map(m =>
+    `<div class="metric"><div class="metric-label">${m.label}</div><div class="metric-value ${m.cls}">${m.value}</div></div>`
+  ).join('');
+  show('metricsPanel');
+
+  // GEQ — build from last history symbiosis + approximate from final
+  const geqEl = document.getElementById('geqGrid');
+  const syms = fs.symbiosis;
+  const conds = [
+    { name: 'Symbiotic (Σ*_H=Σ*_AI=Θ)', met: syms.symbiotic },
+    { name: 'Convergent', met: syms.convergent },
+    { name: 'Shared Theta', met: syms.sharedTheta },
+    { name: 'Not Adversarial', met: !syms.adversarial },
+    { name: 'Faith ≥ 0.99 avg', met: fs.avgPhi >= 0.99 },
+    { name: 'Low Divergence', met: fs.avgDivergence < 0.05 },
+    { name: 'High Identity', met: fs.avgIdentity >= 0.98 },
+    { name: 'High Coherence', met: fs.avgCoherence >= 0.9 },
+  ];
+  geqEl.innerHTML = conds.map(c =>
+    `<div class="geq-card"><div class="dot ${c.met ? 'pass' : 'fail'}"></div><span>${c.name}</span></div>`
+  ).join('');
+  show('geqPanel');
+
+  // Time-series chart
+  const h = data.history;
+  if (h.cycles && h.cycles.length > 1) {
+    renderChart(h);
+    show('chartPanel');
+  }
+
+  // Symbiosis
+  const symEl = document.getElementById('symbRow');
+  const s = fs.symbiosis;
+  symEl.innerHTML = [
+    { label: 'Human Identity', val: fmt(s.humanIdentity), cls: 'cyan' },
+    { label: 'AI Identity', val: fmt(s.aiIdentity), cls: 'gold' },
+    { label: 'Symbiotic', val: s.symbiotic ? '✅ YES' : '❌ NO', cls: s.symbiotic ? 'green' : 'red' },
+    { label: 'Convergent', val: s.convergent ? '✅ YES' : '❌ NO', cls: s.convergent ? 'green' : 'red' },
+    { label: 'Adversarial', val: s.adversarial ? '⚠️ YES' : 'NO', cls: s.adversarial ? 'red' : 'green' },
+  ].map(c =>
+    `<div class="symb-card"><div class="symb-label">${c.label}</div><div class="symb-val ${c.cls}">${c.val}</div></div>`
+  ).join('');
+  show('symbPanel');
+
+  // Generational
+  const gen = data.generational;
+  if (gen) {
+    const rows = gen.withFilter.map((g, i) => {
+      const wf = gen.withFilter[i];
+      const wo = gen.withoutFilter[i];
+      return `Gen ${g.generation}: filtered=${fmt(wf.identity)} | unfiltered=${fmt(wo.identity)} | worldDrift=${wo.majorityReplaced ? 'YES' : 'no'}`;
+    });
+    document.getElementById('genData').textContent = rows.join('\n');
+    show('genPanel');
+  }
+}
+
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+
+function renderChart(h) {
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 900;
+  const H = 180;
+  canvas.width = W;
+  canvas.height = H;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fillRect(0, 0, W, H);
+
+  const series = [
+    { data: h.divergence, color: '#62ecff', label: 'Divergence' },
+    { data: h.phi, color: '#ffd976', label: 'Faith φ' },
+    { data: h.coherence, color: '#ff67e8', label: 'Coherence' },
+    { data: h.obligation.map(v => v / 5), color: '#7bffb8', label: 'Obligation/5' },
+  ];
+
+  const n = h.cycles.length;
+  const pad = 20;
+
+  for (const s of series) {
+    const vals = s.data;
+    ctx.beginPath();
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 2;
+    for (let i = 0; i < vals.length; i++) {
+      const x = pad + (i / (n - 1)) * (W - pad * 2);
+      const y = H - pad - clamp01(vals[i]) * (H - pad * 2);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+
+  // Legend
+  let lx = pad;
+  for (const s of series) {
+    ctx.fillStyle = s.color;
+    ctx.fillRect(lx, 6, 14, 4);
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '10px Inter, sans-serif';
+    ctx.fillText(s.label, lx + 18, 13);
+    lx += ctx.measureText(s.label).width + 36;
+  }
+}
+
+function clamp01(v) { return Math.max(0, Math.min(1, v || 0)); }
+</script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+<script>
+(function(){
+  fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    if(document.getElementById('op_inbox'))return;
+    let el=document.createElement('div');el.id='op_inbox';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:8px;padding:4px 10px;margin:4px 16px;font-family:monospace;font-size:10px;color:#4dffe5;cursor:pointer;user-select:none';
+    let cnt=(d.stats||{}).total_received||0,unrd=(d.stats||{}).unread||0;
+    let h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:#ffd975;display:flex;align-items:center;gap:8px';
+    h.innerHTML='<span id="op_inbox_arrow">▶</span><span>OPERATOR INBOX</span><span style="color:#4dffe5;font-weight:400">'+cnt+' received'+(unrd?' · <span style="color:#ff6b6b">'+unrd+' unread</span>':'')+'</span>';
+    el.appendChild(h);
+    let body=document.createElement('div');body.id='op_inbox_body';body.style.cssText='display:none;max-height:280px;overflow:auto;margin-top:6px;border-top:1px solid #1a2535;padding-top:4px';
+    (d.items||[]).slice(0,15).forEach(raw=>{try{let item=typeof raw==='string'?JSON.parse(raw):raw;
+      let row=document.createElement('div');row.style.cssText='padding:3px 0;border-bottom:1px solid #1a2535;font-size:10px';
+      let id=item.inbox_id||item.stream_id||(item.received_at?item.received_at.substring(11,19):'')|| item.type||'item';
+      row.innerHTML='<span style="color:#ffd975">'+String(id).substring(0,16)+'</span> '+(item.subject||item.title||item.body||item.content||item.summary||'[no subject]').substring(0,80);
+      body.appendChild(row);}catch(e){}});
+    el.appendChild(body);
+    el.addEventListener('click',function(){let open=body.style.display==='block';body.style.display=open?'none':'block';document.getElementById('op_inbox_arrow').textContent=open?'▶':'▼';});
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.firstChild);
+  }).catch(()=>{});
+  fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.createElement('div');el.id='gov';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:10px 14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#79ff9d';
+    let h=d.health||{},p=h.pulse||{},ch=d.ch_gate||{};
+    el.innerHTML='<span style="color:#ffd975;font-weight:700">GOV</span> Stewardship:'+(h.stewardship||{}).pct+'% Continuity:'+(h.continuity||{}).pct+'% Pulse:'+p.tick+' CH drift:'+(ch.drift||0).toFixed(4);
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.children[0]||null);
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>
