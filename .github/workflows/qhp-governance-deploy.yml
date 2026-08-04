@@ -40,7 +40,6 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           role-session-name: "QHPPipelineIngestionSession"
           aws-region: ${{ env.AWS_REGION }}
-          audience: "https://github.com/dcgp-ai" # Custom audience constraint guardrail validation
       # Step 3: Initialize the declarative platform provisioning runtime ecosystem environment
       - name: "Setup HashiCorp Terraform Subsystem Environment"
         uses: "hashicorp/setup-terraform@v3"
