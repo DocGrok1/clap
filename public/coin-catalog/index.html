@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>DCGP.AI — COIN Catalog</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;600;700;900&display=swap');
+:root{
+  --bg:#020508;--card:#060a12;--line:#0f1a28;
+  --gold:#ffd975;--cyan:#4dffe5;--green:#79ff9d;--red:#ff7f95;
+  --text:#eaf6ff;--muted:#4a6a80;--dim:#1a2a3a
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;overflow-x:hidden;min-height:100vh}
+
+/* ─── HEADER ─── */
+.mint-header{padding:40px 24px 20px;text-align:center;position:relative}
+.mint-header::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+.mint-mark{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.mint-title{font-size:clamp(32px,6vw,56px);font-weight:900;background:linear-gradient(135deg,var(--gold) 0%,#fff 40%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.02em;line-height:1.1}
+.mint-sub{font-size:14px;color:var(--muted);margin-top:12px;font-family:'JetBrains Mono',monospace;font-weight:400}
+.mint-count{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:800;color:var(--gold);margin-top:20px;line-height:1}
+.mint-count-label{font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:4px}
+
+/* ─── FILTERS ─── */
+.filters{display:flex;justify-content:center;gap:8px;padding:28px 24px;flex-wrap:wrap}
+.filter-btn{padding:8px 18px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.05em;text-transform:uppercase}
+.filter-btn:hover{border-color:var(--gold);color:var(--gold)}
+.filter-btn.active{border-color:var(--gold);background:rgba(255,217,117,.08);color:var(--gold)}
+
+/* ─── COIN GRID ─── */
+.coin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2px;padding:2px;max-width:1400px;margin:0 auto}
+
+.coin{background:var(--card);padding:24px;cursor:pointer;position:relative;overflow:hidden;transition:all .3s;border:1px solid transparent}
+.coin:hover{background:#0a1020;border-color:var(--line)}
+.coin::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--cyan));opacity:0;transition:opacity .3s}
+.coin:hover::before{opacity:1}
+
+.coin-id{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.1em;margin-bottom:8px}
+.coin-title{font-size:15px;font-weight:700;line-height:1.4;margin-bottom:12px;color:var(--text)}
+.coin-meta{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.coin-domain{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border-radius:3px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.domain-metals{background:rgba(255,217,117,.08);color:var(--gold);border:1px solid rgba(255,217,117,.15)}
+.domain-quantum{background:rgba(77,255,229,.08);color:var(--cyan);border:1px solid rgba(77,255,229,.15)}
+.domain-pharma{background:rgba(121,255,157,.08);color:var(--green);border:1px solid rgba(121,255,157,.15)}
+.domain-defense{background:rgba(255,127,149,.08);color:var(--red);border:1px solid rgba(255,127,149,.15)}
+.domain-governance{background:rgba(160,140,255,.08);color:#a08cff;border:1px solid rgba(160,140,255,.15)}
+.coin-planet{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+.coin-novelty{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+.coin-novelty b{color:var(--cyan)}
+
+/* ─── PROJECTION OVERLAY ─── */
+.projection-overlay{position:fixed;inset:0;z-index:2000;background:var(--bg);display:none;flex-direction:column}
+.projection-overlay.open{display:flex}
+.projection-canvas{flex:1;position:relative}
+.projection-canvas canvas{width:100%!important;height:100%!important;display:block}
+.projection-hud{position:absolute;bottom:0;left:0;right:0;padding:32px;background:linear-gradient(transparent,rgba(2,5,8,.95));pointer-events:none}
+.projection-hud-inner{max-width:700px}
+.hud-coin-id{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.15em;margin-bottom:6px}
+.hud-title{font-size:clamp(20px,4vw,32px);font-weight:900;line-height:1.2;margin-bottom:8px}
+.hud-domain{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:4px}
+.hud-report{font-size:13px;color:var(--muted);line-height:1.6;max-height:100px;overflow-y:auto}
+.projection-close{position:absolute;top:20px;right:24px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(2,5,8,.8);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;pointer-events:all;transition:border-color .2s}
+.projection-close:hover{border-color:var(--gold)}
+
+/* ─── FIRE ON METAL ─── */
+.fire-btn{margin-top:12px;padding:10px 20px;border:1px solid var(--cyan);border-radius:6px;background:rgba(77,255,229,.06);color:var(--cyan);font:700 11px 'JetBrains Mono',monospace;letter-spacing:.1em;cursor:pointer;pointer-events:all;transition:all .2s}
+.fire-btn:hover{background:rgba(77,255,229,.18);box-shadow:0 0 20px rgba(77,255,229,.15)}
+.fire-btn:disabled{opacity:.4;cursor:default}
+.fire-result{margin-top:8px;font:12px/1.6 'JetBrains Mono',monospace;color:var(--cyan);white-space:pre-wrap;max-height:150px;overflow-y:auto;pointer-events:all}
+
+/* ─── LOADING ─── */
+.loading{text-align:center;padding:80px 24px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted)}
+.loading-bar{width:200px;height:2px;background:var(--line);margin:16px auto;border-radius:1px;overflow:hidden}
+.loading-bar::after{content:'';display:block;width:40%;height:100%;background:var(--gold);animation:load .8s ease-in-out infinite alternate}
+@keyframes load{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+
+/* ─── FOOTER ─── */
+.catalog-footer{text-align:center;padding:48px 24px;border-top:1px solid var(--line);margin-top:40px}
+.catalog-footer p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.8}
+</style>
+</head>
+<body>
+
+<div class="mint-header">
+  <div class="mint-mark">DCGP.AI Governed Mint</div>
+  <div class="mint-title">COIN Catalog</div>
+  <div class="mint-sub">Each COIN is a governed computation. Patent-backed. Mathematically proven. Plug into any stack.</div>
+  <div class="mint-count" id="total-count">—</div>
+  <div class="mint-count-label">Minted Inventions</div>
+</div>
+
+<div class="filters" id="filters"></div>
+
+<div id="coin-grid" class="coin-grid">
+  <div class="loading" id="loading">
+    <div>Loading inventory from the governed ledger</div>
+    <div class="loading-bar"></div>
+  </div>
+</div>
+
+<div class="catalog-footer">
+  <p>DCGP.AI LLC &middot; Joshua Lopez, Founder &amp; Sole Inventor<br>
+  170+ USPTO Patent Applications &middot; Root Priority January 15, 2026<br>
+  Every COIN is a standalone product. The buyer gets the computation. The forge stays behind the wall.</p>
+</div>
+
+<!-- QHP Projection Overlay -->
+<div class="projection-overlay" id="projection-overlay">
+  <div class="projection-canvas" id="projection-canvas">
+    <button class="projection-close" onclick="closeProjection()">&times;</button>
+    <div class="projection-hud">
+      <div class="projection-hud-inner">
+        <div class="hud-coin-id" id="hud-coin-id"></div>
+        <div class="hud-title" id="hud-title"></div>
+        <div class="hud-domain" id="hud-domain"></div>
+        <div class="hud-report" id="hud-report"></div>
+        <button class="fire-btn" id="fire-btn" onclick="fireOnMetal()">⚡ VERIFY ON METAL</button>
+        <div class="fire-result" id="fire-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+
+const DOMAIN_LABELS = {
+  new_metals_market: 'New Metals',
+  quantum_computing: 'Quantum Computing',
+  pharma: 'Pharmaceutical',
+  defense: 'Defense',
+  governance: 'Governance',
+  materials_science: 'Materials Science',
+  energy: 'Energy',
+  finance: 'Finance'
+};
+
+const DOMAIN_CLASS = {
+  new_metals_market: 'domain-metals',
+  quantum_computing: 'domain-quantum',
+  pharma: 'domain-pharma',
+  defense: 'domain-defense',
+  governance: 'domain-governance'
+};
+
+let allCoins = [];
+let activeDomain = 'all';
+let projScene, projCamera, projRenderer, projAnimId;
+
+// ─── LOAD CATALOG ────────────────────────────────────────────────────────────
+
+async function loadCatalog() {
+  const grid = document.getElementById('coin-grid');
+  const domains = new Set();
+  let total = 0;
+
+  try {
+    // Load multiple pages
+    const fetches = [
+      fetch('/api/invention-ledger?limit=200&offset=0').then(r=>r.json()).catch(()=>({entries:[]})),
+      fetch('/api/invention-ledger?limit=200&offset=200').then(r=>r.json()).catch(()=>({entries:[]})),
+      fetch('/api/invention-ledger?limit=200&offset=400').then(r=>r.json()).catch(()=>({entries:[]})),
+    ];
+    const results = await Promise.all(fetches);
+    
+    for (const r of results) {
+      const entries = r.entries || r.items || [];
+      allCoins.push(...entries);
+      total = Math.max(total, r.total || 0);
+    }
+
+    // Dedupe by coin_id
+    const seen = new Set();
+    allCoins = allCoins.filter(c => {
+      if (seen.has(c.coin_id)) return false;
+      seen.add(c.coin_id);
+      return true;
+    });
+
+    document.getElementById('total-count').textContent = total.toLocaleString();
+
+    allCoins.forEach(c => domains.add(c.domain || 'unknown'));
+    buildFilters(domains);
+    renderGrid();
+  } catch(e) {
+    grid.innerHTML = '<div class="loading">Failed to load ledger. Retrying...</div>';
+    setTimeout(loadCatalog, 3000);
+  }
+}
+
+function buildFilters(domains) {
+  const container = document.getElementById('filters');
+  let html = '<button class="filter-btn active" onclick="setFilter(\'all\',this)">All</button>';
+  for (const d of [...domains].sort()) {
+    const label = DOMAIN_LABELS[d] || d.replace(/_/g,' ');
+    html += `<button class="filter-btn" onclick="setFilter('${d}',this)">${label}</button>`;
+  }
+  container.innerHTML = html;
+}
+
+function setFilter(domain, btn) {
+  activeDomain = domain;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = document.getElementById('coin-grid');
+  const coins = activeDomain === 'all' ? allCoins : allCoins.filter(c => c.domain === activeDomain);
+  
+  if (!coins.length) {
+    grid.innerHTML = '<div class="loading">No COINs in this category</div>';
+    return;
+  }
+
+  grid.innerHTML = coins.map(c => {
+    const domClass = DOMAIN_CLASS[c.domain] || 'domain-governance';
+    const domLabel = DOMAIN_LABELS[c.domain] || c.domain || 'unknown';
+    const novelty = c.novelty_score ? `<span class="coin-novelty">Novelty <b>${c.novelty_score}</b></span>` : '';
+    return `
+      <div class="coin" onclick='openProjection(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+        <div class="coin-id">${c.coin_id || ''}</div>
+        <div class="coin-title">${esc(c.title || 'Untitled')}</div>
+        <div class="coin-meta">
+          <span class="coin-domain ${domClass}">${domLabel}</span>
+          <span class="coin-planet">${c.planet_name || ''}</span>
+          ${novelty}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── QHP PROJECTION ─────────────────────────────────────────────────────────
+
+function openProjection(coin) {
+  const overlay = document.getElementById('projection-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  document.getElementById('hud-coin-id').textContent = coin.coin_id || '';
+  document.getElementById('hud-title').textContent = coin.title || '';
+  document.getElementById('hud-domain').textContent = (DOMAIN_LABELS[coin.domain] || coin.domain || '') + (coin.planet_name ? ' \u00b7 ' + coin.planet_name : '');
+  document.getElementById('hud-report').textContent = coin.report || 'QHP Projection — governed computation visualization';
+  document.getElementById('fire-result').textContent = '';
+  document.getElementById('fire-btn').textContent = '⚡ VERIFY ON METAL';
+  document.getElementById('fire-btn').disabled = false;
+  setCurrentCoin(coin);
+
+  buildProjection(coin);
+}
+
+function closeProjection() {
+  document.getElementById('projection-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  if (projAnimId) cancelAnimationFrame(projAnimId);
+  if (projRenderer) {
+    projRenderer.dispose();
+    projRenderer.domElement.remove();
+    projRenderer = null;
+  }
+}
+
+function buildProjection(coin) {
+  const container = document.getElementById('projection-canvas');
+  // Clear old canvas
+  const old = container.querySelector('canvas');
+  if (old) old.remove();
+  if (projAnimId) cancelAnimationFrame(projAnimId);
+  if (projRenderer) projRenderer.dispose();
+
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+
+  projScene = new THREE.Scene();
+  projCamera = new THREE.PerspectiveCamera(60, w/h, 0.1, 1000);
+  projCamera.position.z = 30;
+
+  projRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  projRenderer.setSize(w, h);
+  projRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.insertBefore(projRenderer.domElement, container.firstChild);
+
+  // Domain-specific visualization
+  const domain = coin.domain || 'unknown';
+  if (domain === 'new_metals_market') buildMetalsViz(coin);
+  else if (domain === 'quantum_computing') buildQuantumViz(coin);
+  else if (domain === 'pharma') buildPharmaViz(coin);
+  else if (domain === 'defense') buildDefenseViz(coin);
+  else buildGovernanceViz(coin);
+
+  const startTime = Date.now();
+  function animate() {
+    projAnimId = requestAnimationFrame(animate);
+    const t = (Date.now() - startTime) * 0.001;
+    
+    projScene.children.forEach(child => {
+      if (child.userData.rotate) {
+        child.rotation.y = t * child.userData.rotateSpeed;
+        child.rotation.x = Math.sin(t * 0.3) * 0.2;
+      }
+      if (child.userData.pulse) {
+        const s = 1 + Math.sin(t * child.userData.pulseSpeed) * 0.05;
+        child.scale.set(s,s,s);
+      }
+      if (child.userData.orbit) {
+        const r = child.userData.orbitRadius;
+        const speed = child.userData.orbitSpeed;
+        child.position.x = Math.cos(t * speed) * r;
+        child.position.z = Math.sin(t * speed) * r;
+        child.position.y = Math.sin(t * speed * 0.7) * r * 0.3;
+      }
+    });
+
+    projRenderer.render(projScene, projCamera);
+  }
+  animate();
+
+  // Resize handler
+  const onResize = () => {
+    const nw = container.clientWidth;
+    const nh = container.clientHeight;
+    projCamera.aspect = nw/nh;
+    projCamera.updateProjectionMatrix();
+    projRenderer.setSize(nw, nh);
+  };
+  window.addEventListener('resize', onResize);
+}
+
+// ─── DOMAIN VISUALIZATIONS ──────────────────────────────────────────────────
+
+function buildMetalsViz(coin) {
+  // Atomic orbital cloud — electron shells with nucleus
+  const nucleusGeo = new THREE.SphereGeometry(2, 32, 32);
+  const nucleusMat = new THREE.MeshBasicMaterial({ color: 0xffd975, wireframe: true, transparent: true, opacity: 0.6 });
+  const nucleus = new THREE.Mesh(nucleusGeo, nucleusMat);
+  nucleus.userData = { rotate: true, rotateSpeed: 0.2, pulse: true, pulseSpeed: 1.5 };
+  projScene.add(nucleus);
+
+  // Inner glow
+  const glowGeo = new THREE.SphereGeometry(2.5, 16, 16);
+  const glowMat = new THREE.MeshBasicMaterial({ color: 0xffd975, transparent: true, opacity: 0.1 });
+  const glow = new THREE.Mesh(glowGeo, glowMat);
+  glow.userData = { pulse: true, pulseSpeed: 2 };
+  projScene.add(glow);
+
+  // Electron shells
+  const shells = [6, 10, 15, 20];
+  const shellColors = [0x4dffe5, 0x79ff9d, 0xffd975, 0xff7f95];
+  shells.forEach((r, i) => {
+    const ringGeo = new THREE.TorusGeometry(r, 0.04, 8, 128);
+    const ringMat = new THREE.MeshBasicMaterial({ color: shellColors[i], transparent: true, opacity: 0.3 });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.random() * Math.PI;
+    ring.rotation.y = Math.random() * Math.PI;
+    ring.userData = { rotate: true, rotateSpeed: 0.3 + i * 0.15 };
+    projScene.add(ring);
+
+    // Electrons on shell
+    const nElectrons = 3 + i * 2;
+    for (let j = 0; j < nElectrons; j++) {
+      const eGeo = new THREE.SphereGeometry(0.25, 8, 8);
+      const eMat = new THREE.MeshBasicMaterial({ color: shellColors[i] });
+      const electron = new THREE.Mesh(eGeo, eMat);
+      electron.userData = { orbit: true, orbitRadius: r, orbitSpeed: 0.8 + i * 0.3 + j * 0.4 };
+      projScene.add(electron);
+    }
+  });
+
+  // Particle dust
+  const dustGeo = new THREE.BufferGeometry();
+  const dustCount = 500;
+  const positions = new Float32Array(dustCount * 3);
+  for (let i = 0; i < dustCount * 3; i++) positions[i] = (Math.random() - 0.5) * 60;
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const dustMat = new THREE.PointsMaterial({ color: 0xffd975, size: 0.08, transparent: true, opacity: 0.4 });
+  const dust = new THREE.Points(dustGeo, dustMat);
+  dust.userData = { rotate: true, rotateSpeed: 0.02 };
+  projScene.add(dust);
+}
+
+function buildQuantumViz(coin) {
+  // Entangled particle pairs — two spinning geometries connected by probability threads
+  const geo = new THREE.IcosahedronGeometry(3, 1);
+  const mat1 = new THREE.MeshBasicMaterial({ color: 0x4dffe5, wireframe: true, transparent: true, opacity: 0.7 });
+  const mat2 = new THREE.MeshBasicMaterial({ color: 0xffd975, wireframe: true, transparent: true, opacity: 0.7 });
+  
+  const p1 = new THREE.Mesh(geo, mat1);
+  p1.position.x = -8;
+  p1.userData = { rotate: true, rotateSpeed: 0.5, pulse: true, pulseSpeed: 2 };
+  projScene.add(p1);
+
+  const p2 = new THREE.Mesh(geo, mat2);
+  p2.position.x = 8;
+  p2.userData = { rotate: true, rotateSpeed: -0.5, pulse: true, pulseSpeed: 2 };
+  projScene.add(p2);
+
+  // Entanglement threads
+  for (let i = 0; i < 12; i++) {
+    const curve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(-8, 0, 0),
+      new THREE.Vector3(0, (Math.random()-0.5)*12, (Math.random()-0.5)*12),
+      new THREE.Vector3(8, 0, 0)
+    );
+    const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.02, 4, false);
+    const tubeMat = new THREE.MeshBasicMaterial({ 
+      color: i % 2 === 0 ? 0x4dffe5 : 0xffd975, transparent: true, opacity: 0.15
+    });
+    const tube = new THREE.Mesh(tubeGeo, tubeMat);
+    tube.userData = { rotate: true, rotateSpeed: 0.1 + i * 0.02 };
+    projScene.add(tube);
+  }
+
+  // Probability cloud
+  const cloudGeo = new THREE.BufferGeometry();
+  const n = 800;
+  const pos = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const r = Math.random() * 25;
+    pos[i*3] = Math.cos(theta) * r * (Math.random() > 0.5 ? 0.3 : 1);
+    pos[i*3+1] = (Math.random()-0.5) * 15;
+    pos[i*3+2] = Math.sin(theta) * r * 0.5;
+  }
+  cloudGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const cloudMat = new THREE.PointsMaterial({ color: 0x4dffe5, size: 0.06, transparent: true, opacity: 0.25 });
+  const cloud = new THREE.Points(cloudGeo, cloudMat);
+  cloud.userData = { rotate: true, rotateSpeed: 0.03 };
+  projScene.add(cloud);
+}
+
+function buildPharmaViz(coin) {
+  // Molecular pathway — connected nodes with bonds
+  const nodes = [];
+  const nodeCount = 20;
+  for (let i = 0; i < nodeCount; i++) {
+    const geo = new THREE.SphereGeometry(0.6 + Math.random()*0.8, 16, 16);
+    const color = [0x79ff9d, 0x4dffe5, 0xffd975][i % 3];
+    const mat = new THREE.MeshBasicMaterial({ color, wireframe: true, transparent: true, opacity: 0.6 });
+    const node = new THREE.Mesh(geo, mat);
+    node.position.set((Math.random()-0.5)*24, (Math.random()-0.5)*16, (Math.random()-0.5)*16);
+    node.userData = { pulse: true, pulseSpeed: 1 + Math.random()*2 };
+    projScene.add(node);
+    nodes.push(node);
+  }
+
+  // Bonds
+  for (let i = 0; i < nodeCount - 1; i++) {
+    const j = Math.min(i + 1 + Math.floor(Math.random()*2), nodeCount-1);
+    const points = [nodes[i].position, nodes[j].position];
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+    const lineMat = new THREE.LineBasicMaterial({ color: 0x79ff9d, transparent: true, opacity: 0.2 });
+    projScene.add(new THREE.Line(lineGeo, lineMat));
+  }
+
+  // Pathway flow particles
+  const flowGeo = new THREE.BufferGeometry();
+  const flowCount = 400;
+  const fp = new Float32Array(flowCount * 3);
+  for (let i = 0; i < flowCount * 3; i++) fp[i] = (Math.random()-0.5)*30;
+  flowGeo.setAttribute('position', new THREE.BufferAttribute(fp, 3));
+  const flowMat = new THREE.PointsMaterial({ color: 0x79ff9d, size: 0.1, transparent: true, opacity: 0.3 });
+  const flow = new THREE.Points(flowGeo, flowMat);
+  flow.userData = { rotate: true, rotateSpeed: 0.05 };
+  projScene.add(flow);
+}
+
+function buildDefenseViz(coin) {
+  // Radar sweep with signal rings
+  for (let i = 0; i < 8; i++) {
+    const r = 4 + i * 3;
+    const ringGeo = new THREE.RingGeometry(r - 0.05, r + 0.05, 64);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff7f95, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    projScene.add(ring);
+  }
+
+  // Sweep line
+  const sweepGeo = new THREE.PlaneGeometry(28, 0.3);
+  const sweepMat = new THREE.MeshBasicMaterial({ color: 0xff7f95, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
+  const sweep = new THREE.Mesh(sweepGeo, sweepMat);
+  sweep.rotation.x = -Math.PI / 2;
+  sweep.position.x = 14;
+  const sweepPivot = new THREE.Object3D();
+  sweepPivot.add(sweep);
+  sweepPivot.userData = { rotate: true, rotateSpeed: 0.8 };
+  projScene.add(sweepPivot);
+
+  // Target blips
+  for (let i = 0; i < 15; i++) {
+    const bGeo = new THREE.SphereGeometry(0.3, 8, 8);
+    const bMat = new THREE.MeshBasicMaterial({ color: 0xff7f95 });
+    const blip = new THREE.Mesh(bGeo, bMat);
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 5 + Math.random() * 20;
+    blip.position.set(Math.cos(angle)*dist, 0.5, Math.sin(angle)*dist);
+    blip.userData = { pulse: true, pulseSpeed: 2 + Math.random()*3 };
+    projScene.add(blip);
+  }
+
+  projCamera.position.set(0, 25, 20);
+  projCamera.lookAt(0, 0, 0);
+}
+
+function buildGovernanceViz(coin) {
+  // Manifold surface — parametric mesh with correction vectors
+  const size = 20;
+  const segments = 40;
+  const geo = new THREE.PlaneGeometry(size, size, segments, segments);
+  const positions = geo.attributes.position;
+  for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i);
+    const z = positions.getY(i);
+    positions.setZ(i, Math.sin(x*0.5)*Math.cos(z*0.5)*3 + Math.sin(x*0.3+z*0.4)*1.5);
+  }
+  geo.computeVertexNormals();
+  const mat = new THREE.MeshBasicMaterial({ color: 0xa08cff, wireframe: true, transparent: true, opacity: 0.3 });
+  const surface = new THREE.Mesh(geo, mat);
+  surface.rotation.x = -Math.PI / 3;
+  surface.userData = { rotate: true, rotateSpeed: 0.08 };
+  projScene.add(surface);
+
+  // Correction vectors
+  for (let i = 0; i < 30; i++) {
+    const x = (Math.random()-0.5)*16;
+    const z = (Math.random()-0.5)*16;
+    const y = Math.sin(x*0.5)*Math.cos(z*0.5)*3;
+    const arrowGeo = new THREE.CylinderGeometry(0.03, 0.03, 2, 4);
+    const arrowMat = new THREE.MeshBasicMaterial({ color: 0x4dffe5, transparent: true, opacity: 0.5 });
+    const arrow = new THREE.Mesh(arrowGeo, arrowMat);
+    arrow.position.set(x, y + 1, z);
+    arrow.userData = { pulse: true, pulseSpeed: 1 + Math.random() };
+    projScene.add(arrow);
+  }
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProjection(); });
+
+// ─── FIRE ON METAL — real QPU execution from the coin projection ────────────
+let currentCoinForFire = null;
+
+const DOMAIN_CIRCUITS = {
+  'new_metals_market': 'lopez',
+  'quantum_computing': 'bell',
+  'pharma': 'rescue',
+  'defense': 'rescue',
+  'governance': 'bell'
+};
+
+const ENGINES = ['neptune', 'garnet', 'emerald'];
+
+function setCurrentCoin(coin) { currentCoinForFire = coin; }
+
+async function fireOnMetal() {
+  const btn = document.getElementById('fire-btn');
+  const result = document.getElementById('fire-result');
+  if (!currentCoinForFire) return;
+
+  const circuit = DOMAIN_CIRCUITS[currentCoinForFire.domain] || 'bell';
+  const engine = ENGINES[Math.floor(Math.random() * ENGINES.length)];
+
+  btn.disabled = true;
+  btn.textContent = '⚡ FIRING ON ' + engine.toUpperCase() + '...';
+  result.textContent = 'Submitting ' + circuit + ' circuit to QPU...';
+
+  try {
+    const r = await fetch('/braket', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({circuit, engine, shots: 100})
+    });
+    const d = await r.json();
+    const b = d.braket || d;
+    if (b.ok || b.counts) {
+      const counts = b.counts || {};
+      const total = Object.values(counts).reduce((a,v) => a+v, 0) || 1;
+      let out = 'CIRCUIT: ' + circuit + '  ENGINE: ' + (b.device?.vendor || engine) + '\n';
+      out += 'QUBITS: ' + (b.device?.qubits || '?') + '  SHOTS: ' + (b.shots || 100) + '\n\n';
+      Object.entries(counts).sort((a,b) => b[1]-a[1]).forEach(([state,count]) => {
+        const bar = '█'.repeat(Math.round(count/total*20));
+        out += '|' + state + '⟩ ' + count + ' ' + bar + '\n';
+      });
+      if (circuit === 'bell') {
+        const bell = ((counts['00']||0) + (counts['11']||0));
+        out += '\nBELL FIDELITY: ' + Math.round(bell/total*100) + '%';
+      }
+      out += '\nTASK: ' + (b.task_id || '').split('/').pop();
+      result.textContent = out;
+      btn.textContent = '⚡ VERIFIED — FIRE AGAIN';
+    } else {
+      result.textContent = 'Error: ' + (b.error || JSON.stringify(d));
+      btn.textContent = '⚡ RETRY';
+    }
+  } catch(e) {
+    result.textContent = 'Connection error: ' + e.message;
+    btn.textContent = '⚡ RETRY';
+  }
+  btn.disabled = false;
+}
+
+loadCatalog();
+</script>
+<script>
+(function(){
+  fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    if(document.getElementById('op_inbox'))return;
+    let el=document.createElement('div');el.id='op_inbox';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:8px;padding:4px 10px;margin:4px 16px;font-family:monospace;font-size:10px;color:#4dffe5;cursor:pointer;user-select:none';
+    let cnt=(d.stats||{}).total_received||0,unrd=(d.stats||{}).unread||0;
+    let h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:#ffd975;display:flex;align-items:center;gap:8px';
+    h.innerHTML='<span id="op_inbox_arrow">▶</span><span>OPERATOR INBOX</span><span style="color:#4dffe5;font-weight:400">'+cnt+' received'+(unrd?' · <span style="color:#ff6b6b">'+unrd+' unread</span>':'')+'</span>';
+    el.appendChild(h);
+    let body=document.createElement('div');body.id='op_inbox_body';body.style.cssText='display:none;max-height:280px;overflow:auto;margin-top:6px;border-top:1px solid #1a2535;padding-top:4px';
+    (d.items||[]).slice(0,15).forEach(raw=>{try{let item=typeof raw==='string'?JSON.parse(raw):raw;
+      let row=document.createElement('div');row.style.cssText='padding:3px 0;border-bottom:1px solid #1a2535;font-size:10px';
+      let id=item.inbox_id||item.stream_id||(item.received_at?item.received_at.substring(11,19):'')|| item.type||'item';
+      row.innerHTML='<span style="color:#ffd975">'+String(id).substring(0,16)+'</span> '+(item.subject||item.title||item.body||item.content||item.summary||'[no subject]').substring(0,80);
+      body.appendChild(row);}catch(e){}});
+    el.appendChild(body);
+    el.addEventListener('click',function(){let open=body.style.display==='block';body.style.display=open?'none':'block';document.getElementById('op_inbox_arrow').textContent=open?'▶':'▼';});
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.firstChild);
+  }).catch(()=>{});
+  fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.createElement('div');el.id='gov';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:10px 14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#79ff9d';
+    let h=d.health||{},p=h.pulse||{},ch=d.ch_gate||{};
+    el.innerHTML='<span style="color:#ffd975;font-weight:700">GOV</span> Stewardship:'+(h.stewardship||{}).pct+'% Continuity:'+(h.continuity||{}).pct+'% Pulse:'+p.tick+' CH:'+(ch.drift||0).toFixed(4);
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.children[0]||null);
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>
