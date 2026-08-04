@@ -1,0 +1,151 @@
+{
+  "circuits": [
+    {
+      "id": "spectral-engine",
+      "name": "Spectral Stability Engine",
+      "desc": "S_Q = Tr[\u03c1 ln \u03c1] \u2212 Tr[\u03c1* ln \u03c1*] \u00b7 Detects deviation from Legendre equilibrium",
+      "qubits": 4,
+      "shots": 100,
+      "p_output": 0.53,
+      "unique_states": 16,
+      "proof": "e12f6c2967d8986e7b767f9c8ba9037a7032dff4aa1355140d63143cca8d6764",
+      "symbol": "S_Q",
+      "color": "#48ffe0"
+    },
+    {
+      "id": "authority-engine",
+      "name": "Fast Authority Loop Engine",
+      "desc": "K_dot = \u03b1\u00b7S_Q \u2212 \u03b2\u00b7K \u00b7 Tightens governance envelope on instability",
+      "qubits": 4,
+      "shots": 100,
+      "p_output": 0.54,
+      "unique_states": 16,
+      "proof": "4090ec02e849dad54d3b112cc124e1886668783a4871e454d68d42e94fc5af4a",
+      "symbol": "K",
+      "color": "#ffd975"
+    },
+    {
+      "id": "continuity-engine",
+      "name": "Continuity Guard Engine",
+      "desc": "\u2016\u0394Z\u2016_W \u2264 \u03ba\u00b7O_t \u00b7 Master's step in time \u2014 no step larger than obligation allows",
+      "qubits": 5,
+      "shots": 100,
+      "p_output": 0.4,
+      "unique_states": 31,
+      "proof": "6ab4007d55aa4290c385e198d72f1e09da64b4418779395a20582008007605fd",
+      "symbol": "\u0394Z",
+      "color": "#79ff9d"
+    },
+    {
+      "id": "obligation-engine",
+      "name": "Obligation Conservation Engine",
+      "desc": "dO/dt = \u03b7\u00b7G(Z) \u2212 \u03bb\u00b7O \u2212 \u03b3\u00b7\u2016v\u2016 \u00b7 E = C + \u03bbO conserved on slow manifold",
+      "qubits": 5,
+      "shots": 100,
+      "p_output": 0.58,
+      "unique_states": 31,
+      "proof": "45cf4fdf685e74461815eb84d58405ce5d95178b1c3b68edfbba84e412106b67",
+      "symbol": "O",
+      "color": "#c792ff"
+    },
+    {
+      "id": "free-energy-engine",
+      "name": "Free Energy Governance Engine",
+      "desc": "\u03a6 = C(x) \u2212 T\u00b7S(x) + \u039b(g) \u00b7 Correction field \u0393 directs structural motion",
+      "qubits": 5,
+      "shots": 100,
+      "p_output": 0.46,
+      "unique_states": 30,
+      "proof": "f2479a154c1e19715616ced472e856b2fea1473d453fd384ee86d72a89b67225",
+      "symbol": "\u03a6",
+      "color": "#ff8ba0"
+    },
+    {
+      "id": "viability-engine",
+      "name": "Viability Manifold Engine",
+      "desc": "M = K \u2229 F \u2229 {\u03a6=0} \u2229 {guard} \u00b7 Projection operator keeps trajectory admissible",
+      "qubits": 6,
+      "shots": 100,
+      "p_output": 0.5,
+      "unique_states": 49,
+      "proof": "c6b2b6972f49a158f73385fae9afad458b09f27fc334561ba96b05fa8f9e31cd",
+      "symbol": "\u03a0_A",
+      "color": "#7db7ff"
+    },
+    {
+      "id": "horizon-engine",
+      "name": "Horizon Governor Engine",
+      "desc": "G_H = \u03c3/\u03ba_H \u00b7 Detects approach to Lopez Governance Horizon",
+      "qubits": 4,
+      "shots": 100,
+      "p_output": 0.51,
+      "unique_states": 16,
+      "proof": "ad1d92ffea50bdc0b8098ec28962232681e14d0341edc22705d5bd54c1a5bfb2",
+      "symbol": "G_H",
+      "color": "#ff6b80"
+    },
+    {
+      "id": "meta-recursive-engine",
+      "name": "Meta-Recursive Governance Engine",
+      "desc": "Bounded meta-capacity, meta-continuity, meta-obligation \u00b7 Governs the governors",
+      "qubits": 6,
+      "shots": 100,
+      "p_output": 0.38,
+      "unique_states": 48,
+      "proof": "145e7b876408a50b9b13d6ac08974d5c8633322a23ef154071d82357e5efcd19",
+      "symbol": "\u0398",
+      "color": "#e8f4ff"
+    },
+    {
+      "id": "stewardship-engine",
+      "name": "Stewardship Engine",
+      "desc": "Care \u00d7 Continuity \u00d7 Fidelity \u00b7 Preserves accepted meaning over time",
+      "qubits": 5,
+      "shots": 100,
+      "p_output": 0.47,
+      "unique_states": 31,
+      "proof": "4a887f7be6c4114be6176142f8a11d7e2f7e907d6bfb4ba965c28dbaaf448d04",
+      "symbol": "Stw",
+      "color": "#ffd975"
+    },
+    {
+      "id": "conservation-monitor",
+      "name": "Lopez Resource Conservation Monitor",
+      "desc": "E = C + \u03bbO \u00b7 Total resource cannot be destroyed, only redistributed",
+      "qubits": 4,
+      "shots": 100,
+      "p_output": 0.56,
+      "unique_states": 16,
+      "proof": "ce8d41703e2f1724db15a1629801a8ecff357ce2014ce3c54d8deb39da2e94f1",
+      "symbol": "E",
+      "color": "#79ff9d"
+    },
+    {
+      "id": "capital-engine",
+      "name": "Agent Field Capital Engine",
+      "desc": "6-agent momentum/vol/mean-reversion \u00b7 COIN scoring through MT14",
+      "qubits": 6,
+      "shots": 100,
+      "p_output": 0.59,
+      "unique_states": 50,
+      "proof": "7446ff6427ae6bc59a5f7232a16dfbf8902b6605776c9f83d5f44f3d7f4d8f10",
+      "symbol": "$",
+      "color": "#ffd975"
+    },
+    {
+      "id": "lqme-engine",
+      "name": "Lopez Quantum Master Equation Engine",
+      "desc": "Density matrix + Lindblad + K/M/O loops \u00b7 Full quantum governance substrate",
+      "qubits": 6,
+      "shots": 100,
+      "p_output": 0.48,
+      "unique_states": 49,
+      "proof": "ab038cbd416564a65d01a1585c28de8bcf46b92fab38ee193465c9577ee67842",
+      "symbol": "\u03c1",
+      "color": "#c792ff"
+    }
+  ],
+  "gov": 1.9416110387254664,
+  "total_shots": 1200,
+  "timestamp": "2026-08-04T13:19:05Z"
+}
