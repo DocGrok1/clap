@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400"
+     font-family="Courier New, monospace">
+  <rect width="600" height="400" fill="#060810"/>
+  <rect x="8" y="8" width="584" height="384" rx="4" fill="none" stroke="#00d4ff" stroke-width="2"/>
+
+  <!-- Header -->
+  <text x="300" y="36" font-size="11" fill="#00d4ff" text-anchor="middle" font-weight="bold"
+        letter-spacing="3">NAME SVG IDENTITY CARD</text>
+  <text x="300" y="52" font-size="8" fill="#586069" text-anchor="middle">USPTO 19/693,411 · CCTP v1 · QHP ENCODED</text>
+  <line x1="24" y1="60" x2="576" y2="60" stroke="#1e2733" stroke-width="1"/>
+
+  <!-- Module -->
+  <text x="24" y="82" font-size="8" fill="#586069">MODULE</text>
+  <text x="160" y="82" font-size="9" fill="#00d4ff">POLARIPHOTON_QHP_NEPTUNE</text>
+
+  <!-- Title -->
+  <text x="24" y="100" font-size="8" fill="#586069">TITLE</text>
+  <text x="160" y="100" font-size="9" fill="#c9d1d9">Quasicrystal-Mediated Polarization Teleportation Circuit — QHP Entanglement Language Embodiment</text>
+
+  <!-- App Number -->
+  <text x="24" y="118" font-size="8" fill="#586069">APP NUMBER</text>
+  <text x="160" y="118" font-size="9" fill="#f5c842">64/095,091</text>
+
+  <!-- Authority -->
+  <text x="24" y="136" font-size="8" fill="#586069">AUTHORITY</text>
+  <text x="160" y="136" font-size="9" fill="#c9d1d9">Joshua L. Lopez / DCGP.AI</text>
+
+  <!-- QHP Payload -->
+  <text x="24" y="154" font-size="8" fill="#586069">QHP PAYLOAD</text>
+  <text x="160" y="154" font-size="8" fill="#00d4ff">QHP-QHP-ENT-12P1F3H-MC290-LCHC-------------</text>
+
+  <!-- LCHC Digest -->
+  <text x="24" y="172" font-size="8" fill="#586069">LCHC-2048</text>
+  <text x="160" y="172" font-size="7" fill="#f5c842">4c0e1f9c535aca1d2182f9cad3f382123a9436a4713edf72...</text>
+
+  <!-- Timestamp -->
+  <text x="24" y="190" font-size="8" fill="#586069">MINTED</text>
+  <text x="160" y="190" font-size="9" fill="#00ff88">2026-07-22T00:55:20Z</text>
+
+  <line x1="24" y1="200" x2="576" y2="200" stroke="#1e2733" stroke-width="1"/>
+
+  <!-- QHP Metrics -->
+  <text x="300" y="220" font-size="9" fill="#f5c842" text-anchor="middle" font-weight="bold">QHP RUNTIME METRICS</text>
+
+  <text x="40" y="242" font-size="8" fill="#586069">OBLIGATION HEALTH</text>
+  <rect x="200" y="234" width="300" height="10" fill="#00ff88" rx="2"/>
+  <text x="510" y="242" font-size="8" fill="#00ff88">1.0000</text>
+
+  <text x="40" y="262" font-size="8" fill="#586069">FIDELITY MEAN</text>
+  <rect x="200" y="254" width="164" height="10" fill="#00d4ff" rx="2"/>
+  <text x="510" y="262" font-size="8" fill="#00d4ff">0.5471</text>
+
+  <text x="40" y="282" font-size="8" fill="#586069">RESILIENCE INDEX</text>
+  <rect x="200" y="274" width="300" height="10" fill="#f5c842" rx="2"/>
+  <text x="510" y="282" font-size="8" fill="#f5c842">1.0000</text>
+
+  <text x="40" y="302" font-size="8" fill="#586069">RISK INDEX</text>
+  <rect x="200" y="294" width="135" height="10" fill="#ff4466" rx="2"/>
+  <text x="510" y="302" font-size="8" fill="#ff4466">0.4529</text>
+
+  <line x1="24" y1="316" x2="576" y2="316" stroke="#1e2733" stroke-width="1"/>
+
+  <!-- Footer -->
+  <text x="300" y="340" font-size="8" fill="#586069" text-anchor="middle">DCGP.AI · AURA115 · Neptune Collider Engine · Polariphoton v1.0</text>
+  <text x="300" y="356" font-size="8" fill="#00d4ff" text-anchor="middle">CCTP WIRE · QHP ENTANGLEMENT LANGUAGE · GOVERNED</text>
+  <text x="300" y="372" font-size="7" fill="#586069" text-anchor="middle">Customer Nos. 222625 &amp; 226575 · Patent Pending</text>
+
+  <!-- Hidden NAME SVG metadata carrier -->
+  <metadata>
+    <name-cell xmlns:name="dcgp://name-protocol/v1">
+      <name:module>POLARIPHOTON_QHP_NEPTUNE</name:module>
+      <name:title>Quasicrystal-Mediated Polarization Teleportation Circuit — QHP Entanglement Language Embodiment</name:title>
+      <name:author>Joshua L. Lopez / DCGP.AI</name:author>
+      <name:patent>64/095,091</name:patent>
+      <name:protocol>CCTP-v1</name:protocol>
+      <name:qhp encoding="base64">UUhQLVFIUC1FTlQtMTJQMUYzSC1NQzI5MC1MQ0hDLS0tLS0tLS0tLS0tLQ==</name:qhp>
+      <name:lchc>4c0e1f9c535aca1d2182f9cad3f382123a9436a4713edf726ac3d5824c5b54be</name:lchc>
+      <name:minted>2026-07-22T00:55:20Z</name:minted>
+      <name:metrics obligation_health="1.000000"
+                    fidelity_mean="0.547107"
+                    resilience_index="1.000000"
+                    risk_index="0.452893"/>
+    </name-cell>
+  </metadata>
+</svg>
