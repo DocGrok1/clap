@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1000" width="900" height="1000" font-family="Arial, sans-serif">
+  <rect width="900" height="1000" fill="#0a0a12"/>
+  <text x="450" y="36" font-size="15" font-weight="bold" fill="#c0c8ff" text-anchor="middle">FIG. 1 — UHCSS THREE-LAYER STACK ARCHITECTURE</text>
+  <text x="450" y="56" font-size="10" fill="#6070b0" text-anchor="middle">Unified Hardware Constitutional Sovereignty System · DCGP.AI · Joshua L. Lopez · Patent Pending</text>
+  <line x1="40" y1="66" x2="860" y2="66" stroke="#2a2a50" stroke-width="1"/>
+
+  <!-- L0 Label -->
+  <text x="50" y="130" font-size="11" fill="#ffffff" font-weight="bold">L0 — HARDWARE CONSTITUTIONAL LAYER</text>
+  <text x="50" y="148" font-size="9" fill="#aaaacc">Irreducible Authority · No Override Possible</text>
+
+  <!-- LAYER 1: WRD -->
+  <rect x="60" y="160" width="780" height="160" rx="8" fill="#0d1a2e" stroke="#4a90d9" stroke-width="2"/>
+  <text x="450" y="185" font-size="12" fill="#4a90d9" text-anchor="middle" font-weight="bold">LAYER 1 — WARDENCLYFFE RESONANT DRIVE (WRD)</text>
+  <text x="450" y="202" font-size="9" fill="#6090c0" text-anchor="middle">f₀ = 7.83 Hz | Schumann Resonance | 127.7ms Wave Period</text>
+  <!-- Dome icon -->
+  <ellipse cx="200" cy="270" rx="80" ry="22" fill="none" stroke="#4a90d9" stroke-width="2"/>
+  <path d="M 120 270 Q 200 230 280 270" fill="#0d1a2e" stroke="#4a90d9" stroke-width="2"/>
+  <rect x="188" y="292" width="24" height="20" fill="#0d1a2e" stroke="#4a90d9" stroke-width="1.5"/>
+  <text x="200" y="262" font-size="8" fill="#4a90d9" text-anchor="middle">TOROIDAL</text>
+  <text x="200" y="274" font-size="8" fill="#4a90d9" text-anchor="middle">DOME</text>
+  <!-- DDS block -->
+  <rect x="320" y="240" width="110" height="50" rx="4" fill="#0a1525" stroke="#4a90d9" stroke-width="1.5"/>
+  <text x="375" y="260" font-size="9" fill="#4a90d9" text-anchor="middle">DDS OSC</text>
+  <text x="375" y="274" font-size="8" fill="#6090c0" text-anchor="middle">AD9833 ±0.001Hz</text>
+  <text x="375" y="286" font-size="8" fill="#6090c0" text-anchor="middle">7.83 Hz output</text>
+  <!-- PWR AMP -->
+  <rect x="470" y="240" width="110" height="50" rx="4" fill="#0a1525" stroke="#4a90d9" stroke-width="1.5"/>
+  <text x="525" y="260" font-size="9" fill="#4a90d9" text-anchor="middle">CLASS-D AMP</text>
+  <text x="525" y="274" font-size="8" fill="#6090c0" text-anchor="middle">CLPG 1064nm</text>
+  <text x="525" y="286" font-size="8" fill="#6090c0" text-anchor="middle">CO₂ loop fed</text>
+  <!-- Control freqs -->
+  <rect x="620" y="240" width="160" height="50" rx="4" fill="#0a1525" stroke="#4a90d9" stroke-width="1.5"/>
+  <text x="700" y="258" font-size="9" fill="#4a90d9" text-anchor="middle">CONTROL FREQS</text>
+  <text x="700" y="271" font-size="8" fill="#6090c0" text-anchor="middle">7.0 / 7.4 Hz (below)</text>
+  <text x="700" y="284" font-size="8" fill="#6090c0" text-anchor="middle">8.2 / 8.6 Hz (above)</text>
+  <!-- arrows -->
+  <line x1="430" y1="265" x2="470" y2="265" stroke="#4a90d9" stroke-width="1.5" marker-end="url(#arr_b)"/>
+  <line x1="580" y1="265" x2="620" y2="265" stroke="#4a90d9" stroke-width="1.5" marker-end="url(#arr_b)"/>
+
+  <!-- Down arrow L1→L2 -->
+  <line x1="450" y1="320" x2="450" y2="345" stroke="#ffffff" stroke-width="2" marker-end="url(#arr_w)"/>
+  <text x="460" y="338" font-size="8" fill="#808090">7.83Hz signal</text>
+
+  <!-- LAYER 2: MC290 PGC -->
+  <rect x="60" y="345" width="780" height="210" rx="8" fill="#1a1200" stroke="#f0a030" stroke-width="2"/>
+  <text x="450" y="370" font-size="12" fill="#f0a030" text-anchor="middle" font-weight="bold">LAYER 2 — MC290 POLYHEDRAL GOVERNANCE CIRCUIT (PGC)</text>
+  <text x="450" y="387" font-size="9" fill="#806020" text-anchor="middle">290 Constitutional Faces · 100 Phase Channels · B := S ∩ I(S)</text>
+  <!-- Concentric circles representing MC290 -->
+  <circle cx="200" cy="470" r="70" fill="none" stroke="#f0a030" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <circle cx="200" cy="470" r="45" fill="none" stroke="#e06010" stroke-width="1.5"/>
+  <circle cx="200" cy="470" r="22" fill="none" stroke="#c04000" stroke-width="1.5"/>
+  <polygon points="200,455 212,470 200,485 188,470" fill="#0a2010" stroke="#00cc44" stroke-width="1.5"/>
+  <text x="200" y="473" font-size="7" fill="#00cc44" text-anchor="middle" font-weight="bold">STM32</text>
+  <text x="200" y="407" font-size="7" fill="#f0a030" text-anchor="middle">AUDIT RING</text>
+  <text x="200" y="542" font-size="7" fill="#f0a030" text-anchor="middle">290 FACES</text>
+  <!-- pads -->
+  <circle cx="200" cy="400" r="4" fill="#f0a030"/>
+  <circle cx="249" cy="415" r="4" fill="#f0a030"/>
+  <circle cx="270" cy="460" r="4" fill="#f0a030"/>
+  <circle cx="249" cy="506" r="4" fill="#f0a030"/>
+  <circle cx="200" cy="540" r="4" fill="#f0a030"/>
+  <circle cx="151" cy="506" r="4" fill="#f0a030"/>
+  <circle cx="130" cy="460" r="4" fill="#f0a030"/>
+  <circle cx="151" cy="415" r="4" fill="#f0a030"/>
+  <!-- Phase gates -->
+  <rect x="238" y="445" width="9" height="9" fill="#e06010" rx="1"/>
+  <rect x="238" y="472" width="9" height="9" fill="#e06010" rx="1"/>
+  <rect x="153" y="445" width="9" height="9" fill="#e06010" rx="1"/>
+  <rect x="153" y="472" width="9" height="9" fill="#e06010" rx="1"/>
+  <!-- Classification states -->
+  <rect x="320" y="405" width="460" height="130" rx="6" fill="#0a0a1a" stroke="#f0a030" stroke-width="1"/>
+  <text x="550" y="423" font-size="10" fill="#f0a030" text-anchor="middle" font-weight="bold">BOUNDARY CLASSIFICATION ENGINE</text>
+  <text x="550" y="440" font-size="8" fill="#808080" text-anchor="middle">Atomic evaluation: detect → project → classify → emit token</text>
+  <rect x="335" y="450" width="80" height="28" rx="4" fill="#cc0000" stroke="#ff4444" stroke-width="1"/>
+  <text x="375" y="469" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">BLOCKED</text>
+  <rect x="425" y="450" width="80" height="28" rx="4" fill="#cc7700" stroke="#ffaa00" stroke-width="1"/>
+  <text x="465" y="469" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">LIMITED</text>
+  <rect x="515" y="450" width="80" height="28" rx="4" fill="#006600" stroke="#00cc44" stroke-width="1"/>
+  <text x="555" y="469" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">GO</text>
+  <rect x="605" y="450" width="80" height="28" rx="4" fill="#555500" stroke="#cccc00" stroke-width="1"/>
+  <text x="645" y="469" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">ANOMALY</text>
+  <rect x="695" y="450" width="75" height="28" rx="4" fill="#660066" stroke="#cc00cc" stroke-width="1"/>
+  <text x="733" y="469" font-size="9" fill="#ffffff" text-anchor="middle" font-weight="bold">EMERGENCY</text>
+  <text x="550" y="508" font-size="8" fill="#a0a0c0" text-anchor="middle">Co-Constitution: B := S ∩ I(S) · Habitat Radius: R = C/γ · Q_L Monitor</text>
+  <text x="550" y="524" font-size="8" fill="#a0a0c0" text-anchor="middle">100 phase channels · tunable γ · domain-specific calibration</text>
+
+  <!-- Down arrow L2→L3 -->
+  <line x1="450" y1="555" x2="450" y2="578" stroke="#ffffff" stroke-width="2" marker-end="url(#arr_w)"/>
+  <text x="460" y="571" font-size="8" fill="#808090">governed output</text>
+
+  <!-- LAYER 3: MH66 -->
+  <rect x="60" y="580" width="780" height="190" rx="8" fill="#0d0a14" stroke="#cc44cc" stroke-width="2"/>
+  <text x="450" y="604" font-size="12" fill="#cc44cc" text-anchor="middle" font-weight="bold">LAYER 3 — MH66 ADMISSIBLE PROJECTION MEASUREMENT ARRAY (APMA)</text>
+  <text x="450" y="621" font-size="9" fill="#803080" text-anchor="middle">8× Piezo · IMU · Circulation Monitor · 10ns Hard Interlock · SHA-256 Audit</text>
+  <!-- Piezo array -->
+  <text x="110" y="645" font-size="8" fill="#cc44cc">PIEZO (8×)</text>
+  <rect x="80" y="652" width="24" height="24" rx="2" fill="#1a0a20" stroke="#cc44cc" stroke-width="1"/><text x="92" y="668" font-size="7" fill="#cc44cc" text-anchor="middle">P1</text>
+  <rect x="108" y="652" width="24" height="24" rx="2" fill="#1a0a20" stroke="#cc44cc" stroke-width="1"/><text x="120" y="668" font-size="7" fill="#cc44cc" text-anchor="middle">P2</text>
+  <rect x="136" y="652" width="24" height="24" rx="2" fill="#1a0a20" stroke="#cc44cc" stroke-width="1"/><text x="148" y="668" font-size="7" fill="#cc44cc" text-anchor="middle">P3</text>
+  <rect x="164" y="652" width="24" height="24" rx="2" fill="#1a0a20" stroke="#cc44cc" stroke-width="1"/><text x="176" y="668" font-size="7" fill="#cc44cc" text-anchor="middle">P4</text>
+  <rect x="80" y="680" width="24" height="24" rx="2" fill="#1a0a20" stroke="#cc44cc" stroke-width="1"/><text x="92" y="696" font-size="7" fill="#cc44cc" text-anchor="middle">P5</text>
+  <rect x="108" y="680" width="24" height="24" rx="2" fill="#1a0a20" stroke="#cc44cc" stroke-width="1"/><text x="120" y="696" font-size="7" fill="#cc44cc" text-anchor="middle">P6</text>
+  <rect x="136" y="680" width="24" height="24" rx="2" fill="#1a0a20" stroke="#cc44cc" stroke-width="1"/><text x="148" y="696" font-size="7" fill="#cc44cc" text-anchor="middle">P7</text>
+  <rect x="164" y="680" width="24" height="24" rx="2" fill="#1a0a20" stroke="#cc44cc" stroke-width="1"/><text x="176" y="696" font-size="7" fill="#cc44cc" text-anchor="middle">P8</text>
+  <!-- IMU -->
+  <rect x="220" y="645" width="100" height="65" rx="4" fill="#140a1a" stroke="#cc44cc" stroke-width="1.5"/>
+  <text x="270" y="663" font-size="9" fill="#cc44cc" text-anchor="middle">IMU</text>
+  <text x="270" y="676" font-size="7" fill="#9060a0" text-anchor="middle">MPU-6050</text>
+  <text x="270" y="688" font-size="7" fill="#9060a0" text-anchor="middle">ax·ay·az 3σ</text>
+  <text x="270" y="700" font-size="7" fill="#9060a0" text-anchor="middle">&gt;0.1g trigger</text>
+  <!-- Circulation -->
+  <rect x="335" y="645" width="130" height="65" rx="4" fill="#0a140a" stroke="#44cc44" stroke-width="1.5"/>
+  <text x="400" y="663" font-size="9" fill="#44cc44" text-anchor="middle">CIRCULATION ∮</text>
+  <text x="400" y="676" font-size="7" fill="#40a040" text-anchor="middle">|I(t)−I(0)| ≤ ε</text>
+  <text x="400" y="688" font-size="7" fill="#40a040" text-anchor="middle">Cp · Cpk vs controls</text>
+  <text x="400" y="700" font-size="7" fill="#40a040" text-anchor="middle">Q_L ±3% tolerance</text>
+  <!-- Safety relay -->
+  <rect x="480" y="645" width="120" height="65" rx="4" fill="#1a0a0a" stroke="#cc4444" stroke-width="2"/>
+  <text x="540" y="663" font-size="9" fill="#cc4444" text-anchor="middle">HARD INTERLOCK</text>
+  <text x="540" y="676" font-size="8" fill="#904040" text-anchor="middle">Dual-coil NOT relay</text>
+  <text x="540" y="688" font-size="8" fill="#ff4444" text-anchor="middle" font-weight="bold">≤ 10 ns response</text>
+  <text x="540" y="700" font-size="7" fill="#904040" text-anchor="middle">Physical wire · no software</text>
+  <!-- Audit log -->
+  <rect x="615" y="645" width="120" height="65" rx="4" fill="#0a0a14" stroke="#6060cc" stroke-width="1.5"/>
+  <text x="675" y="663" font-size="9" fill="#6060cc" text-anchor="middle">SHA-256 AUDIT</text>
+  <text x="675" y="676" font-size="7" fill="#404090" text-anchor="middle">Immutable log</text>
+  <text x="675" y="688" font-size="7" fill="#404090" text-anchor="middle">Saturn Ring 4</text>
+  <text x="675" y="700" font-size="7" fill="#404090" text-anchor="middle">BLE/USB-C/SD</text>
+  <!-- Phase results -->
+  <text x="80" y="738" font-size="8" fill="#cc44cc">Phase 1 (0–27): BLOCKED → fast transverse approach to manifold</text>
+  <text x="80" y="752" font-size="8" fill="#44cc44">Phase 2 (58–119): GO → stable confinement · Lyapunov V: 0.592 → 0.000654 (99.9%↓)</text>
+
+  <!-- LCHC-2048 binding bar -->
+  <rect x="60" y="785" width="780" height="40" rx="6" fill="#0a1a08" stroke="#00cc44" stroke-width="2"/>
+  <text x="450" y="801" font-size="10" fill="#00cc44" text-anchor="middle" font-weight="bold">LCHC-2048 CRYPTOGRAPHIC BINDING — Quad-Context 256-byte Chain</text>
+  <text x="450" y="817" font-size="8" fill="#40a060" text-anchor="middle">CtxA: State · CtxB: Authority · CtxC: Temporal · CtxD: Provenance → Saturn Ring 4 Audit</text>
+
+  <!-- Authority labels -->
+  <text x="870" y="240" font-size="8" fill="#4a90d9" text-anchor="end">L0-WRD</text>
+  <text x="870" y="455" font-size="8" fill="#f0a030" text-anchor="end">L0-PGC</text>
+  <text x="870" y="680" font-size="8" fill="#cc44cc" text-anchor="end">L0-APMA</text>
+
+  <!-- Footer -->
+  <text x="450" y="870" font-size="8" fill="#404060" text-anchor="middle">DCGP.AI / AURA115™ · Joshua L. Lopez, Inventor · USPTO Customer Nos. 222625 &amp; 226575 · Patent Pending</text>
+  <rect x="300" y="880" width="300" height="26" rx="6" fill="#0a1a08" stroke="#00cc44" stroke-width="1.5"/>
+  <text x="450" y="897" font-size="9" fill="#00cc44" text-anchor="middle" font-weight="bold">BOUNDARY: ADMISSIBLE · Q_L: CONSERVED · STATUS: GO</text>
+
+  <defs>
+    <marker id="arr_b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4a90d9"/></marker>
+    <marker id="arr_w" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#ffffff"/></marker>
+  </defs>
+</svg>
