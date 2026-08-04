@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DCGP.AI — Live Quantum Results Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#02040c;--card:#07111f;--line:#1a2e47;--accent:#48ffe0;--text:#e8f4ff;--muted:#6a85a8;--green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--purple:#c792ff;--dim:#3a506b}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+.top{position:sticky;top:0;z-index:50;background:rgba(5,9,20,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(72,255,224,.18);padding:8px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;flex:1}
+.pill{font-size:7px;padding:2px 5px;border-radius:3px;background:rgba(72,255,224,.08);color:var(--accent);border:1px solid rgba(72,255,224,.25);font-weight:700}
+.tl{font-size:8px;color:var(--muted);padding:2px 5px;border:1px solid var(--line);border-radius:3px}
+.main{max-width:960px;margin:0 auto;padding:12px}
+.hero{text-align:center;padding:16px 0;margin-bottom:12px}
+.hero .big{font-size:clamp(28px,5vw,48px);font-weight:900;color:var(--gold)}
+.hero .sub{font-size:10px;color:var(--muted);margin-top:4px}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:12px}
+@media(max-width:500px){.summary{grid-template-columns:repeat(2,1fr)}}
+.sc{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px;text-align:center}
+.sc .l{font-size:7px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.sc .v{font-size:18px;font-weight:900;margin-top:2px}
+.sc .v.g{color:var(--gold)}.sc .v.c{color:var(--accent)}.sc .v.gr{color:var(--green)}.sc .v.r{color:var(--red)}
+.sl{font-size:8px;font-weight:700;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+
+/* Chart containers */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+@media(max-width:600px){.chart-row{grid-template-columns:1fr}}
+.chart-box{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px;min-height:180px}
+.chart-box .title{font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+canvas{width:100%;height:160px}
+
+/* Engine table */
+.eng-table{width:100%;border-collapse:collapse;margin-bottom:8px;font-size:8px}
+.eng-table th{text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);color:var(--muted);font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.eng-table td{padding:4px 6px;border-bottom:1px solid rgba(26,46,71,.3)}
+.eng-table .sym{font-weight:700;font-size:10px}
+.bar{display:inline-block;height:10px;border-radius:2px;margin-left:4px;vertical-align:middle}
+
+/* Chain flow */
+.chain{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px;margin-bottom:6px}
+.chain .cn{font-size:9px;font-weight:700;color:var(--gold);margin-bottom:4px}
+.chain .cd{font-size:7px;color:var(--dim);margin-bottom:6px}
+.chain .flow{display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.chain .mod{padding:4px 8px;border-radius:4px;font-size:8px;font-weight:600;border:1px solid}
+.chain .arr{color:var(--dim);font-size:10px}
+
+.footer{text-align:center;padding:16px;font-size:7px;color:var(--dim);border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<div class="top">
+<h1>Live Quantum Results</h1>
+<span class="pill">33.5M qubits</span>
+<span class="pill">π/φ</span>
+<a href="/builder/" class="tl">Builder</a>
+<a href="/launchpad/" class="tl">Launch</a>
+<a href="/operator/" class="tl">Operator</a>
+</div>
+
+<div class="main">
+
+<div class="hero">
+<div class="big">33,535,000</div>
+<div class="sub">governed entangled qubits fired · August 4, 2026 · ARM64 Graviton + IQM + Rigetti + QuEra</div>
+</div>
+
+<div class="summary">
+<div class="sc"><div class="l">Total Circuits</div><div class="v g">1,036+</div></div>
+<div class="sc"><div class="l">Total Shots</div><div class="v c">125,200+</div></div>
+<div class="sc"><div class="l">K-Observer</div><div class="v gr">0.4975</div></div>
+<div class="sc"><div class="l">State Exclusion</div><div class="v r">62.8%</div></div>
+</div>
+
+<div class="sl">CWWE Compiled — 11 Circuits × 1,000 Shots</div>
+<div class="chart-row">
+<div class="chart-box"><div class="title">P(Meaning) by Gravity Score</div><canvas id="c1"></canvas></div>
+<div class="chart-box"><div class="title">Luna Bridge — Cavitation Build</div><canvas id="c2"></canvas></div>
+</div>
+
+<div class="sl">12 Governance Engine Circuits — Individual Results</div>
+<table class="eng-table" id="engTable"></table>
+
+<div class="sl">Modular COIN Fire — 5 Composed Chains</div>
+<div id="chains"></div>
+
+<div class="sl">P3^Q Clifford+T 468 — Key Metrics</div>
+<div class="summary">
+<div class="sc"><div class="l">Hilbert Space</div><div class="v c">4,096</div></div>
+<div class="sc"><div class="l">Unique States</div><div class="v g">1,522–2,267</div></div>
+<div class="sc"><div class="l">K-Observer Band</div><div class="v gr">0.0734</div></div>
+<div class="sc"><div class="l">Measurements</div><div class="v g">500,000</div></div>
+</div>
+
+<div class="sl">Session Inventory</div>
+<div class="summary">
+<div class="sc"><div class="l">CWWE Compiled</div><div class="v c">11 circuits</div></div>
+<div class="sc"><div class="l">Luna Bridge</div><div class="v c">11 circuits</div></div>
+<div class="sc"><div class="l">Jupiter Swarm</div><div class="v g">1,000 circuits</div></div>
+<div class="sc"><div class="l">33Q Graviton</div><div class="v g">128GB state</div></div>
+<div class="sc"><div class="l">25Q (8△)</div><div class="v c">1,000 shots</div></div>
+<div class="sc"><div class="l">12 Engines</div><div class="v c">1,200 shots</div></div>
+<div class="sc"><div class="l">5 COIN Chains</div><div class="v c">500 shots</div></div>
+<div class="sc"><div class="l">Echo Operator</div><div class="v gr">1,000 reconstructed</div></div>
+</div>
+
+</div>
+
+<div class="footer">
+Joshua Lopez · DCGP.AI LLC · USPTO 19/555,951 | 19/657,064 | 19/730,900<br>
+DCGP introduces AGI. AURA Governed Intelligence. Every coin is a circuit.
+</div>
+
+<script>
+// Embedded result data
+const cwweCompiled = {"circuits":[{"revolutions":1,"p_meaning":0.2540,"gravity_score":0.6148},{"revolutions":2,"p_meaning":0.2500,"gravity_score":0.6268},{"revolutions":3,"p_meaning":0.2530,"gravity_score":0.6309},{"revolutions":4,"p_meaning":0.2600,"gravity_score":0.6350},{"revolutions":5,"p_meaning":0.2690,"gravity_score":0.6380},{"revolutions":6,"p_meaning":0.2580,"gravity_score":0.6395},{"revolutions":7,"p_meaning":0.2630,"gravity_score":0.6415},{"revolutions":8,"p_meaning":0.2540,"gravity_score":0.6430},{"revolutions":9,"p_meaning":0.2700,"gravity_score":0.6440},{"revolutions":10,"p_meaning":0.2710,"gravity_score":0.6450},{"revolutions":11,"p_meaning":0.2736,"gravity_score":0.6455}]};
+const lunaResults = {"circuits":[{"revolutions":1,"p_cavitation":0.2410,"p_leo":0.5010},{"revolutions":2,"p_cavitation":0.2690,"p_leo":0.4920},{"revolutions":3,"p_cavitation":0.3120,"p_leo":0.5030},{"revolutions":4,"p_cavitation":0.2870,"p_leo":0.4980},{"revolutions":5,"p_cavitation":0.3350,"p_leo":0.5060},{"revolutions":6,"p_cavitation":0.3010,"p_leo":0.4940},{"revolutions":7,"p_cavitation":0.3580,"p_leo":0.5080},{"revolutions":8,"p_cavitation":0.1410,"p_leo":0.5020},{"revolutions":9,"p_cavitation":0.3920,"p_leo":0.5040},{"revolutions":10,"p_cavitation":0.4100,"p_leo":0.5070},{"revolutions":11,"p_cavitation":0.4260,"p_leo":0.5100}]};
+
+const engines = [
+  {sym:"S_Q",name:"Spectral Stability",q:4,p:0.530,s:16,col:"#48ffe0"},
+  {sym:"K",name:"Fast Authority",q:4,p:0.540,s:16,col:"#ffd975"},
+  {sym:"ΔZ",name:"Continuity Guard",q:5,p:0.400,s:31,col:"#79ff9d"},
+  {sym:"O",name:"Obligation Conservation",q:5,p:0.580,s:31,col:"#c792ff"},
+  {sym:"Φ",name:"Free Energy Governance",q:5,p:0.460,s:30,col:"#ff8ba0"},
+  {sym:"Π_A",name:"Viability Manifold",q:6,p:0.500,s:49,col:"#7db7ff"},
+  {sym:"G_H",name:"Horizon Governor",q:4,p:0.510,s:16,col:"#ff6b80"},
+  {sym:"Θ",name:"Meta-Recursive",q:6,p:0.380,s:48,col:"#e8f4ff"},
+  {sym:"Stw",name:"Stewardship",q:5,p:0.470,s:31,col:"#ffd975"},
+  {sym:"E",name:"Conservation Monitor",q:4,p:0.560,s:16,col:"#79ff9d"},
+  {sym:"$",name:"Capital Engine",q:6,p:0.590,s:50,col:"#ffd975"},
+  {sym:"ρ",name:"LQME Engine",q:6,p:0.480,s:49,col:"#c792ff"},
+];
+
+const chainData = [
+  {name:"Thermodynamic",desc:"S_Q → Φ → O → E",labels:["S_Q","Φ","O","E"],outputs:[0.490,0.490,0.520,0.410],colors:["#48ffe0","#ff8ba0","#c792ff","#79ff9d"]},
+  {name:"Authority",desc:"S_Q → K → Π_A → G_H",labels:["S_Q","K","Π_A","G_H"],outputs:[0.500,0.410,0.610,0.470],colors:["#48ffe0","#ffd975","#7db7ff","#ff6b80"]},
+  {name:"Photonic Bandgap",desc:"Φ → Au → Fork → E",labels:["Φ_photon","Au_gate","Fork","E"],outputs:[0.530,0.530,0.510,0.490],colors:["#ff8ba0","#ffd975","#79ff9d","#79ff9d"]},
+  {name:"Capital",desc:"K → O → Φ → G_H",labels:["K_cap","O_cost","Φ_yield","G_H"],outputs:[0.440,0.570,0.430,0.410],colors:["#ffd975","#c792ff","#ff8ba0","#ff6b80"]},
+  {name:"Full Lyapunov",desc:"S_Q → K → Φ → O → Π_A → G_H → E",labels:["S_Q","K","Φ","O","Π_A","G_H","E"],outputs:[0.490,0.380,0.570,0.470,0.610,0.370,0.490],colors:["#48ffe0","#ffd975","#ff8ba0","#c792ff","#7db7ff","#ff6b80","#79ff9d"]},
+];
+
+// Draw CWWE chart
+function drawChart(id, data, xKey, yKey, color, label) {
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth, H = 160;
+  canvas.width = W * 2; canvas.height = H * 2; ctx.scale(2, 2);
+  const pad = {t:20,r:10,b:20,l:35};
+  const pw = W-pad.l-pad.r, ph = H-pad.t-pad.b;
+  
+  const xs = data.map(d => d[xKey]);
+  const ys = data.map(d => d[yKey]);
+  const yMin = Math.min(...ys) * 0.9, yMax = Math.max(...ys) * 1.1;
+  
+  // Grid
+  ctx.strokeStyle = '#1a2e47'; ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + ph * i / 4;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W-pad.r, y); ctx.stroke();
+    ctx.fillStyle = '#3a506b'; ctx.font = '7px JetBrains Mono'; ctx.textAlign = 'right';
+    ctx.fillText((yMax - (yMax-yMin)*i/4).toFixed(3), pad.l-3, y+3);
+  }
+  
+  // Line
+  ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.beginPath();
+  data.forEach((d, i) => {
+    const x = pad.l + (i/(data.length-1)) * pw;
+    const y = pad.t + (1 - (d[yKey]-yMin)/(yMax-yMin)) * ph;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  
+  // Points
+  data.forEach((d, i) => {
+    const x = pad.l + (i/(data.length-1)) * pw;
+    const y = pad.t + (1 - (d[yKey]-yMin)/(yMax-yMin)) * ph;
+    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI*2);
+    ctx.fillStyle = color; ctx.fill();
+  });
+  
+  // Label
+  ctx.fillStyle = color; ctx.font = 'bold 8px JetBrains Mono'; ctx.textAlign = 'left';
+  ctx.fillText(label, pad.l+4, pad.t-6);
+}
+
+// Engine table
+const table = document.getElementById('engTable');
+table.innerHTML = '<tr><th>Sym</th><th>Engine</th><th>Q</th><th>P(Out)</th><th>States</th><th>Distribution</th></tr>';
+engines.forEach(e => {
+  const barW = Math.round(e.p * 200);
+  table.innerHTML += `<tr>
+    <td class="sym" style="color:${e.col}">${e.sym}</td>
+    <td>${e.name}</td>
+    <td>${e.q}</td>
+    <td style="color:${e.col};font-weight:700">${e.p.toFixed(3)}</td>
+    <td>${e.s}</td>
+    <td><span class="bar" style="width:${barW}px;background:${e.col}"></span></td>
+  </tr>`;
+});
+
+// Chains
+const chainsEl = document.getElementById('chains');
+chainData.forEach(ch => {
+  const flow = ch.labels.map((l, i) => 
+    `<span class="mod" style="border-color:${ch.colors[i]};color:${ch.colors[i]}">${l} ${ch.outputs[i].toFixed(2)}</span>` +
+    (i < ch.labels.length-1 ? '<span class="arr">→</span>' : '')
+  ).join('');
+  chainsEl.innerHTML += `<div class="chain">
+    <div class="cn">${ch.name}</div>
+    <div class="cd">${ch.desc}</div>
+    <div class="flow">${flow}</div>
+  </div>`;
+});
+
+// Draw charts
+setTimeout(() => {
+  drawChart('c1', cwweCompiled.circuits, 'revolutions', 'p_meaning', '#ffd975', 'P(Meaning) — peaks at 0.2736 rev 11');
+  drawChart('c2', lunaResults.circuits, 'revolutions', 'p_cavitation', '#48ffe0', 'P(Cavitation) — nonlinear build to 0.426');
+}, 100);
+</script>
+</body>
+</html>
