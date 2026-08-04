@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Hamiltonian Constitutional Gate — P3^Q Governed Quantum Framework · DCGP.AI</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#02040c;--panel:#050e1d;--card:#07111f;--line:#1a2e47;
+    --accent:#48ffe0;--dim:rgba(72,255,224,.08);--border:rgba(72,255,224,.25);
+    --text:#e8f4ff;--muted:#6a85a8;--subdim:#3a506b;
+    --green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--cyan:#4dffe5;
+    --purple:#c792ff;--blue:#7db7ff;
+  }
+  html,body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',ui-monospace,monospace;min-height:100vh}
+  a{color:var(--cyan);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(5,9,20,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(72,255,224,.18)}
+  .topbar-inner{max-width:1300px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .topbar h1{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.4px;text-transform:uppercase;flex:1;white-space:nowrap}
+  .tb-pill{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--dim);color:var(--accent);border:1px solid var(--border);letter-spacing:.5px;white-space:nowrap}
+  .tb-link{font-size:10px;color:var(--muted);padding:4px 8px;border:1px solid var(--line);border-radius:4px}
+  .tb-link:hover{color:var(--accent);border-color:var(--accent);text-decoration:none}
+
+  /* Hero */
+  .hero{max-width:1300px;margin:0 auto;padding:40px 18px 30px}
+  .hero h2{font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:8px}
+  .hero .sub{font-size:0.75rem;color:var(--muted);line-height:1.6;max-width:800px}
+  .hero .eq{font-size:0.85rem;color:var(--gold);margin:16px 0;font-weight:600;letter-spacing:0.02em}
+
+  /* Gate section */
+  .section{max-width:1300px;margin:0 auto;padding:0 18px 30px}
+  .section-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+
+  /* Live gate */
+  .gate-container{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:30px}
+  @media(max-width:700px){.gate-container{grid-template-columns:1fr}}
+  .gate-panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;position:relative}
+  .gate-panel h3{font-size:10px;color:var(--accent);letter-spacing:.1em;margin-bottom:10px;text-transform:uppercase}
+  .gate-canvas{width:100%;height:200px;border:1px solid var(--line);border-radius:4px;background:var(--bg)}
+  .gate-readout{margin-top:10px;font-size:11px;color:var(--muted);line-height:1.8}
+  .gate-readout .val{color:var(--green);font-weight:600}
+  .gate-readout .warn{color:var(--gold)}
+  .gate-readout .fail{color:var(--red)}
+
+  .run-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:8px 16px;border-radius:4px;font-family:inherit;font-size:11px;cursor:pointer;margin-top:10px;transition:.15s}
+  .run-btn:hover{background:var(--dim)}
+
+  /* Admission badge */
+  .admission{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.05em;margin-top:8px}
+  .admission.admitted{background:rgba(121,255,157,.1);color:var(--green);border:1px solid rgba(121,255,157,.3)}
+  .admission.rejected{background:rgba(255,45,85,.1);color:var(--red);border:1px solid rgba(255,45,85,.3)}
+  .admission.pending{background:rgba(255,211,117,.1);color:var(--gold);border:1px solid rgba(255,211,117,.3)}
+
+  /* Constants */
+  .constants{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:30px}
+  .const-card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px}
+  .const-card .label{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+  .const-card .value{font-size:1.1rem;color:var(--gold);font-weight:700;margin-top:4px}
+  .const-card .note{font-size:9px;color:var(--subdim);margin-top:2px}
+
+  /* Pipeline */
+  .pipeline{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-bottom:30px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:8px}
+  .pipe-stage{padding:8px 14px;font-size:10px;font-weight:600;letter-spacing:.05em;border:1px solid var(--line);border-radius:4px;white-space:nowrap}
+  .pipe-stage.wc{color:var(--blue);border-color:rgba(125,183,255,.3)}
+  .pipe-stage.bell{color:var(--purple);border-color:rgba(199,146,255,.3)}
+  .pipe-stage.p27{color:var(--gold);border-color:rgba(255,211,117,.3)}
+  .pipe-stage.ch{color:var(--accent);border-color:var(--border);background:var(--dim)}
+  .pipe-stage.zk{color:var(--green);border-color:rgba(121,255,157,.3)}
+  .pipe-stage.qhp{color:var(--red);border-color:rgba(255,45,85,.3)}
+  .pipe-arrow{color:var(--subdim);font-size:14px;padding:0 6px}
+
+  /* Simulations grid */
+  .sim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:4px;margin-bottom:30px;max-height:400px;overflow-y:auto}
+  .sim-cell{display:flex;align-items:center;justify-content:center;padding:6px;background:var(--card);border:1px solid var(--line);border-radius:3px;font-size:10px;color:var(--muted);cursor:pointer;transition:.15s}
+  .sim-cell:hover{border-color:var(--accent);color:var(--accent);background:var(--dim)}
+
+  /* AQIS section */
+  .aqis-card{background:linear-gradient(135deg,#0b1222 0%,#111a30 100%);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:30px}
+  .aqis-card h3{font-size:14px;color:var(--accent);margin-bottom:8px}
+  .aqis-card .date{font-size:12px;color:var(--gold);font-weight:600;margin-bottom:4px}
+  .aqis-card .venue{font-size:11px;color:var(--muted);margin-bottom:12px}
+  .aqis-card .desc{font-size:11px;color:var(--text);line-height:1.7;margin-bottom:12px}
+  .aqis-card .topics{font-size:10px;color:var(--subdim);line-height:1.6}
+  .aqis-link{display:inline-block;margin-top:12px;padding:8px 16px;border:1px solid var(--accent);border-radius:4px;font-size:11px;color:var(--accent)}
+  .aqis-link:hover{background:var(--dim);text-decoration:none}
+
+  /* Nav links */
+  .nav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:30px}
+  .nav-card{display:block;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px;transition:.15s}
+  .nav-card:hover{border-color:var(--accent);text-decoration:none}
+  .nav-card .name{font-size:11px;color:var(--text);font-weight:600}
+  .nav-card .desc{font-size:9px;color:var(--muted);margin-top:4px}
+
+  /* Footer */
+  .footer{max-width:1300px;margin:0 auto;padding:30px 18px;border-top:1px solid var(--line);text-align:center}
+  .footer p{font-size:9px;color:var(--subdim);margin:3px 0}
+  .footer .sig{color:var(--gold);opacity:.7}
+
+  /* Scrollbar */
+  ::-webkit-scrollbar{width:4px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <h1>Contact Hamiltonian Gate</h1>
+    <span class="tb-pill">P3^Q</span>
+    <span class="tb-pill">USPTO 19/731,016</span>
+    <a href="/operator/" class="tb-link">Operator</a>
+    <a href="/clap/" class="tb-link">CLAP</a>
+    <a href="/simulations/" class="tb-link">Simulations</a>
+    <a href="/guard/" class="tb-link">Guard</a>
+  </div>
+</div>
+
+<div class="hero">
+  <h2>Bidirectional Contact Hamiltonian Gate</h2>
+  <div class="sub">WC admits. CH transforms. What comes out IS QHP. The Contact Hamiltonian is not a checkpoint after admission — it is the conversion. The moment data passes through the CH gate is the moment it becomes QHP. Admission is not governance. Governance is the Hamiltonian.</div>
+  <div class="eq">L<sub>X<sub>α</sub></sub> = (p·∂H/∂p − H) + ∂H/∂q + p·∂H/∂S − p·∂H/∂p &nbsp;&nbsp;|&nbsp;&nbsp; |L<sub>X<sub>α</sub></sub>| ≤ ε → manifold holds</div>
+</div>
+
+<div class="section">
+  <div class="section-label">Governing Constants</div>
+  <div class="constants">
+    <div class="const-card">
+      <div class="label">GOV_ANGLE</div>
+      <div class="value">π/φ</div>
+      <div class="note">1.941611 rad</div>
+    </div>
+    <div class="const-card">
+      <div class="label">φ (Golden Ratio)</div>
+      <div class="value">(1+√5)/2</div>
+      <div class="note">1.618034</div>
+    </div>
+    <div class="const-card">
+      <div class="label">Core Thesis</div>
+      <div class="value">Σ*<sub>h</sub> = Σ*<sub>AI</sub> = Θ</div>
+      <div class="note">Human-AI convergence</div>
+    </div>
+    <div class="const-card">
+      <div class="label">Gate Primitive</div>
+      <div class="value">CH ↔</div>
+      <div class="note">evaluateExchange · verifyAdmission</div>
+    </div>
+    <div class="const-card">
+      <div class="label">Total Circuits</div>
+      <div class="value" id="circuitCount">0</div>
+      <div class="note">P3^Q governed</div>
+    </div>
+    <div class="const-card">
+      <div class="label">Total Measurements</div>
+      <div class="value" id="measurementCount">0</div>
+      <div class="note">Independent quantum shots</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Full Pipeline Seal</div>
+  <div class="pipeline">
+    <div class="pipe-stage wc">Wardenclyffe</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-stage bell">Bell Pair</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-stage p27">Proverbs 27</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-stage ch">Contact Hamiltonian</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-stage zk">ZK-SNARK Groth16</div>
+    <span class="pipe-arrow">→</span>
+    <div class="pipe-stage qhp">QHP</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Live Gate Execution</div>
+  <div class="gate-container">
+    <div class="gate-panel">
+      <h3>evaluateExchange — Trajectory</h3>
+      <canvas id="trajCanvas" class="gate-canvas"></canvas>
+      <div class="gate-readout" id="exchReadout">Ready to execute.</div>
+      <button class="run-btn" onclick="runGate()">Execute Gate</button>
+    </div>
+    <div class="gate-panel">
+      <h3>verifyAdmission — Drift</h3>
+      <canvas id="driftCanvas" class="gate-canvas"></canvas>
+      <div class="gate-readout" id="admitReadout">Awaiting exchange.</div>
+      <div class="admission pending" id="admissionBadge">PENDING</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">AQIS'26 — Target Venue</div>
+  <div class="aqis-card">
+    <h3>26th Asian Quantum Information Science Conference</h3>
+    <div class="date">August 24–28, 2026 · 20 days</div>
+    <div class="venue">KAIST Auditorium (E15), KAIST Campus, Daejeon, Korea</div>
+    <div class="desc">P3^Q governed quantum circuits demonstrate that the governing angle π/φ = 1.941611 radians produces measurable structure in quantum measurement distributions where ungoverned circuits produce flat noise. The Contact Hamiltonian gate provides the bidirectional admission primitive — evaluateExchange for forward transformation, verifyAdmission for proof verification — binding infrastructure governance to the same constant that governs quantum gate rotations.</div>
+    <div class="topics">Focus areas: quantum information processing, communication and cryptography · bridging quantum physics, computer science, mathematics, and information technologies</div>
+    <a href="https://aqis-conf.org/2026/" target="_blank" class="aqis-link">AQIS'26 Conference →</a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Connected Architecture</div>
+  <div class="nav-grid">
+    <a href="/clap/" class="nav-card">
+      <div class="name">CLAP</div>
+      <div class="desc">Controlled Ledgered Admission Protocol — the governing gate between source and serve</div>
+    </a>
+    <a href="/guard/" class="nav-card">
+      <div class="name">Guard</div>
+      <div class="desc">Governance application — the constitutional enforcement layer</div>
+    </a>
+    <a href="/qhp/" class="nav-card">
+      <div class="name">QHP</div>
+      <div class="desc">Quantum Holographic Projection — the output of CH transformation</div>
+    </a>
+    <a href="/bell-pair-circuit/" class="nav-card">
+      <div class="name">Bell Pair Circuit</div>
+      <div class="desc">Entanglement verification — upstream of CH in the pipeline</div>
+    </a>
+    <a href="/operator/" class="nav-card">
+      <div class="name">Operator Console</div>
+      <div class="desc">Unified command — 111 routes, one pane of glass</div>
+    </a>
+    <a href="/simulations/" class="nav-card">
+      <div class="name">Simulations Index</div>
+      <div class="desc">124 governed simulation environments</div>
+    </a>
+    <a href="/governed-tsp/" class="nav-card">
+      <div class="name">Governed TSP</div>
+      <div class="desc">Travelling salesman under π/φ governance</div>
+    </a>
+    <a href="/decoherence-defense/" class="nav-card">
+      <div class="name">Decoherence Defense</div>
+      <div class="desc">Quantum error mitigation through governed structure</div>
+    </a>
+    <a href="/equilibrium/" class="nav-card">
+      <div class="name">Equilibrium</div>
+      <div class="desc">Governance manifold stability analysis</div>
+    </a>
+    <a href="/ghz-state-demo/" class="nav-card">
+      <div class="name">GHZ State Demo</div>
+      <div class="desc">Greenberger–Horne–Zeilinger entanglement under P3^Q</div>
+    </a>
+    <a href="/unified-shors-rp-simulation/" class="nav-card">
+      <div class="name">Unified Shor's RP</div>
+      <div class="desc">Shor's algorithm simulation with governed factoring</div>
+    </a>
+    <a href="/sonoluminescence-simulation/" class="nav-card">
+      <div class="name">Sonoluminescence</div>
+      <div class="desc">Rayleigh-Plesset cavitation — decoherence as fuel</div>
+    </a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">All Simulations (124)</div>
+  <div class="sim-grid" id="simGrid"></div>
+</div>
+
+<div class="footer">
+  <p>Joshua Lopez · DCGP.AI LLC</p>
+  <p>USPTO 19/555,951 | 19/730,900 | 19/731,016 | 19/732,119</p>
+  <p>Root Priority: January 15, 2026</p>
+  <p class="sig">DCGP introduces AGI. AURA Governed Intelligence.</p>
+  <p style="margin-top:8px;color:var(--gold);opacity:.5;font-style:italic">Where there is a gap, there is a gate.</p>
+</div>
+
+<script>
+// ─── Constants ───
+const GOV_ANGLE = Math.PI / ((1 + Math.sqrt(5)) / 2); // π/φ
+const PHI = (1 + Math.sqrt(5)) / 2;
+
+// ─── Populate simulation grid ───
+const simGrid = document.getElementById('simGrid');
+for (let i = 1; i <= 124; i++) {
+  const num = String(i).padStart(4, '0');
+  const cell = document.createElement('a');
+  cell.href = `/simulations/sim-${num}.html`;
+  cell.className = 'sim-cell';
+  cell.textContent = `SIM-${num}`;
+  simGrid.appendChild(cell);
+}
+
+// ─── Animate counts ───
+function animateCount(el, target, suffix='') {
+  let current = 0;
+  const step = Math.ceil(target / 40);
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) { current = target; clearInterval(timer); }
+    el.textContent = current.toLocaleString() + suffix;
+  }, 30);
+}
+animateCount(document.getElementById('circuitCount'), 2339);
+animateCount(document.getElementById('measurementCount'), 2370000, '+');
+
+// ─── Contact Hamiltonian Gate Engine ───
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function hamiltonianPartials(q, p, S, delta) {
+  return {
+    H: q*q + (p*p)/2 + delta*S,
+    Hq: 2*q,
+    Hp: p,
+    HS: delta
+  };
+}
+
+function contactVectorField(q, p, S, delta) {
+  const {Hq, Hp, HS, H} = hamiltonianPartials(q, p, S, delta);
+  return { Xq: Hp, Xp: -Hq - p*HS, XS: p*Hp - H, H };
+}
+
+function lieDrift(q, p, S, delta) {
+  const {Xq, Xp, XS} = contactVectorField(q, p, S, delta);
+  const L = XS - Xp - p*Xq;
+  return Math.abs(L);
+}
+
+function runGate() {
+  const q0 = 1.0, p0 = 0.5, S0 = 0.2;
+  const delta = 0.6, epsilon = 1.2, dt = 0.005;
+  const steps = 100;
+  let q = q0, p = p0, S = S0;
+  const trajectory = [];
+  const drifts = [];
+  let maxDrift = 0, breached = false, breachStep = -1;
+
+  for (let i = 0; i < steps; i++) {
+    const {Xq, Xp, XS} = contactVectorField(q, p, S, delta);
+    const drift = lieDrift(q, p, S, delta);
+    trajectory.push({q, p, S, drift});
+    drifts.push(drift);
+    if (drift > maxDrift) maxDrift = drift;
+    if (!breached && drift > epsilon) { breached = true; breachStep = i; }
+    q = clamp(q + Xq*dt, -5, 5);
+    p = clamp(p + Xp*dt, -5, 5);
+    S = clamp(S + XS*dt, -5, 5);
+  }
+
+  drawTrajectory(trajectory);
+  drawDrift(drifts, epsilon);
+
+  const exchReadout = document.getElementById('exchReadout');
+  exchReadout.innerHTML = `q<sub>f</sub> = <span class="val">${q.toFixed(4)}</span> · p<sub>f</sub> = <span class="val">${p.toFixed(4)}</span> · S<sub>f</sub> = <span class="val">${S.toFixed(4)}</span><br>GOV_ANGLE = <span class="val">${GOV_ANGLE.toFixed(6)} rad</span> · Steps: <span class="val">${steps}</span>`;
+
+  const admitReadout = document.getElementById('admitReadout');
+  const badge = document.getElementById('admissionBadge');
+
+  if (!breached) {
+    admitReadout.innerHTML = `Max drift: <span class="val">${maxDrift.toFixed(4)}</span> &lt; ε=${epsilon} · Manifold <span class="val">HOLDS</span>`;
+    badge.className = 'admission admitted';
+    badge.textContent = 'ADMITTED — verifyAdmission PASSED';
+  } else {
+    admitReadout.innerHTML = `Max drift: <span class="fail">${maxDrift.toFixed(4)}</span> &gt; ε=${epsilon} · Breach at step <span class="fail">${breachStep}</span>`;
+    badge.className = 'admission rejected';
+    badge.textContent = 'REJECTED — verifyAdmission FAILED';
+  }
+}
+
+function drawTrajectory(traj) {
+  const canvas = document.getElementById('trajCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * 2;
+  canvas.height = canvas.offsetHeight * 2;
+  ctx.scale(2, 2);
+  const w = canvas.offsetWidth, h = canvas.offsetHeight;
+
+  ctx.fillStyle = '#02040c';
+  ctx.fillRect(0, 0, w, h);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(72,255,224,0.06)';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+  for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+
+  // q trajectory
+  const qMin = Math.min(...traj.map(t=>t.q));
+  const qMax = Math.max(...traj.map(t=>t.q));
+  const pMin = Math.min(...traj.map(t=>t.p));
+  const pMax = Math.max(...traj.map(t=>t.p));
+  const sMin = Math.min(...traj.map(t=>t.S));
+  const sMax = Math.max(...traj.map(t=>t.S));
+  const pad = 20;
+
+  function mapX(i) { return pad + (i / (traj.length-1)) * (w - 2*pad); }
+  function mapY(v, min, max) { return h - pad - ((v - min) / (max - min || 1)) * (h - 2*pad); }
+
+  // Draw q
+  ctx.strokeStyle = '#48ffe0';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  traj.forEach((t, i) => { i === 0 ? ctx.moveTo(mapX(i), mapY(t.q, qMin, qMax)) : ctx.lineTo(mapX(i), mapY(t.q, qMin, qMax)); });
+  ctx.stroke();
+
+  // Draw p
+  ctx.strokeStyle = '#c792ff';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  traj.forEach((t, i) => { i === 0 ? ctx.moveTo(mapX(i), mapY(t.p, pMin, pMax)) : ctx.lineTo(mapX(i), mapY(t.p, pMin, pMax)); });
+  ctx.stroke();
+
+  // Draw S
+  ctx.strokeStyle = '#ffd975';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  traj.forEach((t, i) => { i === 0 ? ctx.moveTo(mapX(i), mapY(t.S, sMin, sMax)) : ctx.lineTo(mapX(i), mapY(t.S, sMin, sMax)); });
+  ctx.stroke();
+
+  // Labels
+  ctx.font = '9px JetBrains Mono';
+  ctx.fillStyle = '#48ffe0'; ctx.fillText('q', 6, 14);
+  ctx.fillStyle = '#c792ff'; ctx.fillText('p', 20, 14);
+  ctx.fillStyle = '#ffd975'; ctx.fillText('S', 34, 14);
+}
+
+function drawDrift(drifts, epsilon) {
+  const canvas = document.getElementById('driftCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * 2;
+  canvas.height = canvas.offsetHeight * 2;
+  ctx.scale(2, 2);
+  const w = canvas.offsetWidth, h = canvas.offsetHeight;
+
+  ctx.fillStyle = '#02040c';
+  ctx.fillRect(0, 0, w, h);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(72,255,224,0.06)';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+  for (let y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+
+  const maxD = Math.max(...drifts, epsilon * 1.2);
+  const pad = 20;
+
+  function mapX(i) { return pad + (i / (drifts.length-1)) * (w - 2*pad); }
+  function mapY(v) { return h - pad - (v / maxD) * (h - 2*pad); }
+
+  // Epsilon line
+  ctx.strokeStyle = 'rgba(255,45,85,0.5)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  const ey = mapY(epsilon);
+  ctx.moveTo(pad, ey); ctx.lineTo(w - pad, ey);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.font = '9px JetBrains Mono';
+  ctx.fillStyle = '#ff2d55';
+  ctx.fillText('ε=' + epsilon, w - pad - 40, ey - 4);
+
+  // Drift curve
+  ctx.strokeStyle = '#79ff9d';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  drifts.forEach((d, i) => { i === 0 ? ctx.moveTo(mapX(i), mapY(d)) : ctx.lineTo(mapX(i), mapY(d)); });
+  ctx.stroke();
+
+  // Fill under
+  ctx.fillStyle = 'rgba(121,255,157,0.05)';
+  ctx.beginPath();
+  ctx.moveTo(mapX(0), mapY(0));
+  drifts.forEach((d, i) => ctx.lineTo(mapX(i), mapY(d)));
+  ctx.lineTo(mapX(drifts.length - 1), mapY(0));
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#79ff9d';
+  ctx.fillText('|L_Xα|', 6, 14);
+}
+
+// Auto-run on load
+runGate();
+</script>
+
+</body>
+</html>
