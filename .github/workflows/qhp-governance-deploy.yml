@@ -28,7 +28,7 @@ jobs:
     env:
       AWS_REGION: "us-east-1"
       # Replace this value with your actual verified IAM OIDC AssumeRole ARN
-      AWS_ROLE_ARN: "arn:aws:iam::125746528360:role/qhp-github-actions-oidc-execution-role"
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
     steps:
       # Step 1: Securely pull the structural configuration file stream from the workspace repository
       - name: "Checkout Repository Workspace Source"
