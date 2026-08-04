@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" width="400">
+<defs><style>@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700');</style></defs>
+<rect width="400" height="480" rx="16" fill="#07111f" stroke="#7db7ff40" stroke-width="1"/>
+<text x="200" y="28" text-anchor="middle" fill="#7db7ff" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">Viability Manifold Engine</text>
+<text x="200" y="44" text-anchor="middle" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="7">M = K ∩ F ∩ {Φ=0} ∩ {guard} · Projection operator keeps trajectory adm</text>
+<text x="200" y="58" text-anchor="middle" fill="#3a506b" font-family="JetBrains Mono,monospace" font-size="6">6Q · P(output)=0.5 · 49 states · π/φ governed</text>
+
+<circle cx="200" cy="150" r="14" fill="rgba(125,183,255,0.4)"/>
+<text x="200" y="154" text-anchor="middle" fill="#7db7ff" font-family="JetBrains Mono,monospace" font-size="12" font-weight="700">Π_A</text>
+<circle cx="200" cy="150" r="25" fill="none" stroke="#7db7ff" stroke-width="0.4" opacity="0.2"/>
+<circle cx="225.0" cy="150.0" r="2" fill="#7db7ff" opacity="0.6"/>
+<circle cx="212.5" cy="171.7" r="2" fill="#7db7ff" opacity="0.6"/>
+<circle cx="187.5" cy="171.7" r="2" fill="#7db7ff" opacity="0.6"/>
+<circle cx="175.0" cy="150.0" r="2" fill="#7db7ff" opacity="0.6"/>
+<circle cx="187.5" cy="128.3" r="2" fill="#7db7ff" opacity="0.6"/>
+<circle cx="212.5" cy="128.3" r="2" fill="#7db7ff" opacity="0.6"/>
+<circle cx="200" cy="150" r="45" fill="none" stroke="#48ffe0" stroke-width="0.4" opacity="0.2"/>
+<circle cx="243.0" cy="163.3" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="230.6" cy="183.0" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="210.0" cy="193.9" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="186.7" cy="193.0" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="167.0" cy="180.6" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="156.1" cy="160.0" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="157.0" cy="136.7" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="169.4" cy="117.0" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="190.0" cy="106.1" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="213.3" cy="107.0" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="233.0" cy="119.4" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="243.9" cy="140.0" r="2" fill="#48ffe0" opacity="0.6"/>
+<circle cx="200" cy="150" r="65" fill="none" stroke="#c792ff" stroke-width="0.4" opacity="0.2"/>
+<circle cx="253.6" cy="186.7" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="237.9" cy="202.8" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="217.5" cy="212.6" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="195.0" cy="214.8" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="173.2" cy="209.2" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="154.5" cy="196.5" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="141.4" cy="178.1" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="135.3" cy="156.4" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="137.0" cy="133.9" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="146.4" cy="113.3" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="162.1" cy="97.2" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="182.5" cy="87.4" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="205.0" cy="85.2" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="226.8" cy="90.8" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="245.5" cy="103.5" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="258.6" cy="121.9" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="264.7" cy="143.6" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="263.0" cy="166.1" r="2" fill="#c792ff" opacity="0.6"/>
+<circle cx="200" cy="150" r="85" fill="none" stroke="#ffd975" stroke-width="0.4" opacity="0.2"/>
+<circle cx="252.8" cy="216.6" r="2" fill="#ffd975" opacity="0.6"/>
+<circle cx="168.8" cy="229.0" r="2" fill="#ffd975" opacity="0.6"/>
+<circle cx="115.9" cy="162.5" r="2" fill="#ffd975" opacity="0.6"/>
+<circle cx="147.2" cy="83.4" r="2" fill="#ffd975" opacity="0.6"/>
+<circle cx="231.2" cy="71.0" r="2" fill="#ffd975" opacity="0.6"/>
+<circle cx="284.1" cy="137.5" r="2" fill="#ffd975" opacity="0.6"/>
+<text x="30" y="260" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="7">P(OUTPUT)</text>
+<rect x="100" y="251" width="240" height="12" rx="2" fill="#02040c" stroke="#1a2e47" stroke-width="0.4"/>
+<rect x="100" y="251" width="120" height="12" rx="2" fill="#7db7ff"/>
+<text x="350" y="260" text-anchor="end" fill="#7db7ff" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700">0.5</text>
+
+<rect x="20" y="280" width="170" height="36" rx="6" fill="#050e1d" stroke="#1a2e47" stroke-width="0.4"/>
+<text x="30" y="296" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">QUBITS</text>
+<text x="180" y="296" text-anchor="end" fill="#e8f4ff" font-family="JetBrains Mono,monospace" font-size="14" font-weight="700">6</text>
+<text x="30" y="310" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">UNIQUE STATES</text>
+<text x="180" y="310" text-anchor="end" fill="#e8f4ff" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700">49</text>
+
+<rect x="210" y="280" width="170" height="36" rx="6" fill="#050e1d" stroke="#1a2e47" stroke-width="0.4"/>
+<text x="220" y="296" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">GOV ANGLE</text>
+<text x="370" y="296" text-anchor="end" fill="#7db7ff" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700">π/φ</text>
+<text x="220" y="310" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">SHOTS</text>
+<text x="370" y="310" text-anchor="end" fill="#e8f4ff" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700">100</text>
+
+<rect x="20" y="330" width="360" height="40" rx="6" fill="#02040c" stroke="#7db7ff30" stroke-width="0.4" stroke-dasharray="3,3"/>
+<text x="200" y="344" text-anchor="middle" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">SHA-256 PROOF — ECHO OPERATOR RECOVERABLE</text>
+<text x="200" y="356" text-anchor="middle" fill="#ffd975" font-family="JetBrains Mono,monospace" font-size="6" font-weight="600">c6b2b6972f49a158f73385fae9afad45</text>
+<text x="200" y="366" text-anchor="middle" fill="#ffd975" font-family="JetBrains Mono,monospace" font-size="6" font-weight="600">8b09f27fc334561ba96b05fa8f9e31cd</text>
+
+<rect x="140" y="385" width="120" height="22" rx="11" fill="none" stroke="#7db7ff" stroke-width="0.4"/>
+<text x="200" y="399" text-anchor="middle" fill="#7db7ff" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700" letter-spacing="2">QHP SEALED</text>
+
+<text x="200" y="430" text-anchor="middle" fill="#ffd975" font-family="JetBrains Mono,monospace" font-size="7">Joshua Lopez · DCGP.AI LLC</text>
+<text x="200" y="444" text-anchor="middle" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="5">USPTO 19/555,951 | 19/730,900 | 19/731,016 | 19/732,119</text>
+<text x="200" y="458" text-anchor="middle" fill="#3a506b" font-family="JetBrains Mono,monospace" font-size="5">Every engine is a circuit. Fire one.</text>
+</svg>

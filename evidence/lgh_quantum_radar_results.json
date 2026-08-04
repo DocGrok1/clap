@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "route": "/api/lgh-quantum-radar-simulation",
+  "ts": "2026-07-17T02:58:44.580Z",
+  "simulation": "LGH Quantum Radar",
+  "params": {
+    "range_km": 50,
+    "rcs_m2": 1,
+    "noise_floor": 0.1,
+    "sweeps": 360
+  },
+  "targets_detected": 4,
+  "targets": [
+    {"id": "TGT-1387378b", "bearing": 258.4, "range_km": 18.97, "snr_db": 25.13, "classification": "HIGH_CONFIDENCE", "governed": true},
+    {"id": "TGT-2298f8ae", "bearing": 78.9, "range_km": 7.97, "snr_db": 29.73, "classification": "HIGH_CONFIDENCE", "governed": true},
+    {"id": "TGT-bf0a3de4", "bearing": 277.1, "range_km": 21.98, "snr_db": 23.25, "classification": "HIGH_CONFIDENCE", "governed": true},
+    {"id": "TGT-0d4a94bf", "bearing": 265.8, "range_km": 47.7, "snr_db": 10.77, "classification": "MEDIUM", "governed": true}
+  ],
+  "quantum_advantage": {
+    "entangled_photons": true,
+    "snr_gain_db": 3.01,
+    "ghost_target_rejection": true,
+    "governance": "Contact Hamiltonian gate on every return pulse"
+  },
+  "pipeline": "MC290 -> AURAL-M -> Echo Operator -> Q_L -> Saturn Ring 4",
+  "authority": "Joshua Lopez — DCGP.AI",
+  "patents": ["USPTO 19/731,016", "USPTO 19/731,025"],
+  "observations": {
+    "western_cluster": "3 targets at 258-277 degrees, 19-48 km",
+    "eastern_contact": "TGT-2298f8ae at 79 degrees, 8 km, 29.73 dB — quantum lock",
+    "marginal_capture": "TGT-0d4a94bf at 47.7 km, 10.77 dB — captured via entangled-photon boost",
+    "all_governed": true
+  },
+  "connection_to_code": {
+    "bloch_dynamics_engine": "Contact-preserving PM dynamics on each return pulse",
+    "qubit_qfi": "QFI_PM 1.8x advantage is the radar's coherence retention",
+    "euler_maruyama_pm": "Stochastic decoherence model for noisy radar environment",
+    "pm_contact_form_theory": "Geometric correction mu preserves signal through noise"
+  }
+}

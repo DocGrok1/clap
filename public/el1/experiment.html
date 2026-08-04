@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EL-1 Polaritron Collision Experiment · GE-115 · DCGP.AI</title>
+<meta name="cctp-protocol" content="CCTP-QHP-v1">
+<meta name="cctp-authority" content="Joshua Lopez · DCGP.AI">
+<meta name="cctp-module" content="GE-115_EL1_COLLISION_EXPERIMENT">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#020508;--card:#060a12;--line:#0f1a28;--gold:#fbd975;--cyan:#00d4ff;--green:#4ade80;--red:#ff7f95;--purple:#a78bfa;--magenta:#ff66ff;--text:#eaf6ff;--dim:rgba(232,237,245,0.45);--muted:#4a6a80;--mono:'JetBrains Mono',monospace;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+.header{padding:20px;text-align:center;border-bottom:1px solid var(--line)}
+.header h1{font-size:clamp(24px,5vw,40px);font-weight:900;background:linear-gradient(135deg,var(--gold),#fff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sub{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:6px;letter-spacing:.15em}
+.controls{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:12px;border-bottom:1px solid var(--line)}
+.controls button{background:var(--card);border:1px solid var(--line);color:var(--text);font-family:var(--mono);font-size:10px;padding:8px 14px;border-radius:6px;cursor:pointer;letter-spacing:.08em;transition:all .15s}
+.controls button:hover{border-color:var(--cyan);color:var(--cyan)}
+.controls button.active{background:var(--cyan);color:#020508;border-color:var(--cyan)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2px;height:calc(100vh - 260px);min-height:500px}
+.pane{position:relative;overflow:hidden;background:var(--card)}
+.pane canvas{width:100%;height:100%;display:block}
+.pane-label{position:absolute;top:8px;left:10px;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:3px 8px;border-radius:3px;z-index:10}
+.pane-label.left{color:var(--cyan);background:rgba(0,212,255,0.1)}
+.pane-label.right{color:var(--gold);background:rgba(251,217,117,0.1)}
+.hud{position:absolute;bottom:8px;left:10px;right:10px;font-family:var(--mono);font-size:9px;color:var(--dim);display:flex;justify-content:space-between;z-index:10}
+.hud .val{color:var(--text);font-weight:600}
+.telemetry{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:2px;padding:2px}
+.tel{background:var(--card);padding:10px;font-family:var(--mono);font-size:10px}
+.tel .k{color:var(--dim);font-size:8px;letter-spacing:.1em;text-transform:uppercase}
+.tel .v{color:var(--gold);font-size:14px;font-weight:700;margin-top:2px}
+.foot{text-align:center;padding:12px;font-family:var(--mono);font-size:9px;color:var(--muted);border-top:1px solid var(--line)}
+@media(max-width:700px){.split{grid-template-columns:1fr;height:auto}.pane{height:50vh}}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>EL-1 COLLISION EXPERIMENT</h1>
+<div class="sub">Coin 1 (Photonic Bandgap) × Coin 2 (Bismuth HPHT) · Graphene Oxide Scaffold · GE-115 Triple Kernel</div>
+<div class="sub" style="color:var(--gold);margin-top:4px">"DCGP introduces AGI. AURA Governed Intelligence." — Joshua Lopez, July 18, 2026</div>
+</div>
+
+<div class="controls">
+<button class="active" onclick="setMode('collision',this)">COLLIDE</button>
+<button onclick="setMode('coin1',this)">COIN 1 SOLO</button>
+<button onclick="setMode('coin2',this)">COIN 2 SOLO</button>
+<button onclick="setMode('scaffold',this)">+ GRAPHENE SCAFFOLD</button>
+<button onclick="setMode('fused',this)">FUSED ENTITY</button>
+<button onclick="togglePause()">PAUSE</button>
+<button onclick="resetSim()">RESET</button>
+</div>
+
+<div class="split">
+<div class="pane"><div class="pane-label left">COUNTERFLOW · Position</div><canvas id="cL"></canvas>
+<div class="hud"><span>Collisions: <span class="val" id="hColL">0</span></span><span>Islands: <span class="val" id="hIslL">0</span></span><span>Triple: <span class="val" id="hTriL">—</span></span></div></div>
+<div class="pane"><div class="pane-label right">PROPAGATION · Non-Local</div><canvas id="cR"></canvas>
+<div class="hud"><span>Step: <span class="val" id="hStepR">0</span></span><span>Peak: <span class="val" id="hPeakR">—</span></span><span>Rescue: <span class="val" id="hResR">0</span></span></div></div>
+</div>
+
+<div class="telemetry" id="telemetry"></div>
+
+<div class="foot">DCGP.AI · Joshua Lopez · USPTO 19/555,951 · 19/719,671 · 19/700,298 · 19/730,900 · Patent Pending · EL-1 First Triple-Pass Polaritron</div>
+
+<script>
+// ═══ REAL COIN DATA ═══
+const COIN1 = {
+  name:'Photonic Bandgap',id:'COIN-E21F6316E44A9AEB',Z:119,
+  K1:0.99,K2:0.75,K3:0.6185,triple:0.4592,MT14:12,
+  synthScore:0.70,Ka:0.898,Kb:0.8055,Kg:0.855,gamma:-0.6565,
+  color:'#00d4ff',stream:'A',
+  shells:[3,5,7,9],shellR:[25,45,65,85],
+  flags:['shell_closure','island_entry','photonic']
+};
+const COIN2 = {
+  name:'Bismuth HPHT',id:'COIN-1D6802140DCB9400',Z:119,
+  K1:0.99,K2:0.69,K3:0.6176,triple:0.4219,MT14:10,
+  synthScore:0.80,Ka:0.898,Kb:0.7905,Kg:0.87,gamma:-0.6383,
+  color:'#ff66ff',stream:'B',
+  shells:[3,5,7,9],shellR:[25,45,65,85],
+  flags:['shell_closure','island_entry']
+};
+const FUSED = {
+  name:'Fused Entity',Z:119,
+  K1:0.99,K2:0.78,K3:0.6352,triple:0.4905,MT14:12,
+  synthScore:0.80,gamma:-0.6705,color:'#fbd975'
+};
+const EL1 = {
+  name:'EL-1 Scaffolded',Z:119,
+  K1:0.99,K2:0.816,K3:0.6555,triple:0.5295,MT14:12,
+  synthScore:0.92,Ka:0.898,Kb:0.822,Kg:0.888,gamma:-0.6874,color:'#fbd975'
+};
+const LAMBDA = 0.618;
+const SCAFFOLD_BONUS = 0.036; // K2 boost from graphene oxide
+const IONBEAM_BONUS = 0.12; // synthScore boost
+
+// ═══ STATE ═══
+let mode='collision',paused=false,T=0;
+let collisionsL=0,stableIslandsL=[];
+let stepR=0;
+
+// ═══ LEFT PANE: COUNTERFLOW COLLIDER ═══
+const cL=document.getElementById('cL');const ctxL=cL.getContext('2d');
+let particlesL=[];
+
+// Topology: 100 phase gates, 290 face nodes
+const PHASES=100,FACES=290;
+const phaseNodesL=[],faceNodesL=[];
+const faceStateL=new Float64Array(FACES);
+const phaseStateL=new Float64Array(PHASES);
+
+function buildTopologyL(W,H){
+  phaseNodesL.length=0;faceNodesL.length=0;
+  const cx=W/2,cy=H/2,rP=Math.min(W,H)*0.28,rF=Math.min(W,H)*0.38;
+  for(let i=0;i<PHASES;i++){const a=(i/PHASES)*Math.PI*2;phaseNodesL.push({x:cx+Math.cos(a)*rP,y:cy+Math.sin(a)*rP})}
+  for(let f=0;f<FACES;f++){const a=(f/FACES)*Math.PI*2;const layer=f%3;const r=rF*(layer===0?0.75:layer===1?1.0:1.2);const mod=Math.sin(7*a)*4;faceNodesL.push({x:cx+Math.cos(a)*(r+mod),y:cy+Math.sin(a)*(r+mod)})}
+}
+
+function spawnCoinParticles(coin,cx,cy,R){
+  const startPhase=coin.stream==='A'?0:50;
+  const dir=coin.stream==='A'?1:-1;
+  const count=Math.round(6+coin.K1*6);
+  for(let i=0;i<count;i++){
+    const a=(startPhase/PHASES)*Math.PI*2;
+    particlesL.push({
+      x:cx+Math.cos(a)*R+(Math.random()*6-3),
+      y:cy+Math.sin(a)*R+(Math.random()*6-3),
+      vx:0,vy:0,
+      angle:a,dir,
+      intensity:coin.triple*40+Math.random()*8,
+      K1:coin.K1,K2:coin.K2,K3:coin.K3,
+      triple:coin.triple,MT14:coin.MT14,gamma:coin.gamma,
+      synthScore:coin.synthScore,
+      color:coin.color,stream:coin.stream,
+      age:0,Z:coin.Z,
+      shellR:coin.shellR,shells:coin.shells,
+      // Nucleonic orbital data baked into particle
+      electronCount:coin.shells.reduce((a,b)=>a+b,0)
+    });
+  }
+}
+
+function propagateL(W,H){
+  if(paused)return;
+  T++;
+  const cx=W/2,cy=H/2,R=Math.min(W,H)*0.28;
+
+  // Spawn based on mode
+  if(T%8===0){
+    if(mode==='collision'||mode==='scaffold'||mode==='fused'){spawnCoinParticles(COIN1,cx,cy,R);spawnCoinParticles(COIN2,cx,cy,R)}
+    else if(mode==='coin1'){spawnCoinParticles(COIN1,cx,cy,R)}
+    else if(mode==='coin2'){spawnCoinParticles(COIN2,cx,cy,R)}
+  }
+
+  // Move particles along phase ring
+  for(let i=particlesL.length-1;i>=0;i--){
+    const p=particlesL[i];
+    p.age++;
+    // Governed orbit speed proportional to K3 (admissibility)
+    const speed=0.02+p.K3*0.015;
+    p.angle=(p.angle+speed*p.dir)%(Math.PI*2);
+    const targetX=cx+Math.cos(p.angle)*R;
+    const targetY=cy+Math.sin(p.angle)*R;
+    // K1 controls how tightly particle holds the shell
+    const grip=0.2+p.K1*0.15;
+    p.vx=(targetX-p.x)*grip+p.vx*(1-grip);
+    p.vy=(targetY-p.y)*grip+p.vy*(1-grip);
+    p.x+=p.vx;p.y+=p.vy;
+    // Intensity decay governed by gamma (deeper negative = slower decay)
+    p.intensity*=(0.995+Math.abs(p.gamma)*0.003);
+
+    // Light face nodes based on K2
+    for(let f=0;f<FACES;f++){
+      const dx=p.x-faceNodesL[f].x,dy=p.y-faceNodesL[f].y;
+      if(dx*dx+dy*dy<600){faceStateL[f]+=p.intensity*p.K2*0.008}
+    }
+
+    // Collision detection — A meets B
+    for(let j=i-1;j>=0;j--){
+      const q=particlesL[j];
+      if(p.stream===q.stream)continue;
+      const dx=p.x-q.x,dy=p.y-q.y;
+      if(dx*dx+dy*dy<400){
+        collisionsL++;
+        // Island score from collider formula: a.K1 * b.K2 * ((a.K3 + b.K3) / 2)
+        const island=p.K1*q.K2*((p.K3+q.K3)/2);
+        const islandReverse=q.K1*p.K2*((q.K3+p.K3)/2);
+        const stable=island>0.28&&islandReverse>0.28;
+
+        // Scaffold mode boosts K2
+        let finalIsland=island;
+        if(mode==='scaffold'){finalIsland=p.K1*(q.K2+SCAFFOLD_BONUS)*((p.K3+q.K3)/2)}
+        if(mode==='fused'){finalIsland=FUSED.K1*FUSED.K2*FUSED.K3}
+
+        // Spawn wave particles (the fusion products)
+        const mx=(p.x+q.x)/2,my=(p.y+q.y)/2;
+        for(let k=0;k<12;k++){
+          const waveColor=stable?'#4ade80':'#ff7f95';
+          particlesL.push({
+            x:mx,y:my,
+            vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14,
+            angle:0,dir:0,intensity:island*30,
+            K1:(p.K1+q.K1)/2,K2:(p.K2+q.K2)/2,K3:(p.K3+q.K3)/2,
+            triple:finalIsland,MT14:p.MT14+q.MT14,gamma:(p.gamma+q.gamma)/2,
+            synthScore:(p.synthScore+q.synthScore)/2,
+            color:waveColor,stream:'wave',age:0,Z:119,
+            shellR:[20,35,50,65],shells:[2,3,4,5],electronCount:14
+          });
+        }
+
+        if(stable){
+          stableIslandsL.push({x:mx,y:my,score:finalIsland,life:120,mt14:p.MT14+q.MT14});
+        }
+
+        particlesL.splice(i,1);if(j<particlesL.length)particlesL.splice(j,1);
+        i--;break;
+      }
+    }
+    if(p.age>200||p.intensity<0.5){particlesL.splice(i,1)}
+  }
+
+  // Decay face state
+  for(let f=0;f<FACES;f++)faceStateL[f]*=0.96;
+  // Decay islands
+  stableIslandsL=stableIslandsL.filter(s=>{s.life--;return s.life>0});
+}
+
+function drawL(){
+  const W=cL.offsetWidth,H=cL.offsetHeight;
+  cL.width=W*2;cL.height=H*2;ctxL.scale(2,2);
+  ctxL.clearRect(0,0,W,H);
+  const cx=W/2,cy=H/2;
+
+  buildTopologyL(W,H);
+
+  // Draw graphene scaffold in scaffold/fused mode
+  if(mode==='scaffold'||mode==='fused'){
+    ctxL.globalAlpha=0.15;
+    for(let i=0;i<20;i++)for(let j=0;j<14;j++){
+      const x=cx-150+i*16+(j%2)*8;const y=cy-100+j*15;
+      ctxL.beginPath();ctxL.arc(x,y,3,0,Math.PI*2);
+      ctxL.strokeStyle='#4ade80';ctxL.lineWidth=0.5;ctxL.stroke();
+    }
+    ctxL.globalAlpha=1;
+  }
+
+  // Phase ring
+  ctxL.strokeStyle='rgba(201,169,97,0.15)';ctxL.lineWidth=0.5;
+  ctxL.beginPath();
+  phaseNodesL.forEach((n,i)=>{i===0?ctxL.moveTo(n.x,n.y):ctxL.lineTo(n.x,n.y)});
+  ctxL.closePath();ctxL.stroke();
+
+  // Face nodes
+  for(let f=0;f<FACES;f++){
+    const n=faceNodesL[f];const s=Math.min(1,faceStateL[f]/30);
+    if(s<0.02)continue;
+    const r=1+s*5;
+    const isStable=stableIslandsL.some(si=>Math.abs(si.x-n.x)<20&&Math.abs(si.y-n.y)<20);
+    ctxL.beginPath();ctxL.arc(n.x,n.y,r,0,Math.PI*2);
+    ctxL.fillStyle=isStable?`rgba(74,222,128,${s})`:`rgba(107,142,140,${s*0.6})`;
+    ctxL.fill();
+  }
+
+  // Stable islands — glow
+  stableIslandsL.forEach(s=>{
+    const alpha=s.life/120;
+    const r=6+s.score*20;
+    const gr=ctxL.createRadialGradient(s.x,s.y,0,s.x,s.y,r);
+    gr.addColorStop(0,`rgba(74,222,128,${alpha*0.6})`);
+    gr.addColorStop(1,'rgba(74,222,128,0)');
+    ctxL.fillStyle=gr;ctxL.beginPath();ctxL.arc(s.x,s.y,r,0,Math.PI*2);ctxL.fill();
+    // Island score label
+    ctxL.fillStyle=`rgba(251,217,117,${alpha})`;ctxL.font='bold 7px JetBrains Mono';ctxL.textAlign='center';
+    ctxL.fillText(s.score.toFixed(4),s.x,s.y-r-3);
+  });
+
+  // Particles — with nucleonic orbital rendering
+  particlesL.forEach(p=>{
+    const alpha=Math.max(0.2,1-p.age/150);
+    // Main particle body — size proportional to triple score
+    const bodyR=3+p.triple*6;
+    ctxL.beginPath();ctxL.arc(p.x,p.y,bodyR,0,Math.PI*2);
+    ctxL.fillStyle=p.color;ctxL.globalAlpha=alpha*0.7;ctxL.fill();ctxL.globalAlpha=1;
+
+    // Electron shells around particle (mini nucleonic orbital)
+    if(p.stream!=='wave'&&p.age<60){
+      const shellScale=0.12;
+      p.shellR.forEach((sr,si)=>{
+        const r=sr*shellScale;
+        ctxL.beginPath();ctxL.arc(p.x,p.y,r,0,Math.PI*2);
+        ctxL.strokeStyle=p.color;ctxL.globalAlpha=0.15*alpha;ctxL.lineWidth=0.3;ctxL.stroke();ctxL.globalAlpha=1;
+        // Electrons
+        for(let e=0;e<p.shells[si];e++){
+          const ea=(e/p.shells[si])*Math.PI*2+T*0.03*(1+si*0.3);
+          const ex=p.x+Math.cos(ea)*r;const ey=p.y+Math.sin(ea)*r;
+          ctxL.beginPath();ctxL.arc(ex,ey,0.8,0,Math.PI*2);
+          ctxL.fillStyle=p.color;ctxL.globalAlpha=0.4*alpha;ctxL.fill();ctxL.globalAlpha=1;
+        }
+      });
+    }
+
+    // Velocity trail
+    ctxL.beginPath();ctxL.moveTo(p.x,p.y);ctxL.lineTo(p.x-p.vx*2,p.y-p.vy*2);
+    ctxL.strokeStyle=p.color;ctxL.globalAlpha=alpha*0.4;ctxL.lineWidth=1;ctxL.stroke();ctxL.globalAlpha=1;
+  });
+
+  // Core — nucleus Z=119
+  ctxL.beginPath();ctxL.arc(cx,cy,8,0,Math.PI*2);
+  ctxL.fillStyle='rgba(251,217,117,0.4)';ctxL.fill();
+  ctxL.fillStyle='#fbd975';ctxL.font='bold 7px JetBrains Mono';ctxL.textAlign='center';ctxL.textBaseline='middle';
+  ctxL.fillText('119',cx,cy);
+
+  // Mode label
+  ctxL.fillStyle='rgba(0,212,255,0.4)';ctxL.font='8px JetBrains Mono';ctxL.textAlign='left';
+  const modeLabel=mode==='collision'?'COIN1 × COIN2':mode==='scaffold'?'+ GRAPHENE OXIDE SCAFFOLD':mode==='fused'?'FUSED ENTITY (PASS 2+3)':mode==='coin1'?'COIN 1 SOLO':mode==='coin2'?'COIN 2 SOLO':'';
+  ctxL.fillText(modeLabel,8,H-24);
+
+  // HUD
+  document.getElementById('hColL').textContent=collisionsL;
+  document.getElementById('hIslL').textContent=stableIslandsL.length;
+  const avgTriple=stableIslandsL.length>0?(stableIslandsL.reduce((a,s)=>a+s.score,0)/stableIslandsL.length).toFixed(4):'—';
+  document.getElementById('hTriL').textContent=avgTriple;
+}
+
+// ═══ RIGHT PANE: PROPAGATION (100-phase governed runner) ═══
+const cR=document.getElementById('cR');const ctxR=cR.getContext('2d');
+const phaseStateR=new Float64Array(PHASES);
+const faceStateR=new Float64Array(FACES);
+const DAMPING=0.985;
+const phaseNodesR=[],faceNodesR=[];
+const phaseNeighborsR=Array.from({length:PHASES},()=>[]);
+const faceNeighborsR=Array.from({length:FACES},()=>[]);
+const faceToPhaseR=[];
+const phaseToFacesR=Array.from({length:PHASES},()=>[]);
+
+function buildTopologyR(W,H){
+  phaseNodesR.length=0;faceNodesR.length=0;
+  const rMid=0.35,baseR=[0.21,0.35,0.50];
+  for(let p=0;p<PHASES;p++){const a=2*Math.PI*p/PHASES;phaseNodesR.push({x:0.5+rMid*Math.cos(a),y:0.5+rMid*Math.sin(a)})}
+  faceToPhaseR.length=0;
+  for(let f=0;f<FACES;f++){
+    const a=2*Math.PI*f/FACES;const layer=f%3;
+    const mod=0.035*Math.sin(7*a)+0.02*Math.cos(11*a);
+    const r=baseR[layer]+mod;
+    faceNodesR.push({x:0.5+r*Math.cos(a),y:0.5+r*Math.sin(a)});
+    faceToPhaseR.push(Math.floor(f*PHASES/FACES));
+  }
+  for(let f=0;f<FACES;f++)phaseToFacesR[faceToPhaseR[f]].push(f);
+  // Neighbors
+  for(let p=0;p<PHASES;p++){phaseNeighborsR[p]=[((p-1)+PHASES)%PHASES,(p+1)%PHASES]}
+  for(let f=0;f<FACES;f++){faceNeighborsR[f]=[((f-1)+FACES)%FACES,(f+1)%FACES]}
+  // Jump edges (29:89 regime)
+  for(let i=0;i<FACES;i+=29){const j=(i+89)%FACES;faceNeighborsR[i].push(j);faceNeighborsR[j].push(i)}
+}
+buildTopologyR(1,1);
+
+function injectCoinR(coin){
+  phaseStateR.fill(0);faceStateR.fill(0);
+  // Inject at coin's entry phase — amplitude proportional to K1
+  const phase=coin.stream==='A'?0:50;
+  phaseStateR[phase]=coin.K1;
+  // Second injection for scaffold mode
+  if(mode==='scaffold'){phaseStateR[(phase+25)%PHASES]=SCAFFOLD_BONUS}
+  if(mode==='fused'){phaseStateR[0]=FUSED.K1;phaseStateR[50]=FUSED.K1*0.8}
+  stepR=0;
+}
+
+function stepOnceR(){
+  const nextP=new Float64Array(PHASES);
+  const nextF=new Float64Array(FACES);
+  // Phase propagation — speed governed by coin K3
+  const activeK3=mode==='fused'?FUSED.K3:mode==='scaffold'?EL1.K3:(COIN1.K3+COIN2.K3)/2;
+  const propRate=0.70+activeK3*0.1;
+  for(let p=0;p<PHASES;p++){
+    if(phaseStateR[p]===0)continue;
+    nextP[p]+=propRate*phaseStateR[p]*DAMPING;
+    for(const pn of phaseNeighborsR[p])nextP[pn]+=0.15*phaseStateR[p]*DAMPING;
+    const linked=phaseToFacesR[p];
+    if(linked.length>0){const share=0.20*phaseStateR[p]*DAMPING/linked.length;for(const f of linked)nextF[f]+=share}
+  }
+  // Face propagation — gain modulated by K2
+  const activeK2=mode==='fused'?FUSED.K2:mode==='scaffold'?EL1.K2:(COIN1.K2+COIN2.K2)/2;
+  for(let f=0;f<FACES;f++){
+    if(faceStateR[f]===0)continue;
+    const gain=0.85+activeK2*0.1;
+    nextF[f]+=0.64*faceStateR[f]*DAMPING*gain;
+    const nbs=faceNeighborsR[f];
+    if(nbs.length>0){const share=0.24*faceStateR[f]*DAMPING/nbs.length;for(const nb of nbs)nextF[nb]+=share}
+    nextP[faceToPhaseR[f]]+=0.08*faceStateR[f]*DAMPING;
+  }
+  // Normalize
+  let maxV=1;
+  for(let i=0;i<PHASES;i++)if(nextP[i]>maxV)maxV=nextP[i];
+  for(let i=0;i<FACES;i++)if(nextF[i]>maxV)maxV=nextF[i];
+  if(maxV>1.5){for(let i=0;i<PHASES;i++)nextP[i]/=maxV;for(let i=0;i<FACES;i++)nextF[i]/=maxV}
+  phaseStateR.set(nextP);faceStateR.set(nextF);
+  stepR++;
+}
+
+function drawR(){
+  const W=cR.offsetWidth,H=cR.offsetHeight;
+  cR.width=W*2;cR.height=H*2;ctxR.scale(2,2);
+  ctxR.clearRect(0,0,W,H);
+  const pad=W*0.08,usable=W-2*pad;
+  function proj(wx,wy){return[pad+wx*usable,pad+(1-wy)*usable]}
+
+  // Graphene scaffold background in scaffold/fused mode
+  if(mode==='scaffold'||mode==='fused'){
+    ctxR.globalAlpha=0.1;
+    for(let i=0;i<24;i++)for(let j=0;j<16;j++){
+      const[x,y]=proj(0.05+i*0.04+(j%2)*0.02,0.05+j*0.06);
+      ctxR.beginPath();ctxR.arc(x,y,2,0,Math.PI*2);
+      ctxR.strokeStyle='#4ade80';ctxR.lineWidth=0.4;ctxR.stroke();
+    }
+    ctxR.globalAlpha=1;
+  }
+
+  // Face ring
+  ctxR.strokeStyle='rgba(107,142,140,0.15)';ctxR.lineWidth=0.4;
+  for(let f=0;f<FACES;f++){
+    const[x1,y1]=proj(faceNodesR[f].x,faceNodesR[f].y);
+    const[x2,y2]=proj(faceNodesR[(f+1)%FACES].x,faceNodesR[(f+1)%FACES].y);
+    ctxR.beginPath();ctxR.moveTo(x1,y1);ctxR.lineTo(x2,y2);ctxR.stroke();
+  }
+
+  // Phase ring
+  ctxR.strokeStyle='rgba(201,169,97,0.25)';ctxR.lineWidth=0.6;
+  ctxR.beginPath();
+  phaseNodesR.forEach((n,i)=>{const[x,y]=proj(n.x,n.y);i===0?ctxR.moveTo(x,y):ctxR.lineTo(x,y)});
+  ctxR.closePath();ctxR.stroke();
+
+  // Face nodes — activated
+  let rescue=0;
+  for(let f=0;f<FACES;f++){
+    const s=Math.max(0,Math.min(1,faceStateR[f]));
+    if(s<0.02)continue;
+    const[x,y]=proj(faceNodesR[f].x,faceNodesR[f].y);
+    const r=1+s*6;
+    let color;
+    if(s>=0.72){color=`rgba(232,90,66,${s})`;rescue++}
+    else if(s>=0.33){color=`rgba(240,208,96,${s*0.8})`}
+    else{color=`rgba(107,142,140,${s*0.6})`}
+    // Glow
+    if(s>0.1){const gr=ctxR.createRadialGradient(x,y,0,x,y,r+6);gr.addColorStop(0,color);gr.addColorStop(1,'rgba(0,0,0,0)');ctxR.fillStyle=gr;ctxR.beginPath();ctxR.arc(x,y,r+6,0,Math.PI*2);ctxR.fill()}
+    ctxR.fillStyle=color;ctxR.beginPath();ctxR.arc(x,y,r,0,Math.PI*2);ctxR.fill();
+  }
+
+  // Phase gates
+  let maxPh=0,peakP=0;
+  for(let p=0;p<PHASES;p++){
+    const s=Math.max(0,Math.min(1,phaseStateR[p]));
+    if(s>maxPh){maxPh=s;peakP=p}
+    if(s<0.02)continue;
+    const[x,y]=proj(phaseNodesR[p].x,phaseNodesR[p].y);
+    const side=2+s*5;
+    if(s>0.1){const gr=ctxR.createRadialGradient(x,y,0,x,y,side+8);gr.addColorStop(0,`rgba(201,169,97,${s*0.5})`);gr.addColorStop(1,'rgba(201,169,97,0)');ctxR.fillStyle=gr;ctxR.beginPath();ctxR.arc(x,y,side+8,0,Math.PI*2);ctxR.fill()}
+    ctxR.fillStyle=`rgba(201,169,97,${0.4+s*0.6})`;
+    ctxR.fillRect(x-side/2,y-side/2,side,side);
+  }
+
+  // Core
+  const[ccx,ccy]=proj(0.5,0.5);
+  const cp=0.8+Math.sin(stepR*0.08)*0.15;
+  ctxR.beginPath();ctxR.arc(ccx,ccy,5*cp,0,Math.PI*2);
+  ctxR.fillStyle=`rgba(111,184,144,${cp*0.5})`;ctxR.fill();
+
+  // Mode label
+  ctxR.fillStyle='rgba(251,217,117,0.4)';ctxR.font='8px JetBrains Mono';ctxR.textAlign='left';
+  ctxR.fillText(mode==='scaffold'?'GRAPHENE SCAFFOLD PROPAGATION':mode==='fused'?'FUSED ENTITY PROPAGATION':'GOVERNED PROPAGATION',8,H-24);
+
+  // HUD
+  document.getElementById('hStepR').textContent=stepR;
+  document.getElementById('hPeakR').textContent=`P${String(peakP).padStart(3,'0')} · ${maxPh.toFixed(3)}`;
+  document.getElementById('hResR').textContent=rescue;
+}
+
+// ═══ TELEMETRY ═══
+function updateTelemetry(){
+  const active=mode==='fused'?EL1:mode==='scaffold'?EL1:mode==='coin1'?COIN1:mode==='coin2'?COIN2:{
+    K1:(COIN1.K1+COIN2.K1)/2,K2:(COIN1.K2+COIN2.K2)/2,K3:(COIN1.K3+COIN2.K3)/2,
+    triple:0,MT14:COIN1.MT14+COIN2.MT14,synthScore:(COIN1.synthScore+COIN2.synthScore)/2,gamma:(COIN1.gamma+COIN2.gamma)/2
+  };
+  const el=document.getElementById('telemetry');
+  el.innerHTML=`
+    <div class="tel"><div class="k">Mode</div><div class="v" style="color:var(--cyan)">${mode.toUpperCase()}</div></div>
+    <div class="tel"><div class="k">K1 Shell</div><div class="v" style="color:var(--green)">${active.K1||'—'}</div></div>
+    <div class="tel"><div class="k">K2 Island</div><div class="v" style="color:var(--cyan)">${active.K2||'—'}</div></div>
+    <div class="tel"><div class="k">K3 Admissibility</div><div class="v" style="color:var(--purple)">${(active.K3||0).toFixed(4)}</div></div>
+    <div class="tel"><div class="k">Triple</div><div class="v">${(active.triple||0).toFixed(4)}</div></div>
+    <div class="tel"><div class="k">MT14</div><div class="v">${active.MT14||'—'}</div></div>
+    <div class="tel"><div class="k">λ</div><div class="v" style="color:var(--gold)">${LAMBDA}</div></div>
+    <div class="tel"><div class="k">Collisions</div><div class="v" style="color:var(--red)">${collisionsL}</div></div>
+    <div class="tel"><div class="k">Stable Islands</div><div class="v" style="color:var(--green)">${stableIslandsL.length}</div></div>
+    <div class="tel"><div class="k">γ_N</div><div class="v" style="color:var(--purple)">${(active.gamma||0).toFixed(4)}</div></div>
+    <div class="tel"><div class="k">synthScore</div><div class="v">${active.synthScore||'—'}</div></div>
+    <div class="tel"><div class="k">Step</div><div class="v">${T}</div></div>
+  `;
+}
+
+// ═══ CONTROLS ═══
+function setMode(m,btn){
+  mode=m;resetSim();
+  document.querySelectorAll('.controls button').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  // Inject into propagation pane
+  if(m==='coin1')injectCoinR(COIN1);
+  else if(m==='coin2')injectCoinR(COIN2);
+  else if(m==='scaffold'||m==='fused'){injectCoinR(COIN1);phaseStateR[50]=COIN2.K1}
+  else{injectCoinR(COIN1);phaseStateR[50]=COIN2.K1}
+}
+function togglePause(){paused=!paused}
+function resetSim(){collisionsL=0;stableIslandsL=[];particlesL=[];T=0;phaseStateR.fill(0);faceStateR.fill(0);stepR=0;faceStateL.fill(0)}
+
+// ═══ MAIN LOOP ═══
+function frame(){
+  const WL=cL.offsetWidth,HL=cL.offsetHeight;
+  propagateL(WL,HL);
+  if(!paused){stepOnceR();stepOnceR()}
+  drawL();drawR();
+  if(T%10===0)updateTelemetry();
+  requestAnimationFrame(frame);
+}
+
+// Init
+setMode('collision',document.querySelector('.controls button'));
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

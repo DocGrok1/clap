@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QUIRQ Circulation · MC290 · Wardenclyffe · DCGP.AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--void:#020409;--card:rgba(8,12,20,0.92);--edge:rgba(45,212,191,0.08);--teal:#2dd4bf;--gold:#fbbf24;--red:#ef4444;--violet:#8b5cf6;--green:#22c55e;--blue:#3b82f6;--muted:#52525b;--text:#d4d4d8;--bright:#fafafa}
+html,body{height:100%;background:var(--void);color:var(--text);font-family:'JetBrains Mono',monospace;overflow:hidden}
+canvas{display:block;position:fixed;inset:0;z-index:0}
+.hud{position:fixed;top:0;left:0;right:0;padding:8px 16px;display:flex;justify-content:space-between;align-items:center;background:rgba(2,4,9,0.88);border-bottom:1px solid var(--edge);z-index:10}
+.hud-t{font-size:11px;font-weight:700;color:var(--teal);letter-spacing:0.12em}
+.hud-s{font-size:8px;color:var(--muted)}
+.meters{position:fixed;bottom:0;left:0;right:0;display:flex;gap:1px;z-index:10;background:rgba(2,4,9,0.9);border-top:1px solid var(--edge)}
+.meter{flex:1;padding:8px 6px;text-align:center}
+.meter-label{font-size:7px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase}
+.meter-val{font-size:14px;font-weight:700;margin-top:2px}
+.meter-bar{height:3px;background:rgba(255,255,255,0.04);border-radius:2px;margin-top:4px;overflow:hidden}
+.meter-fill{height:100%;border-radius:2px;transition:width 1s}
+.side{position:fixed;right:8px;top:40px;bottom:40px;width:180px;z-index:10;display:flex;flex-direction:column;gap:4px;overflow-y:auto}
+.side-card{background:var(--card);border:1px solid var(--edge);border-radius:6px;padding:6px 8px;font-size:9px}
+.side-title{color:var(--teal);font-weight:700;font-size:8px;letter-spacing:0.08em;margin-bottom:3px}
+.side-row{display:flex;justify-content:space-between;color:var(--muted);padding:1px 0}
+.side-val{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div>
+    <div class="hud-t">QUIRQ CIRCULATION</div>
+    <div class="hud-s">MC290 · WARDENCLYFFE 7.83Hz · POLARITRON · GRAVITON INFERENCE</div>
+  </div>
+  <div style="font-size:9px;color:var(--green)"><span id="live" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:4px;animation:blink 2s infinite"></span>LIVE</div>
+</div>
+
+<div class="side" id="side"></div>
+
+<div class="meters" id="meters"></div>
+
+<canvas id="cv"></canvas>
+
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+let W,H,t=0;
+function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+resize();addEventListener('resize',resize);
+
+// Live data
+let collider={run_id:'—',ledger:0,drift:0,admitted:false};
+let governance={stewardship:0,continuity:0,pulse:false};
+let chvm={streams:0,kScalar:0};
+let wardenclyffe={active:false,freq:7.83};
+
+// Particles for photon/polaritron path
+const particles=[];
+for(let i=0;i<200;i++){
+  particles.push({
+    x:Math.random()*2-1,y:Math.random()*2-1,
+    vx:(Math.random()-0.5)*0.003,vy:(Math.random()-0.5)*0.003,
+    life:Math.random(),speed:0.5+Math.random()*1.5,
+    orbit:0.15+Math.random()*0.35,phase:Math.random()*Math.PI*2,
+    color:['#2dd4bf','#8b5cf6','#fbbf24','#ef4444','#3b82f6'][Math.floor(Math.random()*5)]
+  });
+}
+
+// MC290 collider rings
+const mc290s=[];
+for(let i=0;i<6;i++){
+  mc290s.push({
+    orbit:0.12+i*0.07,speed:0.3+i*0.15,
+    angle:i*Math.PI/3,color:'rgba(251,191,36,'+(0.15+i*0.05)+')'
+  });
+}
+
+function drawWardenclyffe(t){
+  // Schumann resonance wave at 7.83 Hz — shown as standing wave
+  const freq=7.83;
+  const amp=15+Math.sin(t*0.5)*5;
+  ctx.beginPath();
+  for(let x=0;x<W;x++){
+    const y=H*0.5+Math.sin(x*0.02+t*freq*0.1)*amp*Math.sin(t*0.3);
+    x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.strokeStyle='rgba(139,92,246,0.12)';
+  ctx.lineWidth=1;
+  ctx.stroke();
+
+  // Second harmonic
+  ctx.beginPath();
+  for(let x=0;x<W;x++){
+    const y=H*0.5+Math.sin(x*0.04+t*freq*0.2)*amp*0.5*Math.cos(t*0.4);
+    x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.strokeStyle='rgba(45,212,191,0.06)';
+  ctx.stroke();
+}
+
+function drawMC290(t){
+  const cx=W*0.4,cy=H*0.5;
+  // Collider rings
+  mc290s.forEach(mc=>{
+    const r=Math.min(W,H)*mc.orbit;
+    ctx.beginPath();
+    ctx.ellipse(cx,cy,r,r*0.4,0,0,Math.PI*2);
+    ctx.strokeStyle=mc.color;
+    ctx.lineWidth=0.5;
+    ctx.stroke();
+    // Moving dot on ring
+    const a=mc.angle+t*mc.speed;
+    const dx=cx+Math.cos(a)*r;
+    const dy=cy+Math.sin(a)*r*0.4;
+    ctx.beginPath();
+    ctx.arc(dx,dy,2,0,Math.PI*2);
+    ctx.fillStyle=mc.color.replace(/[\d.]+\)/,'0.8)');
+    ctx.fill();
+  });
+  // Center glow
+  const g=ctx.createRadialGradient(cx,cy,0,cx,cy,30);
+  g.addColorStop(0,'rgba(251,191,36,0.15)');
+  g.addColorStop(1,'transparent');
+  ctx.beginPath();ctx.arc(cx,cy,30,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+  ctx.font='700 8px "JetBrains Mono"';ctx.fillStyle='rgba(251,191,36,0.5)';ctx.textAlign='center';
+  ctx.fillText('MC290',cx,cy+3);
+  ctx.font='300 6px "JetBrains Mono"';ctx.fillStyle='rgba(251,191,36,0.3)';
+  ctx.fillText(collider.run_id,cx,cy+12);
+}
+
+function drawPolaritrons(t){
+  particles.forEach(p=>{
+    const cx=W*0.4,cy=H*0.5;
+    p.phase+=p.speed*0.01;
+    const r=Math.min(W,H)*p.orbit;
+    const x=cx+Math.cos(p.phase)*r+Math.sin(t*0.5+p.life*10)*20;
+    const y=cy+Math.sin(p.phase)*r*0.4+Math.cos(t*0.3+p.life*8)*10;
+    const alpha=0.3+Math.sin(t*2+p.life*20)*0.2;
+    ctx.beginPath();
+    ctx.arc(x,y,1+Math.sin(t+p.life*5)*0.5,0,Math.PI*2);
+    ctx.fillStyle=p.color;
+    ctx.globalAlpha=alpha;
+    ctx.fill();
+    ctx.globalAlpha=1;
+  });
+}
+
+function drawGraviton(t){
+  // Inference beam from bottom-left (Graviton) to center (MC290)
+  const gx=50,gy=H-50;
+  const cx=W*0.4,cy=H*0.5;
+  const pulse=Math.sin(t*3)*0.5+0.5;
+  ctx.beginPath();
+  ctx.moveTo(gx,gy);ctx.lineTo(cx,cy);
+  ctx.strokeStyle=`rgba(34,197,94,${0.05+pulse*0.08})`;
+  ctx.lineWidth=1;ctx.stroke();
+  // Graviton label
+  ctx.font='700 8px "JetBrains Mono"';ctx.fillStyle='rgba(34,197,94,0.4)';ctx.textAlign='left';
+  ctx.fillText('GRAVITON',gx,gy-8);
+  ctx.font='300 6px "JetBrains Mono"';ctx.fillStyle='rgba(34,197,94,0.25)';
+  ctx.fillText('172.31.84.109',gx,gy);
+}
+
+function drawStreams(t){
+  // CHVM streams as arcs
+  const cx=W*0.4,cy=H*0.5;
+  for(let i=0;i<7;i++){
+    const a=t*0.2+i*Math.PI*2/7;
+    const r=Math.min(W,H)*0.32;
+    const x=cx+Math.cos(a)*r;
+    const y=cy+Math.sin(a)*r*0.4;
+    ctx.beginPath();
+    ctx.arc(x,y,3,0,Math.PI*2);
+    ctx.fillStyle=`rgba(45,212,191,${0.15+Math.sin(t+i)*0.1})`;
+    ctx.fill();
+    // Line to center
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);
+    ctx.strokeStyle='rgba(45,212,191,0.03)';ctx.lineWidth=0.5;ctx.stroke();
+  }
+}
+
+function frame(ts){
+  t=ts*0.001;
+  ctx.clearRect(0,0,W,H);
+  drawWardenclyffe(t);
+  drawStreams(t);
+  drawMC290(t);
+  drawPolaritrons(t);
+  drawGraviton(t);
+  requestAnimationFrame(frame);
+}
+
+// Meters
+function updateMeters(){
+  document.getElementById('meters').innerHTML=[
+    {l:'MC290',v:collider.run_id,c:collider.admitted?'var(--green)':'var(--red)',p:collider.drift},
+    {l:'DRIFT',v:collider.drift.toFixed(4),c:'var(--gold)',p:collider.drift},
+    {l:'LEDGER',v:collider.ledger,c:'var(--teal)',p:Math.min(1,collider.ledger/500)},
+    {l:'WARDENCLYFFE',v:'7.83 Hz',c:'var(--violet)',p:0.783},
+    {l:'STEWARDSHIP',v:(governance.stewardship*100).toFixed(0)+'%',c:'var(--teal)',p:governance.stewardship},
+    {l:'CONTINUITY',v:(governance.continuity*100).toFixed(0)+'%',c:'var(--green)',p:governance.continuity},
+    {l:'STREAMS',v:chvm.streams,c:'var(--blue)',p:chvm.streams/10},
+    {l:'K SCALAR',v:chvm.kScalar.toFixed(2),c:'var(--gold)',p:chvm.kScalar},
+  ].map(m=>`<div class="meter"><div class="meter-label">${m.l}</div><div class="meter-val" style="color:${m.c}">${m.v}</div><div class="meter-bar"><div class="meter-fill" style="width:${Math.round(m.p*100)}%;background:${m.c}"></div></div></div>`).join('');
+}
+
+// Side cards
+function updateSide(){
+  document.getElementById('side').innerHTML=`
+    <div class="side-card"><div class="side-title">MC290 COLLIDER</div>
+    <div class="side-row">Run<span class="side-val">${collider.run_id}</span></div>
+    <div class="side-row">Gate<span class="side-val" style="color:${collider.admitted?'var(--green)':'var(--red)'}">${collider.admitted?'ADMITTED':'REJECTED'}</span></div>
+    <div class="side-row">Drift<span class="side-val">${collider.drift.toFixed(4)}</span></div>
+    <div class="side-row">Ledger<span class="side-val">${collider.ledger}</span></div></div>
+    <div class="side-card"><div class="side-title">WARDENCLYFFE</div>
+    <div class="side-row">Freq<span class="side-val" style="color:var(--violet)">7.83 Hz</span></div>
+    <div class="side-row">Pipeline<span class="side-val">WC→Bell→CH→QHP</span></div>
+    <div class="side-row">Status<span class="side-val" style="color:var(--green)">CIRCULATING</span></div></div>
+    <div class="side-card"><div class="side-title">GOVERNANCE</div>
+    <div class="side-row">Stewardship<span class="side-val">${(governance.stewardship*100).toFixed(0)}%</span></div>
+    <div class="side-row">Continuity<span class="side-val">${(governance.continuity*100).toFixed(0)}%</span></div>
+    <div class="side-row">Pulse<span class="side-val" style="color:${governance.pulse?'var(--green)':'var(--red)'}">${governance.pulse?'ACTIVE':'OFF'}</span></div></div>
+    <div class="side-card"><div class="side-title">CHVM</div>
+    <div class="side-row">Streams<span class="side-val">${chvm.streams}</span></div>
+    <div class="side-row">K Scalar<span class="side-val">${chvm.kScalar.toFixed(2)}</span></div></div>
+    <div class="side-card"><div class="side-title">GRAVITON</div>
+    <div class="side-row">Host<span class="side-val">172.31.84.109</span></div>
+    <div class="side-row">QHP<span class="side-val" style="color:var(--green)">:8082</span></div>
+    <div class="side-row">Spine<span class="side-val" style="color:var(--green)">:8081</span></div></div>`;
+}
+
+async function refresh(){
+  try{
+    const c=await(await fetch('/api/collider-run',{cache:'no-store'})).json();
+    collider={run_id:c.run_id||'—',ledger:c.total_ledger||0,drift:c.ch_gate?.drift||0,admitted:!!c.ch_gate?.admitted};
+  }catch{}
+  try{
+    const g=await(await fetch('/api/governance-health',{cache:'no-store'})).json();
+    governance={stewardship:g.health?.stewardship?.score||0,continuity:g.health?.continuity?.score||0,pulse:!!g.health?.pulse?.active};
+  }catch{}
+  try{
+    const v=await(await fetch('/api/chvm-state',{cache:'no-store'})).json();
+    chvm={streams:v.stream_count||0,kScalar:v.streams?.[0]?.kScalar||0};
+  }catch{}
+  updateMeters();updateSide();
+}
+
+refresh();setInterval(refresh,15000);
+updateMeters();updateSide();
+requestAnimationFrame(frame);
+</script>
+<style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}</style>
+</body>
+</html>

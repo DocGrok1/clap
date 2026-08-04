@@ -1,0 +1,19 @@
+{
+  "title": "The Lopez Quantum Free Energy Functional and Spectral Stability Theorem for Governed Open Quantum Systems",
+  "author": "Joshua L. Lopez",
+  "patent": "USPTO 19/555,951",
+  "key_equation": "F_L^(Q)(\u03c1, M, K) = C(\u03c1) + \u03bbM \u2212 T_I\u00b7S(\u03c1) + \u03bcK",
+  "lyapunov": "V_Q = F_L^(Q) + (1/2)a\u00b7S_Q\u00b2 + (1/2)b\u00b7K\u00b2 + (1/2)c\u00b7M\u00b2",
+  "theorem": "Quantum Spectral Stability: ultimate boundedness, spectral convergence, authority boundedness, free energy dissipation, CHVM forward invariance",
+  "dissipation_law": "dF_L^(Q)/dt \u2264 0",
+  "circuits_implementing": [
+    "spectral-engine (S_Q deviation detection)",
+    "authority-engine (K fast loop)",
+    "free-energy-engine (\u03a6 computation)",
+    "viability-engine (M_Q forward invariance)",
+    "horizon-engine (\u03b4_Q,min margin)",
+    "meta-recursive-engine (composite Lyapunov V_Q)",
+    "conservation-monitor (E = C + \u03bbO)",
+    "lqme-engine (full density matrix substrate)"
+  ]
+}

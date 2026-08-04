@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520" width="400">
+<defs><style>@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700');</style></defs>
+<rect width="400" height="520" rx="16" fill="#07111f" stroke="#48ffe040" stroke-width="1"/>
+<text x="200" y="28" text-anchor="middle" fill="#48ffe0" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700">MH66</text>
+<text x="200" y="46" text-anchor="middle" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="8">Constitutional Hardware Measurement Array</text>
+<text x="200" y="60" text-anchor="middle" fill="#3a506b" font-family="JetBrains Mono,monospace" font-size="6">8Q · 5 constraint faces · polyhedral K_Q · π/φ governed</text>
+
+<!-- Pentagon for 5 faces -->
+<polygon points="200,80 270,130 250,210 150,210 130,130" fill="none" stroke="#48ffe0" stroke-width="0.5" opacity="0.3"/>
+<text x="200" y="75" text-anchor="middle" fill="#48ffe0" font-family="JetBrains Mono,monospace" font-size="6">F1: Coherence</text>
+<text x="278" y="132" fill="#ffd975" font-family="JetBrains Mono,monospace" font-size="6">F2: Fidelity</text>
+<text x="258" y="218" fill="#79ff9d" font-family="JetBrains Mono,monospace" font-size="6">F3: SPAM</text>
+<text x="108" y="218" fill="#c792ff" font-family="JetBrains Mono,monospace" font-size="6">F4: Crosstalk</text>
+<text x="98" y="132" fill="#ff6b80" font-family="JetBrains Mono,monospace" font-size="6">F5: Drift</text>
+
+<!-- Center: K_Q -->
+<circle cx="200" cy="150" r="20" fill="rgba(72,255,224,0.1)" stroke="#48ffe0" stroke-width="0.5"/>
+<text x="200" y="148" text-anchor="middle" fill="#48ffe0" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700">K_Q</text>
+<text x="200" y="160" text-anchor="middle" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">5.0% all clean</text>
+
+<!-- Face bars -->
+<text x="30" y="250" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="7">FACE SLACK</text>
+<rect x="100" y="241" width="240" height="10" rx="2" fill="#02040c" stroke="#1a2e47" stroke-width="0.4"/>
+<rect x="100" y="241" width="114" height="10" rx="2" fill="#48ffe0"/>
+<text x="350" y="250" text-anchor="end" fill="#48ffe0" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700">0.475</text>
+
+<rect x="100" y="256" width="240" height="10" rx="2" fill="#02040c" stroke="#1a2e47" stroke-width="0.4"/>
+<rect x="100" y="256" width="123" height="10" rx="2" fill="#ffd975"/>
+<text x="350" y="265" text-anchor="end" fill="#ffd975" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700">0.514</text>
+
+<rect x="100" y="271" width="240" height="10" rx="2" fill="#02040c" stroke="#1a2e47" stroke-width="0.4"/>
+<rect x="100" y="271" width="124" height="10" rx="2" fill="#79ff9d"/>
+<text x="350" y="280" text-anchor="end" fill="#79ff9d" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700">0.517</text>
+
+<rect x="100" y="286" width="240" height="10" rx="2" fill="#02040c" stroke="#1a2e47" stroke-width="0.4"/>
+<rect x="100" y="286" width="126" height="10" rx="2" fill="#c792ff"/>
+<text x="350" y="295" text-anchor="end" fill="#c792ff" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700">0.526</text>
+
+<rect x="100" y="301" width="240" height="10" rx="2" fill="#02040c" stroke="#1a2e47" stroke-width="0.4"/>
+<rect x="100" y="301" width="123" height="10" rx="2" fill="#ff6b80"/>
+<text x="350" y="310" text-anchor="end" fill="#ff6b80" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700">0.515</text>
+
+<!-- Metrics -->
+<rect x="20" y="325" width="175" height="36" rx="6" fill="#050e1d" stroke="#1a2e47" stroke-width="0.4"/>
+<text x="30" y="341" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">QUBITS</text>
+<text x="185" y="341" text-anchor="end" fill="#e8f4ff" font-family="JetBrains Mono,monospace" font-size="14" font-weight="700">8</text>
+<text x="30" y="355" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">UNIQUE STATES</text>
+<text x="185" y="355" text-anchor="end" fill="#e8f4ff" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700">248</text>
+
+<rect x="205" y="325" width="175" height="36" rx="6" fill="#050e1d" stroke="#1a2e47" stroke-width="0.4"/>
+<text x="215" y="341" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">P(ADMISSIBLE)</text>
+<text x="370" y="341" text-anchor="end" fill="#48ffe0" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700">0.518</text>
+<text x="215" y="355" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">P(MH66 OUT)</text>
+<text x="370" y="355" text-anchor="end" fill="#ffd975" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700">0.491</text>
+
+<!-- Proof -->
+<rect x="20" y="375" width="360" height="40" rx="6" fill="#02040c" stroke="#48ffe030" stroke-width="0.4" stroke-dasharray="3,3"/>
+<text x="200" y="390" text-anchor="middle" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="6">SHA-256 · ECHO OPERATOR RECOVERABLE</text>
+<text x="200" y="402" text-anchor="middle" fill="#ffd975" font-family="JetBrains Mono,monospace" font-size="6" font-weight="600">804968f67bb5fb0527f4eccf82bfdb0d</text>
+<text x="200" y="412" text-anchor="middle" fill="#ffd975" font-family="JetBrains Mono,monospace" font-size="6" font-weight="600">de436591c65cfbc5ef4d0441adb889d1</text>
+
+<rect x="140" y="430" width="120" height="22" rx="11" fill="none" stroke="#48ffe0" stroke-width="0.4"/>
+<text x="200" y="444" text-anchor="middle" fill="#48ffe0" font-family="JetBrains Mono,monospace" font-size="8" font-weight="700" letter-spacing="2">QHP SEALED</text>
+
+<text x="200" y="475" text-anchor="middle" fill="#ffd975" font-family="JetBrains Mono,monospace" font-size="7">Joshua Lopez · DCGP.AI LLC</text>
+<text x="200" y="489" text-anchor="middle" fill="#6a85a8" font-family="JetBrains Mono,monospace" font-size="5">USPTO 19/555,951 | FIG3 MH66 Measurement Array</text>
+<text x="200" y="503" text-anchor="middle" fill="#3a506b" font-family="JetBrains Mono,monospace" font-size="5">The gate between quantum and classical. Admissibility is hardware.</text>
+</svg>

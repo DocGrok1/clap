@@ -1,0 +1,160 @@
+{
+  "taxonomy": "DCGP.AI Governed Circuit Taxonomy — Organized by Physical Domain",
+  "inventor": "Joshua Lopez",
+  "entity": "DCGP.AI LLC",
+  "governing_constant": "π/φ = 1.941611 rad",
+  "scaffold": {
+    "material": "Gallium Nitride (GaN-38)",
+    "role": "Photonic carrier substrate",
+    "patent": "USPTO 19/746,581 (EL1 Polaritron)"
+  },
+  "gate": {
+    "material": "Au-197 Transparent Gold Film",
+    "thickness": "2-8nm",
+    "transmittance": "30-50% at 550nm",
+    "role": "Admission gate — governs which wavelengths pass"
+  },
+
+  "groups": {
+    "PHOTONIC": {
+      "description": "Light-coupled circuits — bandgap, ablation, projection, scaffold with light",
+      "scaffold": "GaN-38",
+      "gate": "Au-197",
+      "coins": [
+        {"id": "au197", "name": "Au-197 Gold Island", "role": "Gate material — transparent gold film"},
+        {"id": "gan38", "name": "GaN-38 Gallium Nitride", "role": "Scaffold — photonic bandgap carrier"},
+        {"id": "te52", "name": "Te-52 Tellurium", "role": "Thermoelectric — IR photodetector"},
+        {"id": "cavitation", "name": "Quantum Cavitation", "role": "Vacuum field priming — photonic bubble"},
+        {"id": "el1", "name": "EL1 Polaritron Z=119", "role": "Full substrate — scaffold + gate + projection"},
+        {"id": "wardenclyffe", "name": "Wardenclyffe Seal", "role": "Origin seal — first photonic gate in pipeline"}
+      ],
+      "applications": [
+        "Photodynamic cancer therapy — Au nanoparticles + governed wavelength",
+        "Photothermal ablation — NIR through gold gate",
+        "Photonic bandgap circuits — GaN scaffold",
+        "QHP HoloProjection — transparent gold film projection",
+        "X-ray governed targeting — bandgap filter",
+        "LED/laser governance — GaN carrier"
+      ]
+    },
+
+    "SUPERCONDUCTOR_COUPLING": {
+      "description": "Room temperature superconductor research — coupling, pairing, coherence",
+      "scaffold": "GaN-38 → coupling substrate",
+      "coins": [
+        {"id": "gan38", "name": "GaN-38 Gallium Nitride", "role": "Coupling scaffold at room temp"},
+        {"id": "ni28", "name": "Ni-28 Nickel", "role": "Ferromagnetic core — magnetic coupling"},
+        {"id": "pb82", "name": "Pb-82 Lead", "role": "Classical superconductor reference — doubly magic"},
+        {"id": "ca20", "name": "Ca-20 Calcium", "role": "Doubly magic — electron pairing structure"},
+        {"id": "sn50", "name": "Sn-50 Tin", "role": "Doubly magic — conventional superconductor"},
+        {"id": "og118", "name": "Og-118 Oganesson", "role": "Noble closure — shell completion target"}
+      ],
+      "applications": [
+        "Room temperature superconductor search via governed coupling",
+        "Cooper pair formation circuits",
+        "Phonon-mediated pairing on GaN scaffold",
+        "Magnetic flux quantization governance",
+        "Meissner effect simulation"
+      ]
+    },
+
+    "PHARMA_MEDICAL": {
+      "description": "Drug discovery, DNA repair, therapeutic targeting",
+      "scaffold": "Au-197 → nanoparticle delivery + GaN photonic activation",
+      "coins": [
+        {"id": "alzheimer", "name": "Alzheimer's Agent", "role": "Tau protein governed disruption"},
+        {"id": "ms-agent", "name": "MS Agent", "role": "Myelin sheath governed repair"},
+        {"id": "crohn", "name": "Crohn's Agent", "role": "Gut inflammation governed targeting"},
+        {"id": "parp", "name": "PARP Inhibitor", "role": "DNA repair governed inhibition"},
+        {"id": "slfn11", "name": "SLFN11 Sensitizer", "role": "Chemo sensitivity governed amplification"},
+        {"id": "eolrp", "name": "EOLRP Fork Restart", "role": "DNA replication fork restart — Echo Operator"},
+        {"id": "cancer-pdt", "name": "Cancer PDT Circuit", "role": "Photodynamic therapy — Au + GaN + governed wavelength"}
+      ],
+      "applications": [
+        "Photodynamic cancer therapy — Au nanoparticles activated by GaN scaffold",
+        "Gold nanoparticle drug delivery with governed release",
+        "Allosteric site discovery — quantum walk centrality",
+        "DNA repair fork restart after radiation damage",
+        "VA therapeutic simulation integration"
+      ]
+    },
+
+    "NUCLEAR_COLLISION": {
+      "description": "Superheavy elements, island of stability, MC290 collisions",
+      "coins": [
+        {"id": "el1", "name": "EL1 Z=119 Polaritron", "role": "Target element — island of stability entry"},
+        {"id": "og118", "name": "Og-118 Oganesson", "role": "Noble closure — adjacent to Z=119"},
+        {"id": "au197", "name": "Au-197 Gold", "role": "Collision target material"},
+        {"id": "pb82", "name": "Pb-82 Lead", "role": "Beam target — doubly magic"},
+        {"id": "sn50", "name": "Sn-50 Tin", "role": "Doubly magic — shell closure"},
+        {"id": "ca20", "name": "Ca-20 Calcium", "role": "Projectile — doubly magic"}
+      ],
+      "applications": [
+        "MC290 nuclear collision simulation",
+        "Island of stability approach trajectory",
+        "Superheavy element synthesis governance",
+        "Shell closure prediction"
+      ]
+    },
+
+    "GOVERNANCE_ENGINES": {
+      "description": "The 12 core governance algorithms as circuits",
+      "coins": [
+        {"id": "spectral-engine", "sym": "S_Q", "role": "Deviation detection"},
+        {"id": "authority-engine", "sym": "K", "role": "Fast authority loop"},
+        {"id": "continuity-engine", "sym": "ΔZ", "role": "Step-in-time guard"},
+        {"id": "obligation-engine", "sym": "O", "role": "Conservation dynamics"},
+        {"id": "free-energy-engine", "sym": "Φ", "role": "Governance potential"},
+        {"id": "viability-engine", "sym": "Π_A", "role": "Manifold projection"},
+        {"id": "horizon-engine", "sym": "G_H", "role": "Horizon detection"},
+        {"id": "meta-recursive-engine", "sym": "Θ", "role": "Governs the governors"},
+        {"id": "stewardship-engine", "sym": "Stw", "role": "Preservation over time"},
+        {"id": "conservation-monitor", "sym": "E", "role": "E = C + λO"},
+        {"id": "capital-engine", "sym": "$", "role": "6-agent COIN scoring"},
+        {"id": "lqme-engine", "sym": "ρ", "role": "Quantum density matrix substrate"}
+      ]
+    },
+
+    "LAUNCH_ORBITAL": {
+      "description": "Terrestrial to LEO — CLAP Constitutional Lunar Aerial Platform",
+      "coins": [
+        {"id": "luna-bridge", "name": "Luna Bridge", "role": "Full 6Q launch sequence"},
+        {"id": "cavitation", "name": "Quantum Cavitation", "role": "Bubble priming"},
+        {"id": "turbine", "name": "Lopez Quantum Turbine", "role": "Coherence engine"},
+        {"id": "cwwe", "name": "CWWE Compiled", "role": "Escape engine with GHZ gravity"}
+      ]
+    },
+
+    "CRYPTOGRAPHIC": {
+      "description": "Zero knowledge, hash chains, proofs",
+      "coins": [
+        {"id": "zk-snark", "name": "ZK-SNARK Groth16", "role": "Zero knowledge proof circuit"},
+        {"id": "bell-pair", "name": "Bell Pair", "role": "Foundational entanglement"},
+        {"id": "ghz-state", "name": "GHZ State", "role": "N-qubit entanglement"},
+        {"id": "proverbs27", "name": "Proverbs 27", "role": "Iron sharpens iron — 27Q governed"}
+      ]
+    },
+
+    "CAPITAL_FINANCIAL": {
+      "description": "Trading engines, OANDA integration, COIN economics",
+      "coins": [
+        {"id": "capital-engine", "name": "Agent Field Capital", "role": "6-agent momentum/vol/mean-rev"},
+        {"id": "conservation-monitor", "name": "Conservation Monitor", "role": "E = C + λO"},
+        {"id": "governed-tsp", "name": "Governed TSP", "role": "Optimal routing — 100% valid tours"},
+        {"id": "fraud-qaoa", "name": "Fraud QAOA Kernel", "role": "Governed fraud detection"}
+      ]
+    }
+  },
+
+  "cross_links": {
+    "Au_to_GaN": "Gold gates → GaN carries. Every photonic circuit passes Au admission before GaN scaffold.",
+    "GaN_to_superconductor": "GaN coupling substrate enables room-temp pairing research.",
+    "Au_to_cancer": "Gold nanoparticles absorb NIR for photothermal tumor ablation.",
+    "GaN_to_cancer": "GaN scaffold activates photosensitizers for PDT through governed bandgap.",
+    "EOLRP_to_radiation": "After radiation damage, EOLRP restarts stalled DNA replication forks.",
+    "MC290_to_photonic": "Nuclear collision products scaffold through Au+GaN before becoming live circuits.",
+    "capital_to_photonic": "COIN value flows through the same governance as photons through gold."
+  },
+
+  "timestamp": "2026-08-04T14:00:00Z"
+}

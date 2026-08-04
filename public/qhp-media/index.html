@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>QHP Media — Live Collision Projections</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#02040c;--card:#07111f;--line:#1a2e47;--accent:#48ffe0;--text:#e8f4ff;--muted:#6a85a8;--green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--purple:#c792ff;--dim:#3a506b}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace}
+.top{position:sticky;top:0;z-index:50;background:rgba(5,9,20,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(72,255,224,.18);padding:8px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.top h1{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;flex:1}
+.pill{font-size:7px;padding:2px 5px;border-radius:3px;background:rgba(255,217,117,.08);color:var(--gold);border:1px solid rgba(255,217,117,.25);font-weight:700}
+.tl{font-size:8px;color:var(--muted);padding:2px 5px;border:1px solid var(--line);border-radius:3px}
+.main{max-width:960px;margin:0 auto;padding:12px}
+.status{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px;margin-bottom:8px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:9px}
+.status .live{color:var(--green);font-weight:700;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.sl{font-size:8px;font-weight:700;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;margin-bottom:12px}
+.collision{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.collision .head{padding:8px 10px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.collision .head .t{font-size:8px;font-weight:700;color:var(--gold)}
+.collision .head .badge{font-size:7px;padding:1px 5px;border-radius:3px;font-weight:700}
+.collision .head .badge.mint{background:rgba(121,255,157,.1);color:var(--green);border:1px solid rgba(121,255,157,.3)}
+.collision .head .badge.admissible{background:rgba(72,255,224,.1);color:var(--accent);border:1px solid rgba(72,255,224,.3)}
+.collision canvas{width:100%;height:120px}
+.collision .data{padding:6px 10px;font-size:7px;color:var(--muted);display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.collision .data .v{color:var(--text);font-weight:600}
+.planet-row{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.planet-btn{padding:6px 12px;background:var(--card);border:1px solid var(--line);border-radius:4px;color:var(--muted);font-family:inherit;font-size:8px;cursor:pointer;transition:.12s}
+.planet-btn:hover,.planet-btn.active{border-color:var(--gold);color:var(--gold)}
+.footer{text-align:center;padding:16px;font-size:7px;color:var(--dim);border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<div class="top">
+<h1>QHP Media — Live Collision Projections</h1>
+<span class="pill">MC290</span>
+<span class="pill">QHP</span>
+<a href="/mc290/" class="tl">Collider</a>
+<a href="/results/" class="tl">Results</a>
+<a href="/builder/" class="tl">Builder</a>
+<a href="/operator/" class="tl">Operator</a>
+<a href="/el1/" class="tl">EL1</a>
+</div>
+
+<div class="main">
+<div class="status">
+<span class="live">● LIVE</span>
+<span id="runId">Loading...</span>
+<span id="islandCount">—</span>
+<span id="collisionCount">—</span>
+<span id="mintCount">—</span>
+</div>
+
+<div class="planet-row" id="planetBtns"></div>
+
+<div class="sl">Top Collisions — Island Stability Projections</div>
+<div class="grid" id="collisions"></div>
+
+<div class="sl">Exceptional COINs</div>
+<div class="grid" id="exceptionals"></div>
+
+<div class="sl">Planet Engine Map — 2,500 Nodes</div>
+<div class="grid" id="planetData"></div>
+</div>
+
+<div class="footer">
+Joshua Lopez · DCGP.AI LLC · QHP Quantum HoloProjection · USPTO 19/555,951<br>
+Every collision is a circuit. Every island is a coin.
+</div>
+
+<script>
+const GOV = Math.PI / ((1+Math.sqrt(5))/2);
+const planets = ['Jupiter','Saturn','Neptune','Moon','Earth','Mercury','Venus','Mars','Pluto','Uranus'];
+
+// Planet buttons
+const pbtns = document.getElementById('planetBtns');
+planets.forEach(p => {
+  const btn = document.createElement('button');
+  btn.className = 'planet-btn';
+  btn.textContent = p;
+  btn.onclick = () => window.open('/' + p.toLowerCase() + '/');
+  pbtns.appendChild(btn);
+});
+
+// Draw orbital collision visualization
+function drawCollision(canvas, scoreA, scoreB, islandScore, stable) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth, H = 120;
+  canvas.width = W*2; canvas.height = H*2; ctx.scale(2,2);
+  const cx = W/2, cy = H/2;
+  
+  // Stream A orbital
+  const rA = 25 + scoreA * 20;
+  ctx.beginPath(); ctx.arc(cx-30, cy, rA, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(255,217,117,0.2)'; ctx.lineWidth = 0.5; ctx.stroke();
+  
+  // Stream B orbital
+  const rB = 25 + scoreB * 20;
+  ctx.beginPath(); ctx.arc(cx+30, cy, rB, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(72,255,224,0.2)'; ctx.stroke();
+  
+  // Collision point
+  const iR = 5 + islandScore * 15;
+  ctx.beginPath(); ctx.arc(cx, cy, iR, 0, Math.PI*2);
+  ctx.fillStyle = stable ? 'rgba(121,255,157,0.3)' : 'rgba(255,45,85,0.2)';
+  ctx.fill();
+  ctx.strokeStyle = stable ? '#79ff9d' : '#ff2d55';
+  ctx.lineWidth = 1; ctx.stroke();
+  
+  // Electrons on A
+  for (let i = 0; i < 5; i++) {
+    const a = (i/5)*Math.PI*2 + Date.now()*0.001;
+    const ex = cx-30 + Math.cos(a)*rA;
+    const ey = cy + Math.sin(a)*rA;
+    ctx.beginPath(); ctx.arc(ex, ey, 2, 0, Math.PI*2);
+    ctx.fillStyle = '#ffd975'; ctx.globalAlpha = 0.7; ctx.fill(); ctx.globalAlpha = 1;
+  }
+  // Electrons on B
+  for (let i = 0; i < 5; i++) {
+    const a = (i/5)*Math.PI*2 - Date.now()*0.0008;
+    const ex = cx+30 + Math.cos(a)*rB;
+    const ey = cy + Math.sin(a)*rB;
+    ctx.beginPath(); ctx.arc(ex, ey, 2, 0, Math.PI*2);
+    ctx.fillStyle = '#48ffe0'; ctx.globalAlpha = 0.7; ctx.fill(); ctx.globalAlpha = 1;
+  }
+  
+  // Labels
+  ctx.font = '7px JetBrains Mono'; ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffd975'; ctx.fillText('A', cx-30, cy+rA+10);
+  ctx.fillStyle = '#48ffe0'; ctx.fillText('B', cx+30, cy+rB+10);
+  ctx.fillStyle = stable ? '#79ff9d' : '#ff2d55';
+  ctx.fillText(islandScore.toFixed(3), cx, cy+3);
+}
+
+// Fetch live collider data
+async function loadData() {
+  try {
+    const r = await fetch('/api/collider-run');
+    const d = await r.json();
+    
+    document.getElementById('runId').textContent = d.run_id;
+    document.getElementById('islandCount').textContent = d.stable_islands + ' stable islands';
+    document.getElementById('collisionCount').textContent = d.collision_events + ' collisions';
+    document.getElementById('mintCount').textContent = d.second_coins_to_mint + ' minted';
+    
+    // Render collisions
+    const grid = document.getElementById('collisions');
+    grid.innerHTML = '';
+    (d.top_collisions || []).forEach((c, i) => {
+      const div = document.createElement('div');
+      div.className = 'collision';
+      const canvasId = 'cc' + i;
+      div.innerHTML = `
+        <div class="head">
+          <span class="t">${c.stream_a_title.slice(0,30)}...</span>
+          <span class="badge ${c.stable?'mint':''}">MT14: ${c.mt14_combined}</span>
+        </div>
+        <canvas id="${canvasId}" height="120"></canvas>
+        <div class="data">
+          <span>Island</span><span class="v">${c.island_score.toFixed(4)}</span>
+          <span>Stable</span><span class="v" style="color:${c.stable?'#79ff9d':'#ff2d55'}">${c.stable}</span>
+          <span>Verdict</span><span class="v" style="color:#79ff9d">${c.second_coin_verdict}</span>
+          <span>A</span><span class="v" style="color:#ffd975">${c.stream_a_coin.slice(-8)}</span>
+          <span>B</span><span class="v" style="color:#48ffe0">${c.stream_b_coin.slice(-8)}</span>
+        </div>`;
+      grid.appendChild(div);
+      setTimeout(() => {
+        const canvas = document.getElementById(canvasId);
+        if (canvas) drawCollision(canvas, c.island_score, c.island_score*0.9, c.island_score, c.stable);
+      }, 50);
+    });
+    
+    // Render exceptionals
+    const excGrid = document.getElementById('exceptionals');
+    excGrid.innerHTML = '';
+    (d.top_exceptional || []).forEach(e => {
+      const div = document.createElement('div');
+      div.className = 'collision';
+      div.innerHTML = `
+        <div class="head">
+          <span class="t">${e.title.slice(0,40)}</span>
+          <span class="badge admissible">${e.verdict}</span>
+        </div>
+        <div class="data">
+          <span>Triple</span><span class="v" style="color:#ffd975">${e.triple.toFixed(4)}</span>
+          <span>MT14</span><span class="v">${e.MT14}</span>
+          <span>COIN</span><span class="v" style="color:#48ffe0">${e.coin_id.slice(-12)}</span>
+          <span>Flags</span><span class="v">${(e.flags||[]).join(', ')}</span>
+        </div>`;
+      excGrid.appendChild(div);
+    });
+    
+  } catch(e) {
+    document.getElementById('runId').textContent = 'Error: ' + e.message;
+  }
+}
+
+// Auto-refresh every 10 seconds
+loadData();
+setInterval(loadData, 10000);
+
+// Animate collisions
+function animate() {
+  document.querySelectorAll('.collision canvas').forEach(c => {
+    const ctx = c.getContext('2d');
+    if (ctx && c._draw) c._draw();
+  });
+  requestAnimationFrame(animate);
+}
+</script>
+</body>
+</html>

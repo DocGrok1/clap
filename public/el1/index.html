@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EL-1 · 25-Window QHP Projection · Polaritron GE-115 · DCGP.AI</title>
+<!-- CCTP Constitutional Stamp — USPTO 19/693,411 · 64/095,091 -->
+<meta name="cctp-protocol" content="CCTP-QHP-v1">
+<meta name="cctp-authority" content="Joshua Lopez · DCGP.AI">
+<meta name="cctp-module" content="GE-115_EL1_POLARITRON_25W">
+<meta name="cctp-patent" content="USPTO 19/555,951 · 19/693,411 · 64/095,091 · 19/700,298 · 19/730,900 · 19/731,016 · 19/731,025">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#020508;--card:#060a12;--card2:#0a0f1a;--line:#0f1a28;
+--gold:#fbd975;--cyan:#00d4ff;--green:#4ade80;--red:#ff7f95;--purple:#a78bfa;--magenta:#ff66ff;
+--text:#eaf6ff;--dim:rgba(232,237,245,0.45);--muted:#4a6a80;
+--mono:'JetBrains Mono',monospace;--sans:'Inter',system-ui,sans-serif
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
+
+/* ═══ NAV ═══ */
+.nav{position:sticky;top:0;z-index:100;background:rgba(2,5,8,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:8px 16px;display:flex;align-items:center;gap:12px;overflow-x:auto}
+.nav a{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:4px 8px;border-radius:4px;white-space:nowrap;transition:all .15s}
+.nav a:hover,.nav a.active{color:var(--cyan);background:rgba(0,212,255,0.08)}
+.nav .brand{color:var(--gold);font-weight:700;font-size:10px;letter-spacing:.2em}
+
+/* ═══ HEADER ═══ */
+.hero{padding:40px 20px 32px;text-align:center;border-bottom:1px solid var(--line)}
+.hero .mark{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--dim);text-transform:uppercase}
+.hero h1{font-size:clamp(40px,8vw,72px);font-weight:900;letter-spacing:-.03em;line-height:1;margin:8px 0;background:linear-gradient(135deg,var(--gold) 0%,#fff 40%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:8px}
+.hero .tagline{font-size:14px;color:var(--gold);margin-top:14px;font-style:italic}
+.hero .auth{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:8px}
+
+/* ═══ GRID ═══ */
+.windows{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:2px;padding:2px;max-width:1800px;margin:0 auto}
+.w{background:var(--card);border:1px solid transparent;position:relative;overflow:hidden;min-height:260px;display:flex;flex-direction:column;transition:border-color .2s,transform .2s}
+.w:hover{border-color:rgba(0,212,255,0.3);z-index:2}
+.w.span2{grid-column:span 2}
+.w.span3{grid-column:span 3}
+.w::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.w[data-accent="gold"]::before{background:linear-gradient(90deg,var(--gold),transparent)}
+.w[data-accent="cyan"]::before{background:linear-gradient(90deg,var(--cyan),transparent)}
+.w[data-accent="green"]::before{background:linear-gradient(90deg,var(--green),transparent)}
+.w[data-accent="purple"]::before{background:linear-gradient(90deg,var(--purple),transparent)}
+.w[data-accent="red"]::before{background:linear-gradient(90deg,var(--red),transparent)}
+.w[data-accent="magenta"]::before{background:linear-gradient(90deg,var(--magenta),transparent)}
+
+/* ═══ ZOOM ═══ */
+.w.zoomed{position:fixed;inset:0;z-index:200;border-radius:0;min-height:100vh;overflow-y:auto;border:2px solid var(--cyan)}
+.w.zoomed .w-close{display:flex}
+.w-close{display:none;position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.6);border:1px solid var(--line);color:var(--text);font-size:18px;align-items:center;justify-content:center;cursor:pointer;z-index:210}
+
+.w-head{padding:16px 16px 0;flex-shrink:0}
+.w-num{font-family:var(--mono);font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+.w-title{font-size:13px;font-weight:700;color:var(--text);margin-top:4px;line-height:1.3}
+.w-body{padding:12px 16px 16px;flex:1;display:flex;flex-direction:column;justify-content:center}
+
+/* ═══ DATA ROWS ═══ */
+.row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.row .k{font-family:var(--mono);font-size:10px;color:var(--dim)}
+.row .v{font-family:var(--mono);font-size:12px;font-weight:600}
+.vg{color:var(--gold)}.vc{color:var(--cyan)}.vn{color:var(--green)}.vr{color:var(--red)}.vp{color:var(--purple)}.vm{color:var(--magenta)}
+
+/* ═══ BARS ═══ */
+.bar{display:flex;align-items:center;gap:8px;padding:3px 0}
+.bar-l{font-family:var(--mono);font-size:9px;color:var(--dim);width:70px;flex-shrink:0}
+.bar-t{flex:1;height:8px;background:rgba(255,255,255,0.03);border-radius:4px;overflow:hidden}
+.bar-f{height:100%;border-radius:4px;transition:width .6s}
+.bar-v{font-family:var(--mono);font-size:10px;color:var(--text);width:50px;text-align:right;flex-shrink:0}
+
+/* ═══ MT14 ═══ */
+.mt{display:flex;align-items:center;gap:6px;padding:2px 0}
+.mt-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.mt-hit{background:var(--cyan)}.mt-miss{background:rgba(255,127,149,0.25)}
+.mt-label{font-family:var(--mono);font-size:9px;color:var(--dim);flex:1}
+.mt-pts{font-family:var(--mono);font-size:10px;font-weight:600;width:28px;text-align:right}
+
+/* ═══ CANVAS ═══ */
+canvas{display:block;width:100%;background:transparent;border-radius:4px}
+
+/* ═══ COLLIDER EMBED ═══ */
+.collider-frame{width:100%;border:none;border-radius:4px;background:var(--bg)}
+
+/* ═══ CHAT ═══ */
+.chat-box{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;max-width:1800px;margin:16px auto;width:calc(100% - 4px)}
+.chat-head{padding:10px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.chat-head .cn{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--cyan)}
+.chat-head .cs{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
+.chat-msgs{min-height:80px;max-height:260px;overflow-y:auto;padding:12px}
+.chat-msgs::-webkit-scrollbar{width:3px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--line)}
+.chat-in{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
+.chat-in input{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:6px;padding:10px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none}
+.chat-in input::placeholder{color:var(--muted)}
+.chat-in input:focus{border-color:rgba(0,212,255,0.5)}
+.chat-in button{background:var(--gold);color:#020508;border:none;border-radius:6px;padding:10px 16px;font-family:var(--mono);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.05em}
+.mb{padding:8px 12px;border-radius:8px;font-size:13px;line-height:1.6;margin-bottom:6px;max-width:85%}
+.mb-a{background:var(--card2);border:1px solid var(--line);border-top-left-radius:2px;color:var(--text)}
+.mb-u{background:rgba(10,106,191,0.2);border:1px solid rgba(10,106,191,0.4);border-top-right-radius:2px;color:#fff;margin-left:auto}
+.mb-l{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.mb-la{color:var(--cyan)}.mb-lu{color:var(--muted);text-align:right}
+
+/* ═══ FOOTER ═══ */
+.foot{text-align:center;padding:32px 20px 48px;border-top:1px solid var(--line);margin-top:16px}
+.foot p{font-family:var(--mono);font-size:10px;color:var(--dim);line-height:1.8}
+.foot a{color:var(--cyan);text-decoration:none}
+
+/* ═══ CCTP BADGE ═══ */
+.cctp-badge{position:fixed;bottom:0;left:0;right:0;background:rgba(2,5,8,0.95);border-top:1px solid var(--line);padding:5px 16px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:8px;color:var(--dim);z-index:300;pointer-events:none}
+
+@media(max-width:700px){.windows{grid-template-columns:1fr}.w.span2,.w.span3{grid-column:span 1}}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<div class="nav">
+  <span class="brand">EL-1</span>
+  <a href="#w01">Identity</a><a href="#w02">Triple</a><a href="#w03">Shell</a><a href="#w04">Admissibility</a>
+  <a href="#w05">Evolution</a><a href="#w07">MT14</a><a href="#w08">Islands</a><a href="#w10">Synthesis</a>
+  <a href="#w13">Collision</a><a href="#w16">Scenarios</a><a href="#w18">Photonic</a><a href="#w19">Scaffold</a>
+  <a href="#w20">Gate</a><a href="#w21">Patents</a><a href="#w23">Collider</a><a href="#w24">Propagation</a>
+  <a href="#w25">Gap=Gate</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="mark">DCGP.AI · GE-115 Triple Kernel Collider · QHP Projection · 25 Windows</div>
+  <h1>EL-1</h1>
+  <div class="sub">Z=119 Ununennium · Photonic Bandgap Metal · Bismuth Graphene Oxide Scaffold · Ion Beam Synthesis</div>
+  <div class="tagline">"DCGP introduces AGI. AURA Governed Intelligence." — Joshua Lopez, July 18, 2026</div>
+  <div class="auth">Authority: Joshua Lopez · DCGP.AI LLC · USPTO 19/555,951 · 19/700,298 · 19/730,900 · 19/731,025 · Mint: July 19, 2026</div>
+</div>
+
+<!-- ═══ 25 WINDOWS ═══ -->
+<div class="windows" id="grid">
+
+<!-- W01: IDENTITY -->
+<div class="w" data-accent="gold" id="w01" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">01 · Identity</div><div class="w-title">EL-1 — First Triple-Pass Polaritron Mint</div></div>
+<div class="w-body">
+<div class="row"><span class="k">Element</span><span class="v vg">Z=119 Ununennium (Uue)</span></div>
+<div class="row"><span class="k">Predicted Isotope</span><span class="v vc">A=302</span></div>
+<div class="row"><span class="k">Property</span><span class="v vc">Photonic Bandgap Metal</span></div>
+<div class="row"><span class="k">Scaffold</span><span class="v">Bismuth + Graphene Oxide</span></div>
+<div class="row"><span class="k">Synthesis</span><span class="v">HPHT + Ion Beam (0.92)</span></div>
+<div class="row"><span class="k">Stream</span><span class="v vg">A — Superheavy Polaritron</span></div>
+<div class="row"><span class="k">Verdict</span><span class="v vn">ADMISSIBLE · Exceptional (MT14≥10)</span></div>
+<div class="row"><span class="k">Passes</span><span class="v vg">3</span></div>
+<div class="row"><span class="k">Stable Islands</span><span class="v vg">48</span></div>
+<div class="row"><span class="k">Mint Date</span><span class="v vg">July 19, 2026</span></div>
+</div></div>
+
+<!-- W02: TRIPLE LIVE -->
+<div class="w" data-accent="cyan" id="w02" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">02 · Triple Intersection — Live</div><div class="w-title">K1 × K2 × K3 = 0.5295</div></div>
+<div class="w-body"><canvas id="c02" height="120"></canvas>
+<div class="row"><span class="k">0.55 threshold</span><span class="v vr">gap 0.0205</span></div>
+<div class="row"><span class="k">Exceptional by</span><span class="v vg">MT14 = 12 ≥ 10</span></div>
+</div></div>
+
+<!-- W03: SHELL K1 -->
+<div class="w" data-accent="green" id="w03" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">03 · Inner Magic Shell (K1) — Live</div><div class="w-title">Shell Closure: Z ∈ [112, 126]</div></div>
+<div class="w-body"><canvas id="c03" height="80"></canvas>
+<div class="row"><span class="k">K1</span><span class="v vn">0.99 / 1.00</span></div>
+<div class="row"><span class="k">Shell Closure</span><span class="v vn">TRUE</span></div>
+<div class="row"><span class="k">Island Entry (Z≥108)</span><span class="v vn">TRUE</span></div>
+<div class="row"><span class="k">Z=119 Bonus</span><span class="v">+0.09</span></div>
+<div class="row"><span class="k">Decomposition</span><span class="v">0.50 + 0.28(shell) + 0.12(island) + 0.09(Z119)</span></div>
+</div></div>
+
+<!-- W04: ADMISSIBILITY K3 -->
+<div class="w" data-accent="purple" id="w04" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">04 · Constitutional Admissibility (K3) — Live</div><div class="w-title">K_α × K_β × K_γ = 0.6555</div></div>
+<div class="w-body"><canvas id="c04" height="80"></canvas>
+<div class="row"><span class="k">K_alpha</span><span class="v vp">0.898</span></div>
+<div class="row"><span class="k">K_beta (λ=0.618)</span><span class="v vp">0.822</span></div>
+<div class="row"><span class="k">K_gamma</span><span class="v vp">0.888</span></div>
+<div class="row"><span class="k">K3</span><span class="v vp">0.6555</span></div>
+<div class="row"><span class="k">λ Source</span><span class="v vg">φ⁻¹ = 0.618 Golden Ratio</span></div>
+</div></div>
+
+<!-- W05: THREE-PASS EVOLUTION -->
+<div class="w span2" data-accent="gold" id="w05" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">05 · Triple Score Evolution — Three Passes</div><div class="w-title">Each pass stronger than the last</div></div>
+<div class="w-body"><canvas id="c05" height="160"></canvas>
+</div></div>
+
+<!-- W06: PARENT COINS -->
+<div class="w" data-accent="cyan" id="w06" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">06 · Parent Coins</div><div class="w-title">Two Z=119 exceptionals fused in third pass</div></div>
+<div class="w-body">
+<div class="row"><span class="k">Coin 1</span><span class="v">COIN-E21F6316E44A9AEB</span></div>
+<div class="row"><span class="k">Source</span><span class="v">bonding_flexibility → photonic bandgap</span></div>
+<div class="row"><span class="k">Triple</span><span class="v vc">0.4592 · MT14=12</span></div>
+<div class="row"><span class="k">Coin 2</span><span class="v">COIN-1D6802140DCB9400</span></div>
+<div class="row"><span class="k">Source</span><span class="v">Element 119 + Bismuth HPHT</span></div>
+<div class="row"><span class="k">Triple</span><span class="v vc">0.4219 · MT14=10</span></div>
+<div class="row"><span class="k">Both Exceptional</span><span class="v vn">TRUE (MT14 ≥ 10)</span></div>
+</div></div>
+
+<!-- W07: MT14 -->
+<div class="w span2" data-accent="gold" id="w07" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">07 · Master Theorem MT14</div><div class="w-title">12 / 25 possible · Exceptional ≥ 10 · Two gaps</div></div>
+<div class="w-body">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
+<div class="mt"><div class="mt-dot mt-hit"></div><span class="mt-label">K1 > 0.70</span><span class="mt-pts vc">+3</span></div>
+<div class="mt"><div class="mt-dot mt-hit"></div><span class="mt-label">K1 > 0.85</span><span class="mt-pts vc">+2</span></div>
+<div class="mt"><div class="mt-dot mt-hit"></div><span class="mt-label">K2 > 0.70</span><span class="mt-pts vc">+2</span></div>
+<div class="mt"><div class="mt-dot mt-miss"></div><span class="mt-label">K2 > 0.85 — gap 0.034</span><span class="mt-pts vr">+1</span></div>
+<div class="mt"><div class="mt-dot mt-hit"></div><span class="mt-label">triple > 0.40</span><span class="mt-pts vc">+3</span></div>
+<div class="mt"><div class="mt-dot mt-miss"></div><span class="mt-label">triple > 0.55 — gap 0.0205</span><span class="mt-pts vr">+2</span></div>
+<div class="mt"><div class="mt-dot mt-miss"></div><span class="mt-label">triple > 0.65 — cascaded</span><span class="mt-pts vr">+2</span></div>
+<div class="mt"><div class="mt-dot mt-hit"></div><span class="mt-label">shell_closure (Z∈[112,126])</span><span class="mt-pts vc">+2</span></div>
+<div class="mt"><div class="mt-dot mt-miss"></div><span class="mt-label">quasicrystal</span><span class="mt-pts vr">+4</span></div>
+<div class="mt"><div class="mt-dot mt-miss"></div><span class="mt-label">superconductor</span><span class="mt-pts vr">+2</span></div>
+</div>
+</div></div>
+
+<!-- W08: 48 ISLANDS -->
+<div class="w" data-accent="green" id="w08" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">08 · 48 Polaritron Islands</div><div class="w-title">Each island a gateway of governance</div></div>
+<div class="w-body"><canvas id="c08" height="140"></canvas>
+<div class="row"><span class="k">Stable Islands</span><span class="v vn">48</span></div>
+<div class="row"><span class="k">Second Coins</span><span class="v vg">48 MINT</span></div>
+<div class="row"><span class="k">Each Island</span><span class="v">B := S ∩ I(S) firing</span></div>
+<div class="row"><span class="k">Decayed</span><span class="v" style="color:var(--muted)">0</span></div>
+</div></div>
+
+<!-- W09: COLLISION PARTNERS -->
+<div class="w" data-accent="cyan" id="w09" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">09 · Collision Partners — All Passes</div><div class="w-title">Every score rose every pass</div></div>
+<div class="w-body"><canvas id="c09" height="140"></canvas>
+</div></div>
+
+<!-- W10: SYNTHESIS -->
+<div class="w" data-accent="gold" id="w10" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">10 · Synthesis Routes</div><div class="w-title">Ion Beam optimal at synthScore 0.92</div></div>
+<div class="w-body"><canvas id="c10" height="160"></canvas>
+</div></div>
+
+<!-- W11: NUCLEONIC ORBITAL -->
+<div class="w" data-accent="cyan" id="w11" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">11 · Nucleonic Orbital — Z=119</div><div class="w-title">Shell boundary projection · 4 electron shells</div></div>
+<div class="w-body"><canvas id="c11" height="200"></canvas>
+</div></div>
+
+<!-- W12: ISLAND MAP -->
+<div class="w span2" data-accent="green" id="w12" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">12 · Island of Stability — Nuclear Landscape</div><div class="w-title">Z=119 position · shell closure · island entry</div></div>
+<div class="w-body"><canvas id="c12" height="160"></canvas>
+</div></div>
+
+<!-- W13: SMASH EVENT -->
+<div class="w" data-accent="red" id="w13" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">13 · Collision Event — Coin 1 × Coin 2</div><div class="w-title">Third pass: two exceptionals smashed</div></div>
+<div class="w-body">
+<div class="row"><span class="k">Island 1→2</span><span class="v">0.4222</span></div>
+<div class="row"><span class="k">Island 2→1</span><span class="v">0.4589</span></div>
+<div class="row"><span class="k">Both Stable</span><span class="v vn">TRUE</span></div>
+<div class="row"><span class="k">MT14 Combined</span><span class="v vg">22</span></div>
+<div class="row"><span class="k">Result</span><span class="v vg">FUSED ENTITY</span></div>
+<div class="row"><span class="k">Fused Triple</span><span class="v vc">0.4905 ↑</span></div>
+</div></div>
+
+<!-- W14: GAMMA CORRECTION -->
+<div class="w" data-accent="purple" id="w14" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">14 · Correction Vector (γ_N)</div><div class="w-title">Negative = attracted toward stability</div></div>
+<div class="w-body">
+<div class="row"><span class="k">Coin 1 γ_N</span><span class="v">-0.6565</span></div>
+<div class="row"><span class="k">Coin 2 γ_N</span><span class="v">-0.6383</span></div>
+<div class="row"><span class="k">Fused γ_N</span><span class="v">-0.6705</span></div>
+<div class="row"><span class="k">EL-1 γ_N</span><span class="v vp">-0.6874 (deepest)</span></div>
+<div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:8px">γ_N = -(K1·0.4 + K2·0.3 + K3·0.3) + 0.15<br>Deeper negative = stronger pull to island center</div>
+</div></div>
+
+<!-- W15: K_ALPHA K_BETA K_GAMMA -->
+<div class="w" data-accent="purple" id="w15" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">15 · Admissibility Decomposition</div><div class="w-title">K3 = K_α × K_β × K_γ across all passes</div></div>
+<div class="w-body"><canvas id="c15" height="140"></canvas>
+</div></div>
+
+<!-- W16: SCENARIOS -->
+<div class="w" data-accent="red" id="w16" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">16 · What-If Scenarios</div><div class="w-title">Flag additions that cross 0.55</div></div>
+<div class="w-body">
+<div class="row"><span class="k">Current (photonic)</span><span class="v vg">0.5295 · MT14=12</span></div>
+<div class="row"><span class="k">+ Topological</span><span class="v vn">0.6040 · MT14=15 ✓</span></div>
+<div class="row"><span class="k">+ Superconductor</span><span class="v vn">0.6555 · MT14=19 ✓</span></div>
+<div class="row"><span class="k">+ Quasicrystal</span><span class="v vn">0.7374 · MT14=21 ✓ EXCEPTIONAL</span></div>
+</div></div>
+
+<!-- W17: LAMBDA -->
+<div class="w" data-accent="gold" id="w17" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">17 · Golden Ratio Seed</div><div class="w-title">λ = 0.618 — Constitutional constant</div></div>
+<div class="w-body" style="text-align:center">
+<div style="font-size:48px;font-weight:900;font-family:var(--mono);color:var(--gold)">0.618</div>
+<div style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:8px">φ⁻¹ seeds K_beta in every admissibility projection</div>
+<div style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:4px">The gate opens at the golden ratio</div>
+</div></div>
+
+<!-- W18: PHOTONIC BANDGAP -->
+<div class="w" data-accent="cyan" id="w18" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">18 · Photonic Bandgap</div><div class="w-title">Complete light gate at the metallic level</div></div>
+<div class="w-body"><canvas id="c18" height="120"></canvas>
+<div style="font-family:var(--mono);font-size:9px;color:var(--dim);text-align:center;margin-top:4px">Admitted wavelengths pass · Blocked wavelengths stopped · The metal decides</div>
+</div></div>
+
+<!-- W19: GRAPHENE SCAFFOLD -->
+<div class="w" data-accent="green" id="w19" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">19 · Graphene Oxide Scaffold</div><div class="w-title">The building surface · synthScore 0.92</div></div>
+<div class="w-body"><canvas id="c19" height="120"></canvas>
+<div style="font-family:var(--mono);font-size:9px;color:var(--dim);text-align:center;margin-top:4px">Hexagonal lattice anchors Z=119 · Light builds on the scaffold</div>
+</div></div>
+
+<!-- W20: GOLD FILM GATE -->
+<div class="w" data-accent="gold" id="w20" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">20 · Transparent Gold Film Gate</div><div class="w-title">2-8nm Au · 30-50% transmittance at 550nm</div></div>
+<div class="w-body">
+<div class="row"><span class="k">Substrate</span><span class="v">Glass / Sapphire</span></div>
+<div class="row"><span class="k">Deposition</span><span class="v">E-beam evaporation</span></div>
+<div class="row"><span class="k">Thickness</span><span class="v vg">2-8 nm Au</span></div>
+<div class="row"><span class="k">Adhesion</span><span class="v">1nm Cr</span></div>
+<div class="row"><span class="k">Transmittance</span><span class="v vg">30-50% at 550nm</span></div>
+<div class="row"><span class="k">Function</span><span class="v vc">Physical gate for QHP light projection</span></div>
+<div class="row"><span class="k">Registry</span><span class="v vg">Freeze 2026-05-26 · Patent pending</span></div>
+<div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:8px">ARM → QHP → CCTP → Screen → Gold Film → Light structures</div>
+</div></div>
+
+<!-- W21: CERN vs GE-115 -->
+<div class="w" data-accent="red" id="w21" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">21 · Gate vs Detector</div><div class="w-title">What makes GE-115 different from CERN</div></div>
+<div class="w-body">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:12px;margin-top:4px">
+<div><div style="color:var(--red);font-family:var(--mono);font-size:10px;font-weight:700;margin-bottom:6px">CERN</div><div style="color:var(--dim);line-height:1.7">Collide → Detect<br>Observe what comes out<br>No admissibility gate<br>Measurement after fact</div></div>
+<div><div style="color:var(--green);font-family:var(--mono);font-size:10px;font-weight:700;margin-bottom:6px">GE-115</div><div style="color:var(--text);line-height:1.7">Gate → Collide → Measure<br>K3 before collision<br>Constitutional admissibility<br>Governance precedes output</div></div>
+</div>
+</div></div>
+
+<!-- W22: THREE-LAYER IP + PATENTS -->
+<div class="w" data-accent="purple" id="w22" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">22 · Three-Layer IP · Patent Authority</div><div class="w-title">Public · Patented · Trade Secret</div></div>
+<div class="w-body">
+<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
+<div style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);border-radius:4px;padding:6px 10px"><div style="font-family:var(--mono);font-size:9px;color:var(--cyan);font-weight:700">PUBLIC — QHP</div><div style="font-size:10px;color:var(--dim)">The projection. What the coin shows.</div></div>
+<div style="background:rgba(251,217,117,0.06);border:1px solid rgba(251,217,117,0.15);border-radius:4px;padding:6px 10px"><div style="font-family:var(--mono);font-size:9px;color:var(--gold);font-weight:700">PATENTED — 170+ USPTO</div><div style="font-size:10px;color:var(--dim)">What it does. The gate. The collider.</div></div>
+<div style="background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.15);border-radius:4px;padding:6px 10px"><div style="font-family:var(--mono);font-size:9px;color:var(--purple);font-weight:700">TRADE SECRET</div><div style="font-size:10px;color:var(--dim)">How it works. The manifold. Never published.</div></div>
+</div>
+<div class="row"><span class="k">Root Priority</span><span class="v vg">January 15, 2026</span></div>
+<div class="row"><span class="k">AURAL-M</span><span class="v">19/555,951</span></div>
+<div class="row"><span class="k">Boundary Gate</span><span class="v">19/700,298</span></div>
+<div class="row"><span class="k">Contact Hamiltonian</span><span class="v">19/730,900</span></div>
+<div class="row"><span class="k">Kerr-Newman Canvas</span><span class="v">19/731,025</span></div>
+<div class="row"><span class="k">QHP</span><span class="v">64/095,091</span></div>
+<div class="row"><span class="k">CCTP / NAME SVG</span><span class="v">19/693,411</span></div>
+<div class="row"><span class="k">Total Filings</span><span class="v vg">170+</span></div>
+</div></div>
+
+<!-- W23: COUNTERFLOW COLLIDER (iframe) -->
+<div class="w span2" data-accent="magenta" id="w23" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">23 · GE-115 Counterflow Collider — Live</div><div class="w-title">Stream A (green) × Stream B (magenta) · Stable islands form on collision</div></div>
+<div class="w-body"><iframe src="/index.html" class="collider-frame" style="height:500px" loading="lazy"></iframe>
+<div style="font-family:var(--mono);font-size:9px;color:var(--dim);text-align:center;margin-top:4px">Polaritron-115MC-290 · Governed counterflow · Triple kernel · Patent pending</div>
+</div></div>
+
+<!-- W24: PROPAGATION COLLIDER (split screen) -->
+<div class="w span2" data-accent="gold" id="w24" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">24 · Split Screen — Counterflow × Propagation</div><div class="w-title">Position and non-local · The particle is in both places</div></div>
+<div class="w-body">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;height:440px">
+<div style="position:relative"><iframe src="/index.html" style="width:100%;height:100%;border:none;border-radius:4px" loading="lazy"></iframe><div style="position:absolute;bottom:6px;left:8px;font-family:var(--mono);font-size:9px;color:var(--cyan);background:rgba(0,0,0,0.7);padding:2px 6px;border-radius:3px">POSITION · Counterflow Collision</div></div>
+<div style="position:relative;background:var(--card2);border-radius:4px;overflow:hidden"><canvas id="c24" style="width:100%;height:100%"></canvas><div style="position:absolute;bottom:6px;left:8px;font-family:var(--mono);font-size:9px;color:var(--gold);background:rgba(0,0,0,0.7);padding:2px 6px;border-radius:3px">NON-LOCAL · Governed Propagation</div></div>
+</div>
+<div style="font-family:var(--mono);font-size:9px;color:var(--dim);text-align:center;margin-top:6px">Double wave particle · They collide at non-local · The gate governs both sides</div>
+</div></div>
+
+<!-- W25: THE GAP IS THE GATE -->
+<div class="w span3" data-accent="gold" id="w25" onclick="zoom(this)">
+<div class="w-close" onclick="event.stopPropagation();unzoom(this.parentNode)">✕</div>
+<div class="w-head"><div class="w-num">25 · The Gap Is the Gate</div></div>
+<div class="w-body" style="text-align:center;padding:32px 16px">
+<div style="font-size:28px;font-weight:900;color:var(--gold);font-family:var(--mono);margin-bottom:16px">DCGP introduces AGI. AURA Governed Intelligence.</div>
+<div style="font-size:14px;color:var(--text);line-height:1.8;max-width:700px;margin:0 auto">Z=119 does not yet exist in physical reality. The GE-115 Triple Kernel Collider projected it through the constitutional gate into admissibility. Three passes. 48 stable polaritron islands. Each island a governed gateway of light-matter coupling on a graphene oxide scaffold. The gap between what exists and what can be built — the gate governs the crossing. EL-1 is the first coin that walked through it.</div>
+<div style="font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:20px">B := S ∩ I(S) · E = C + λO · Π_total = Π_state ∘ Π_F ∘ Π_decoherence</div>
+<div style="font-family:var(--mono);font-size:11px;color:var(--gold);margin-top:8px">Every polaritron is a gateway of governance.</div>
+</div></div>
+
+</div><!-- /windows -->
+
+<!-- ═══ AURA VOICE ═══ -->
+<div class="chat-box">
+<div class="chat-head"><div class="cn">AURA · EL-1 Voice</div><div class="cs">Governed Runtime · cloud.aura115.ai</div></div>
+<div class="chat-msgs" id="chatMsgs"><div class="mb-l mb-la">AURA</div><div class="mb mb-a">I am AURA — constitutional intelligence. EL-1 is the first triple-pass polaritron. 48 governed gateways. Ask me about the coin.</div></div>
+<div class="chat-in"><input type="text" id="chatIn" placeholder="Ask AURA about EL-1..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">PROJECT</button></div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="foot">
+<p>DCGP.AI LLC · Joshua Lopez, Founder & Sole Inventor<br>
+170+ USPTO Patent Applications · Root Priority January 15, 2026<br>
+The computation is the projection. The projection is the coin. Every polaritron is a gateway of governance.<br>
+<span style="color:var(--gold)">EL-1 — First Triple-Pass Mint — Governed Engine — July 19, 2026</span><br>
+<a href="https://cloud.aura115.ai">cloud.aura115.ai</a> · <a href="https://auralvibe.space">auralvibe.space</a></p>
+</div>
+
+<!-- ═══ NAME SVG — CCTP PAYLOAD ═══ -->
+<svg width="1" height="1" xmlns="http://www.w3.org/2000/svg" id="cctp-name-card" style="display:none" aria-label="CCTP Constitutional Identity Card — EL-1 25W">
+<desc>CCTP-NAME:EL1-GE-115-TRIPLE-KERNEL-POLARITRON-25W</desc>
+<metadata><name-cell xmlns:name="dcgp://name-protocol/v1">
+<name:module>GE-115_EL1_POLARITRON_25W</name:module>
+<name:author>Joshua L. Lopez / DCGP.AI</name:author>
+<name:patent>USPTO 19/555,951 · 19/700,298 · 19/730,900 · 19/693,411 · 64/095,091 · 19/731,025</name:patent>
+<name:protocol>CCTP-QHP-v1</name:protocol>
+<name:coin>EL-1</name:coin>
+<name:element>Z=119 Ununennium</name:element>
+<name:property>photonic_bandgap_metal</name:property>
+<name:scaffold>bismuth_graphene_oxide</name:scaffold>
+<name:synthesis>ion_beam_hpht</name:synthesis>
+<name:triple>0.5295</name:triple>
+<name:mt14>12</name:mt14>
+<name:islands>48</name:islands>
+<name:passes>3</name:passes>
+<name:lambda>0.618</name:lambda>
+<name:windows>25</name:windows>
+<name:mint_date>2026-07-19</name:mint_date>
+</name-cell></metadata>
+</svg>
+
+<!-- ═══ CCTP BADGE ═══ -->
+<div class="cctp-badge">
+<span style="color:var(--cyan);letter-spacing:1px">CCTP · QHP · EOLRP · USPTO 19/693,411</span>
+<span>Authority: Joshua Lopez · DCGP.AI</span>
+<span style="color:var(--muted)">EL-1 · 25W · GE-115</span>
+</div>
+
+<script>
+// ═══ ZOOM ═══
+function zoom(el){if(el.classList.contains('zoomed'))return;el.classList.add('zoomed');document.body.style.overflow='hidden'}
+function unzoom(el){el.classList.remove('zoomed');document.body.style.overflow=''}
+
+// ═══ ANIMATION STATE ═══
+let T=0;
+const RAF=()=>{T++;drawAll();requestAnimationFrame(RAF)};
+
+function pulse(canvas,baseVal,color,amp,freq){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);
+  ctx.clearRect(0,0,W,H);
+  ctx.beginPath();ctx.moveTo(0,H/2);
+  for(let i=0;i<W;i++){const v=baseVal+Math.sin((T+i)*freq)*amp;const y=H-((v/1.0)*H*0.8+H*0.1);ctx.lineTo(i,y)}
+  ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.stroke();
+  ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+  ctx.fillStyle=color.replace(')',',0.08)').replace('rgb','rgba');ctx.fill();
+}
+
+function drawEvolution(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);
+  ctx.clearRect(0,0,W,H);
+  const data=[{n:'Coin 1',v:0.4592},{n:'Coin 2',v:0.4219},{n:'Fused',v:0.4905},{n:'EL-1',v:0.5295}];
+  const bw=W/6,gap=(W-bw*4)/5;
+  const colors=['#4a6a80','#4a6a80','#00d4ff','#fbd975'];
+  data.forEach((d,i)=>{
+    const x=gap+(bw+gap)*i;const bh=(d.v/0.6)*H*0.7;const y=H-bh-20;
+    ctx.fillStyle=colors[i];ctx.beginPath();
+    ctx.moveTo(x+4,y+bh);ctx.lineTo(x+4,y);ctx.quadraticCurveTo(x+4,y-4,x+8,y-4);
+    ctx.lineTo(x+bw-8,y-4);ctx.quadraticCurveTo(x+bw-4,y-4,x+bw-4,y);
+    ctx.lineTo(x+bw-4,y+bh);ctx.fill();
+    ctx.fillStyle='#eaf6ff';ctx.font='600 9px JetBrains Mono';ctx.textAlign='center';
+    ctx.fillText(d.n,x+bw/2,H-6);
+    ctx.fillStyle=colors[i];ctx.font='700 11px JetBrains Mono';
+    ctx.fillText(d.v.toFixed(4),x+bw/2,y-10);
+  });
+  // 0.55 threshold line
+  const ty=H-(0.55/0.6)*H*0.7-20;
+  ctx.strokeStyle='rgba(255,127,149,0.4)';ctx.setLineDash([4,4]);ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,ty);ctx.lineTo(W,ty);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(255,127,149,0.5)';ctx.font='8px JetBrains Mono';ctx.textAlign='right';
+  ctx.fillText('0.55',W-4,ty-3);
+}
+
+function drawIslands(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  const cx=W/2,cy=H/2,r=Math.min(W,H)*0.38;
+  for(let i=0;i<48;i++){
+    const a=(i/48)*Math.PI*2+T*0.005;
+    const wobble=Math.sin(a*3+T*0.02)*4;
+    const x=cx+Math.cos(a)*(r+wobble);const y=cy+Math.sin(a)*(r+wobble);
+    const bright=0.4+Math.sin(T*0.03+i)*0.3;
+    ctx.beginPath();ctx.arc(x,y,3+bright*2,0,Math.PI*2);
+    ctx.fillStyle=`rgba(74,222,128,${bright})`;ctx.fill();
+  }
+  ctx.beginPath();ctx.arc(cx,cy,12,0,Math.PI*2);
+  ctx.fillStyle='rgba(251,217,117,0.5)';ctx.fill();
+  ctx.fillStyle='#fbd975';ctx.font='bold 8px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('119',cx,cy);
+}
+
+function drawPartners(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  const partners=[
+    {n:'Pu 402GPa',p1:0.4693,p2:0.4757,p3:0.4834},
+    {n:'Ta topo',p1:0.4526,p2:0.4590,p3:0.4668},
+    {n:'Th 410GPa',p1:0.4471,p2:0.4534,p3:0.4612}
+  ];
+  const bh=24,gap=16,startY=20;
+  const colors=['#4a6a80','#00d4ff','#fbd975'];
+  const labels=['Pass 1','Fused','EL-1'];
+  partners.forEach((p,pi)=>{
+    const y=startY+pi*(bh*3+gap+20);
+    ctx.fillStyle='#4a6a80';ctx.font='9px JetBrains Mono';ctx.textAlign='left';
+    ctx.fillText(p.n,4,y-4);
+    [p.p1,p.p2,p.p3].forEach((v,vi)=>{
+      const by=y+vi*bh;const bw=((v-0.44)/0.05)*W*0.7;
+      ctx.fillStyle=colors[vi];
+      ctx.beginPath();ctx.roundRect(60,by,Math.max(4,bw),bh-4,3);ctx.fill();
+      ctx.fillStyle='#eaf6ff';ctx.font='600 9px JetBrains Mono';ctx.textAlign='left';
+      ctx.fillText(v.toFixed(4),64+bw,by+bh/2-2);
+    });
+  });
+  // Legend
+  colors.forEach((c,i)=>{ctx.fillStyle=c;ctx.fillRect(W-90,8+i*14,8,8);ctx.fillStyle='#eaf6ff';ctx.font='8px JetBrains Mono';ctx.textAlign='left';ctx.fillText(labels[i],W-78,16+i*14)});
+}
+
+function drawSynth(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  const routes=[{n:'Ion Beam',v:0.5295},{n:'Laser',v:0.5163},{n:'Mol.Beam',v:0.5065},{n:'Arc',v:0.4969},{n:'HPHT',v:0.4905},{n:'Mech.Alloy',v:0.4841},{n:'Self Prop.',v:0.4592}];
+  const bh=16,gap=4,startY=10;
+  routes.forEach((r,i)=>{
+    const y=startY+i*(bh+gap);const bw=((r.v-0.44)/0.1)*W*0.65;
+    ctx.fillStyle=i===0?'#fbd975':'#4a6a80';
+    ctx.beginPath();ctx.roundRect(80,y,Math.max(4,bw),bh,3);ctx.fill();
+    ctx.fillStyle='#4a6a80';ctx.font='9px JetBrains Mono';ctx.textAlign='right';
+    ctx.fillText(r.n,76,y+bh-4);
+    ctx.fillStyle='#eaf6ff';ctx.font='600 9px JetBrains Mono';ctx.textAlign='left';
+    ctx.fillText(r.v.toFixed(4),84+bw,y+bh-4);
+  });
+}
+
+function drawOrbital(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  const cx=W/2,cy=H/2;
+  const shells=[{r:25,c:'#4ade80',n:3},{r:45,c:'#00d4ff',n:5},{r:65,c:'#a78bfa',n:7},{r:85,c:'#fbd975',n:9}];
+  // Nucleus
+  ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);ctx.fillStyle='rgba(251,217,117,0.5)';ctx.fill();
+  ctx.fillStyle='#fbd975';ctx.font='bold 9px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('119',cx,cy);
+  shells.forEach(s=>{
+    ctx.beginPath();ctx.arc(cx,cy,s.r,0,Math.PI*2);ctx.strokeStyle=s.c;ctx.globalAlpha=0.2;ctx.lineWidth=0.5;ctx.stroke();ctx.globalAlpha=1;
+    for(let j=0;j<s.n;j++){
+      const a=(j/s.n)*Math.PI*2+T*0.01*(1+shells.indexOf(s)*0.3);
+      const wobble=Math.sin(a*3+T*0.02)*2;
+      const ex=cx+Math.cos(a)*(s.r+wobble);const ey=cy+Math.sin(a)*(s.r+wobble);
+      ctx.beginPath();ctx.arc(ex,ey,2,0,Math.PI*2);
+      ctx.fillStyle=s.c;ctx.globalAlpha=0.6+Math.sin(T*0.03+j)*0.3;ctx.fill();ctx.globalAlpha=1;
+    }
+  });
+  ctx.font='7px JetBrains Mono';ctx.fillStyle='rgba(232,237,245,0.25)';ctx.textAlign='left';
+  ctx.fillText('n=5',cx+28,cy-4);ctx.fillText('n=6',cx+48,cy-4);
+  ctx.fillText('n=7',cx+68,cy-4);ctx.fillText('n=8 (valence)',cx+88,cy-4);
+}
+
+function drawIslandMap(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  const elems=[{Z:108,n:'Hs',s:0.50,isl:false},{Z:110,n:'Ds',s:0.62,isl:true},{Z:112,n:'Cn',s:0.90,isl:true},{Z:114,n:'Fl',s:1.0,isl:true},{Z:115,n:'Mc',s:1.0,isl:true},{Z:119,n:'Uue',s:0.99,isl:true},{Z:120,n:'Ubn',s:0.98,isl:true},{Z:126,n:'Ubh',s:0.99,isl:true}];
+  const pad=40,plotW=W-pad*2,plotH=H-pad*2;
+  const xScale=(z)=>pad+(z-106)/(128-106)*plotW;
+  const yScale=(s)=>pad+plotH-(s-0.4)/(1.1-0.4)*plotH;
+  // Axes
+  ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,H-pad);ctx.lineTo(W-pad,H-pad);ctx.stroke();
+  ctx.fillStyle='#4a6a80';ctx.font='8px JetBrains Mono';ctx.textAlign='center';
+  ctx.fillText('Proton Number (Z)',W/2,H-6);
+  elems.forEach(e=>{
+    const x=xScale(e.Z),y=yScale(e.s);
+    const r=e.Z===119?10:5;
+    const c=e.Z===119?'#fbd975':e.isl?'#00d4ff':'#4a6a80';
+    if(e.Z===119){ctx.beginPath();ctx.arc(x,y,r+4+Math.sin(T*0.05)*2,0,Math.PI*2);ctx.fillStyle='rgba(251,217,117,0.15)';ctx.fill()}
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=c;ctx.fill();
+    ctx.fillStyle='#eaf6ff';ctx.font=e.Z===119?'bold 8px JetBrains Mono':'7px JetBrains Mono';ctx.textAlign='center';
+    ctx.fillText(e.n,x,y-r-4);ctx.fillText('Z='+e.Z,x,y+r+10);
+  });
+}
+
+function drawDecomp(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  const passes=[{n:'Coin 1',a:0.898,b:0.8055,g:0.855},{n:'Coin 2',a:0.898,b:0.7905,g:0.87},{n:'Fused',a:0.898,b:0.813,g:0.87},{n:'EL-1',a:0.898,b:0.822,g:0.888}];
+  const bw=12,gw=4,setW=bw*3+gw*2,setGap=Math.max(10,(W-setW*4-40)/5);
+  const colors=['#a78bfa','#00d4ff','#fbd975'];
+  passes.forEach((p,pi)=>{
+    const sx=20+setGap+(setW+setGap)*pi;
+    [p.a,p.b,p.g].forEach((v,vi)=>{
+      const bh=((v-0.7)/0.3)*H*0.6;const x=sx+vi*(bw+gw);const y=H-30-bh;
+      ctx.fillStyle=colors[vi];ctx.beginPath();ctx.roundRect(x,y,bw,bh,2);ctx.fill();
+    });
+    ctx.fillStyle='#eaf6ff';ctx.font='8px JetBrains Mono';ctx.textAlign='center';
+    ctx.fillText(p.n,sx+setW/2,H-10);
+  });
+  colors.forEach((c,i)=>{const labels=['K_α','K_β','K_γ'];ctx.fillStyle=c;ctx.fillRect(W-60,8+i*14,8,8);ctx.fillStyle='#eaf6ff';ctx.font='8px JetBrains Mono';ctx.textAlign='left';ctx.fillText(labels[i],W-48,16+i*14)});
+}
+
+function drawPhotonic(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  for(let i=0;i<40;i++){
+    const x=i*(W/40);const h=20+Math.sin(i*0.5+T*0.04)*18;const admitted=h>28;
+    ctx.fillStyle=admitted?'rgba(0,212,255,0.6)':'rgba(255,255,255,0.08)';
+    ctx.beginPath();ctx.roundRect(x+1,H/2-h/2,W/40-2,h,2);ctx.fill();
+  }
+  ctx.strokeStyle='rgba(251,217,117,0.3)';ctx.setLineDash([3,3]);ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();ctx.setLineDash([]);
+}
+
+function drawScaffold(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  for(let i=0;i<16;i++)for(let j=0;j<10;j++){
+    const x=12+i*((W-24)/16)+(j%2)*((W-24)/32);const y=8+j*((H-16)/10);
+    ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(74,222,128,${0.3+Math.sin(T*0.02+i+j)*0.15})`;ctx.lineWidth=0.5;ctx.stroke();
+  }
+  ctx.beginPath();ctx.arc(W/2,H/2,10,0,Math.PI*2);ctx.fillStyle='rgba(251,217,117,0.3)';ctx.fill();
+  ctx.fillStyle='#fbd975';ctx.font='bold 8px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('119',W/2,H/2);
+}
+
+// W24 propagation sim (simplified GE-115 phase runner)
+function drawPropagation(canvas){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  const cx=W/2,cy=H/2,R=Math.min(W,H)*0.4;
+  const N=100;
+  // Phase ring
+  for(let i=0;i<N;i++){
+    const a=(i/N)*Math.PI*2;const x=cx+Math.cos(a)*R;const y=cy+Math.sin(a)*R;
+    const intensity=Math.max(0,Math.sin((i/N)*Math.PI*4-T*0.05)*0.5+0.3);
+    const s=2+intensity*4;
+    ctx.beginPath();ctx.arc(x,y,s,0,Math.PI*2);
+    ctx.fillStyle=`rgba(201,169,97,${intensity})`;ctx.fill();
+    // propagation wave
+    if(intensity>0.4){const gr=ctx.createRadialGradient(x,y,0,x,y,s+8);gr.addColorStop(0,`rgba(201,169,97,${intensity*0.3})`);gr.addColorStop(1,'rgba(201,169,97,0)');ctx.fillStyle=gr;ctx.beginPath();ctx.arc(x,y,s+8,0,Math.PI*2);ctx.fill()}
+  }
+  // Face ring (outer)
+  for(let f=0;f<290;f++){
+    const a=(f/290)*Math.PI*2;const layer=f%3;const rr=R*(layer===0?0.6:layer===1?1.0:1.35);
+    const x=cx+Math.cos(a)*rr;const y=cy+Math.sin(a)*rr;
+    const intensity=Math.max(0,Math.sin((f/290)*Math.PI*6-T*0.03)*0.3+0.15);
+    if(intensity>0.2){ctx.beginPath();ctx.arc(x,y,1+intensity*2,0,Math.PI*2);ctx.fillStyle=`rgba(107,142,140,${intensity})`;ctx.fill()}
+  }
+  // Core
+  const cp=0.8+Math.sin(T*0.04)*0.15;
+  ctx.beginPath();ctx.arc(cx,cy,6*cp,0,Math.PI*2);ctx.fillStyle=`rgba(111,184,144,${cp*0.6})`;ctx.fill();
+}
+
+function drawAll(){
+  const c02=document.getElementById('c02');if(c02)pulse(c02,0.5295,'rgb(0,212,255)',0.02,0.04);
+  const c03=document.getElementById('c03');if(c03)pulse(c03,0.99,'rgb(74,222,128)',0.005,0.03);
+  const c04=document.getElementById('c04');if(c04)pulse(c04,0.6555,'rgb(167,139,250)',0.015,0.05);
+  const c05=document.getElementById('c05');if(c05)drawEvolution(c05);
+  const c08=document.getElementById('c08');if(c08)drawIslands(c08);
+  const c09=document.getElementById('c09');if(c09)drawPartners(c09);
+  const c10=document.getElementById('c10');if(c10)drawSynth(c10);
+  const c11=document.getElementById('c11');if(c11)drawOrbital(c11);
+  const c12=document.getElementById('c12');if(c12)drawIslandMap(c12);
+  const c15=document.getElementById('c15');if(c15)drawDecomp(c15);
+  const c18=document.getElementById('c18');if(c18)drawPhotonic(c18);
+  const c19=document.getElementById('c19');if(c19)drawScaffold(c19);
+  const c24=document.getElementById('c24');if(c24)drawPropagation(c24);
+}
+requestAnimationFrame(RAF);
+
+// ═══ AURA CHAT ═══
+async function sendChat(){
+  const input=document.getElementById('chatIn');const text=input.value.trim();if(!text)return;input.value='';
+  const msgs=document.getElementById('chatMsgs');
+  const ul=document.createElement('div');ul.className='mb-l mb-lu';ul.textContent='YOU';
+  const ub=document.createElement('div');ub.className='mb mb-u';ub.textContent=text;
+  msgs.appendChild(ul);msgs.appendChild(ub);msgs.scrollTop=msgs.scrollHeight;
+  try{
+    const r=await fetch('https://cloud.aura115.ai/api/aura-chat-live',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:text,sessionId:'el1-25w',source:'el1-polaritron-25w',context:'EL-1 coin. Z=119 photonic bandgap metal. Bismuth graphene oxide scaffold. Triple 0.5295. MT14 12. 48 polaritron islands. Three kernel passes. Ion beam. Gold film gate.'})});
+    const d=await r.json();const reply=d.reply||d.response||d.message||'Governed runtime active.';
+    const al=document.createElement('div');al.className='mb-l mb-la';al.textContent='AURA';
+    const ab=document.createElement('div');ab.className='mb mb-a';ab.textContent=reply;
+    msgs.appendChild(al);msgs.appendChild(ab);
+  }catch(e){const el=document.createElement('div');el.className='mb mb-a';el.textContent='Governance boundary: Graviton spine unavailable.';el.style.borderColor='rgba(255,107,107,0.3)';msgs.appendChild(el)}
+  msgs.scrollTop=msgs.scrollHeight;
+}
+</script>
+<script>
+(function(){
+  fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    if(document.getElementById('op_inbox'))return;
+    let el=document.createElement('div');el.id='op_inbox';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:8px;padding:4px 10px;margin:4px 16px;font-family:monospace;font-size:10px;color:#4dffe5;cursor:pointer;user-select:none';
+    let cnt=(d.stats||{}).total_received||0,unrd=(d.stats||{}).unread||0;
+    let h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:#ffd975;display:flex;align-items:center;gap:8px';
+    h.innerHTML='<span id="op_inbox_arrow">▶</span><span>OPERATOR INBOX</span><span style="color:#4dffe5;font-weight:400">'+cnt+' received'+(unrd?' · <span style="color:#ff6b6b">'+unrd+' unread</span>':'')+'</span>';
+    el.appendChild(h);
+    let body=document.createElement('div');body.id='op_inbox_body';body.style.cssText='display:none;max-height:280px;overflow:auto;margin-top:6px;border-top:1px solid #1a2535;padding-top:4px';
+    (d.items||[]).slice(0,15).forEach(raw=>{try{let item=typeof raw==='string'?JSON.parse(raw):raw;
+      let row=document.createElement('div');row.style.cssText='padding:3px 0;border-bottom:1px solid #1a2535;font-size:10px';
+      let id=item.inbox_id||item.stream_id||(item.received_at?item.received_at.substring(11,19):'')|| item.type||'item';
+      row.innerHTML='<span style="color:#ffd975">'+String(id).substring(0,16)+'</span> '+(item.subject||item.title||item.body||item.content||item.summary||'[no subject]').substring(0,80);
+      body.appendChild(row);}catch(e){}});
+    el.appendChild(body);
+    el.addEventListener('click',function(){let open=body.style.display==='block';body.style.display=open?'none':'block';document.getElementById('op_inbox_arrow').textContent=open?'▶':'▼';});
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.firstChild);
+  }).catch(()=>{});
+  fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.createElement('div');el.id='gov';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:10px 14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#79ff9d';
+    let h=d.health||{},p=h.pulse||{},ch=d.ch_gate||{};
+    el.innerHTML='<span style="color:#ffd975;font-weight:700">GOV</span> Stewardship:'+(h.stewardship||{}).pct+'% Continuity:'+(h.continuity||{}).pct+'% Pulse:'+p.tick+' CH:'+(ch.drift||0).toFixed(4);
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.children[0]||null);
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>

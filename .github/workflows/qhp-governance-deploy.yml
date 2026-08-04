@@ -2,8 +2,8 @@
 # DCGP.AI LLC — QHP AWS GitHub Actions CI/CD Pipeline v1.0
 # Automated Deployment Infrastructure utilizing Secure OIDC Federation
 #
-# Configured for hands-free automation workflows. Leverages ephemeral token 
-# exchange via AWS IAM Identity Providers to apply Terraform configurations.
+# MANUAL DISPATCH ONLY — does not trigger on push until Terraform
+# files and OIDC trust policy are configured.
 #
 # Protected under USPTO Patent Applications: 19/555,951 · 19/730,900
 # Core Constitutional Boundary Invariant: B := S ∩ I(S)
@@ -19,45 +19,39 @@ on:
   workflow_dispatch:
 # Core Security Principle Configuration: Mandate explicit permissions for OIDC JWT Token Exchange
 permissions:
-  id-token: write      # Required to request the dynamic OIDC JSON Web Token (JWT) from GitHub
-  contents: read       # Required to checkout the repository configuration files
+  id-token: write
+  contents: read
+
 jobs:
   terraform-pipeline:
     name: "Execute QHP Infrastructure Automation Engine"
     runs-on: ubuntu-latest
-    
     env:
       AWS_REGION: "us-east-1"
-      # Replace this value with your actual verified IAM OIDC AssumeRole ARN
-      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
     steps:
-      # Step 1: Securely pull the structural configuration file stream from the workspace repository
       - name: "Checkout Repository Workspace Source"
         uses: "actions/checkout@v4"
-      # Step 2: Establish cryptographic OIDC trust relationship handshake directly with AWS IAM
+
       - name: "Authenticate to AWS Infrastructure via OIDC Broker"
         uses: "aws-actions/configure-aws-credentials@v4"
         with:
-          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           role-session-name: "QHPPipelineIngestionSession"
           aws-region: ${{ env.AWS_REGION }}
-      # Step 3: Initialize the declarative platform provisioning runtime ecosystem environment
+
       - name: "Setup HashiCorp Terraform Subsystem Environment"
         uses: "hashicorp/setup-terraform@v3"
         with:
           terraform_version: "1.5.7"
-      # Step 4: Validate underlying layout and resolve platform backend state provider links
+
       - name: "Initialize Platform State Directories (Terraform Init)"
         run: "terraform init"
-      # Step 5: Perform rigorous structural static validation check passes across configuration files
-      - name: "Audit Code Compilation Layout (Terraform Format Check)"
-        run: "terraform fmt -check"
-      - name: "Validate Resource Dependency Structures (Terraform Validate)"
+
+      - name: "Validate Resource Dependency Structures"
         run: "terraform validate"
-      # Step 6: Generate definitive transformation matrix execution diagrams for telemetry validation
+
       - name: "Compute Manifold Configuration Blueprints (Terraform Plan)"
         run: "terraform plan -input=false"
-      # Step 7: Atomically commit infrastructure nodes to active cloud hardware environments
+
       - name: "Deploy Governance Elements to Cloud Registers (Terraform Apply)"
-        if: "github.ref == 'refs/heads/main' && github.event_name == 'push'"
         run: "terraform apply -auto-approve -input=false"
