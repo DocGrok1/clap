@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 580" width="400">
+<rect width="400" height="580" rx="16" fill="#07111f" stroke="#1a2e47" stroke-width="1"/>
+<text x="200" y="32" text-anchor="middle" fill="#48ffe0" font-family="monospace" font-size="11" font-weight="700" letter-spacing="2">CWWE-0001</text>
+<text x="200" y="50" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="9">Care · Wait · Weight · Emerge — Quadratic Triangle + GHZ Gravity</text>
+
+<!-- Circuit diagram mini -->
+<rect x="20" y="64" width="360" height="120" rx="8" fill="#02040c" stroke="#1a2e47" stroke-width="0.5"/>
+<!-- Wires -->
+<line x1="40" y1="90" x2="360" y2="90" stroke="#1a2e47" stroke-width="0.5"/>
+<line x1="40" y1="115" x2="360" y2="115" stroke="#1a2e47" stroke-width="0.5"/>
+<line x1="40" y1="140" x2="360" y2="140" stroke="#1a2e47" stroke-width="0.5"/>
+<line x1="40" y1="165" x2="360" y2="165" stroke="#1a2e47" stroke-width="0.5"/>
+<!-- Labels -->
+<text x="30" y="93" text-anchor="end" fill="#48ffe0" font-family="monospace" font-size="8">C</text>
+<text x="30" y="118" text-anchor="end" fill="#48ffe0" font-family="monospace" font-size="8">W</text>
+<text x="30" y="143" text-anchor="end" fill="#48ffe0" font-family="monospace" font-size="8">W</text>
+<text x="30" y="168" text-anchor="end" fill="#ff2d55" font-family="monospace" font-size="8">E</text>
+<!-- Hadamards -->
+<rect x="50" y="82" width="18" height="16" rx="2" fill="#1d9e75" stroke="#5dcaa5" stroke-width="0.5"/>
+<text x="59" y="93" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="8" font-weight="700">H</text>
+<rect x="50" y="107" width="18" height="16" rx="2" fill="#1d9e75" stroke="#5dcaa5" stroke-width="0.5"/>
+<text x="59" y="118" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="8" font-weight="700">H</text>
+<rect x="50" y="132" width="18" height="16" rx="2" fill="#1d9e75" stroke="#5dcaa5" stroke-width="0.5"/>
+<text x="59" y="143" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="8" font-weight="700">H</text>
+<!-- Triangle CNOT cycle -->
+<circle cx="100" cy="90" r="3" fill="#e8f4ff"/>
+<line x1="100" y1="93" x2="100" y2="115" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="100" cy="115" r="6" fill="none" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="125" cy="115" r="3" fill="#e8f4ff"/>
+<line x1="125" y1="118" x2="125" y2="140" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="125" cy="140" r="6" fill="none" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="150" cy="140" r="3" fill="#e8f4ff"/>
+<line x1="150" y1="93" x2="150" y2="137" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="150" cy="90" r="6" fill="none" stroke="#e8f4ff" stroke-width="0.5"/>
+<!-- Phase ramp -->
+<rect x="175" y="82" width="28" height="16" rx="2" fill="#ba7517" stroke="#ffd975" stroke-width="0.5"/>
+<text x="189" y="93" text-anchor="middle" fill="#07111f" font-family="monospace" font-size="7">1/9</text>
+<rect x="175" y="107" width="28" height="16" rx="2" fill="#ba7517" stroke="#ffd975" stroke-width="0.5"/>
+<text x="189" y="118" text-anchor="middle" fill="#07111f" font-family="monospace" font-size="7">4/9</text>
+<rect x="175" y="132" width="28" height="16" rx="2" fill="#ba7517" stroke="#ffd975" stroke-width="0.5"/>
+<text x="189" y="143" text-anchor="middle" fill="#07111f" font-family="monospace" font-size="7">9/9</text>
+<!-- Noise -->
+<rect x="215" y="82" width="20" height="16" rx="2" fill="#993c1d" stroke="#f0997b" stroke-width="0.5"/>
+<text x="225" y="93" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="7">Rx</text>
+<!-- Teleport -->
+<rect x="260" y="157" width="18" height="16" rx="2" fill="#1d9e75" stroke="#5dcaa5" stroke-width="0.5"/>
+<text x="269" y="168" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="8" font-weight="700">H</text>
+<circle cx="295" cy="140" r="3" fill="#e8f4ff"/>
+<line x1="295" y1="143" x2="295" y2="165" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="295" cy="165" r="6" fill="none" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="315" cy="115" r="3" fill="#e8f4ff"/>
+<line x1="315" y1="118" x2="315" y2="162" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="315" cy="165" r="3" fill="#e8f4ff"/>
+<circle cx="335" cy="90" r="3" fill="#e8f4ff"/>
+<line x1="335" y1="93" x2="335" y2="162" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="335" cy="165" r="3" fill="#e8f4ff"/>
+<!-- Seal -->
+<rect x="345" y="157" width="24" height="16" rx="2" fill="#e24b4a" stroke="#f09595" stroke-width="0.5"/>
+<text x="357" y="168" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="7">π/φ</text>
+
+<!-- Data readouts -->
+<text x="30" y="206" fill="#6a85a8" font-family="monospace" font-size="9" letter-spacing="1">NOISE</text>
+<text x="370" y="206" text-anchor="end" fill="#48ffe0" font-family="monospace" font-size="14" font-weight="700">0.00</text>
+
+<!-- Meaning bar -->
+<text x="30" y="232" fill="#6a85a8" font-family="monospace" font-size="9">MEANING</text>
+<rect x="110" y="222" width="260" height="14" rx="3" fill="#02040c" stroke="#1a2e47" stroke-width="0.5"/>
+<rect x="110" y="222" width="237" height="14" rx="3" fill="#ffd975"/>
+<text x="370" y="233" text-anchor="end" fill="#ffd975" font-family="monospace" font-size="11" font-weight="700">0.2736</text>
+
+<!-- Gravity bar -->
+<text x="30" y="256" fill="#6a85a8" font-family="monospace" font-size="9">GRAVITY</text>
+<rect x="110" y="246" width="260" height="14" rx="3" fill="#02040c" stroke="#1a2e47" stroke-width="0.5"/>
+<rect x="110" y="246" width="167" height="14" rx="3" fill="#48ffe0"/>
+<text x="370" y="257" text-anchor="end" fill="#48ffe0" font-family="monospace" font-size="11" font-weight="700">0.6455</text>
+
+<!-- Coherence bar -->
+<text x="30" y="280" fill="#6a85a8" font-family="monospace" font-size="9">COHERENCE</text>
+<rect x="110" y="270" width="260" height="14" rx="3" fill="#02040c" stroke="#1a2e47" stroke-width="0.5"/>
+<rect x="110" y="270" width="208" height="14" rx="3" fill="#79ff9d"/>
+<text x="370" y="281" text-anchor="end" fill="#79ff9d" font-family="monospace" font-size="11" font-weight="700">0.8027</text>
+
+<!-- Metrics grid -->
+<rect x="20" y="298" width="170" height="50" rx="6" fill="#050e1d" stroke="#1a2e47" stroke-width="0.5"/>
+<text x="30" y="316" fill="#6a85a8" font-family="monospace" font-size="8">P(EMERGE=1)</text>
+<text x="180" y="316" text-anchor="end" fill="#e8f4ff" font-family="monospace" font-size="13" font-weight="700">0.5280</text>
+<text x="30" y="338" fill="#6a85a8" font-family="monospace" font-size="8">GHZ FIDELITY</text>
+<text x="180" y="338" text-anchor="end" fill="#c792ff" font-family="monospace" font-size="13" font-weight="700">0.208</text>
+
+<rect x="210" y="298" width="170" height="50" rx="6" fill="#050e1d" stroke="#1a2e47" stroke-width="0.5"/>
+<text x="220" y="316" fill="#6a85a8" font-family="monospace" font-size="8">ENTROPY</text>
+<text x="370" y="316" text-anchor="end" fill="#ff8ba0" font-family="monospace" font-size="13" font-weight="700">0.0000</text>
+<text x="220" y="338" fill="#6a85a8" font-family="monospace" font-size="8">OPENNESS</text>
+<text x="370" y="338" text-anchor="end" fill="#7db7ff" font-family="monospace" font-size="13" font-weight="700">0.5749</text>
+
+<text x="30" y="374" fill="#6a85a8" font-family="monospace" font-size="8">UNIQUE STATES</text>
+<text x="180" y="374" text-anchor="end" fill="#e8f4ff" font-family="monospace" font-size="13" font-weight="700">16</text>
+<text x="220" y="374" fill="#6a85a8" font-family="monospace" font-size="8">SHOTS</text>
+<text x="370" y="374" text-anchor="end" fill="#e8f4ff" font-family="monospace" font-size="13" font-weight="700">1,000</text>
+
+<!-- Stabilization state -->
+<rect x="20" y="392" width="360" height="30" rx="6" fill="#050e1d" stroke="#1a2e47" stroke-width="0.5"/>
+<text x="30" y="412" fill="#6a85a8" font-family="monospace" font-size="8">STABILIZATION</text>
+<text x="370" y="412" text-anchor="end" fill="#ffd975" font-family="monospace" font-size="11" font-weight="700">REJECTED</text>
+
+<!-- Proof hash -->
+<rect x="20" y="434" width="360" height="36" rx="6" fill="#02040c" stroke="#ffd975" stroke-width="0.5" stroke-dasharray="3,3"/>
+<text x="200" y="448" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="8">SHA-256 PROOF</text>
+<text x="200" y="462" text-anchor="middle" fill="#ffd975" font-family="monospace" font-size="11" font-weight="600">5029fcde084e43</text>
+
+<!-- Constants -->
+<text x="200" y="494" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="8">GOV_ANGLE = π/φ = 1.941611 rad · Quadratic △ CNOT cycle · GHZ gravity teleport</text>
+
+<!-- QHP stamp -->
+<rect x="140" y="506" width="120" height="24" rx="12" fill="none" stroke="#48ffe0" stroke-width="0.5"/>
+<text x="200" y="522" text-anchor="middle" fill="#48ffe0" font-family="monospace" font-size="10" font-weight="700" letter-spacing="2">QHP SEALED</text>
+
+<!-- Attribution -->
+<text x="200" y="552" text-anchor="middle" fill="#ffd975" font-family="monospace" font-size="8">Joshua Lopez · DCGP.AI LLC</text>
+<text x="200" y="566" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="7">USPTO 19/555,951 | 19/730,900 | 19/731,016 | 19/732,119</text>
+</svg>
