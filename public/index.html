@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLAP — Controlled Ledgered Admission Protocol</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --text: #e0e0e8;
+    --dim: #6a6a7a;
+    --gold: #c9a84c;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --blue: #3498db;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .clapper-header {
+    text-align: center;
+    padding: 40px 20px 20px;
+    position: relative;
+  }
+
+  .clap-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-shadow: 0 0 40px rgba(201, 168, 76, 0.3);
+    cursor: pointer;
+    user-select: none;
+    transition: text-shadow 0.15s;
+  }
+
+  .clap-title:active {
+    text-shadow: 0 0 80px rgba(201, 168, 76, 0.8);
+  }
+
+  .clap-subtitle {
+    font-size: 0.75rem;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+    margin-top: 8px;
+  }
+
+  .clap-motto {
+    font-size: 0.65rem;
+    color: var(--gold);
+    opacity: 0.5;
+    margin-top: 12px;
+    font-style: italic;
+  }
+
+  /* The Clapper Switch */
+  .clapper-switch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 30px 20px;
+  }
+
+  .clap-state {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 12px 28px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.3s;
+  }
+
+  .clap-state.on {
+    border-color: var(--green);
+    color: var(--green);
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.15);
+  }
+
+  .clap-state.off {
+    border-color: var(--red);
+    color: var(--red);
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.15);
+  }
+
+  .gate-indicator {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 12px rgba(46, 204, 113, 0.5);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Stats Row */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 20px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+    margin-top: 4px;
+  }
+
+  /* Admission Ledger */
+  .section-header {
+    font-size: 0.7rem;
+    color: var(--dim);
+    letter-spacing: 0.2em;
+    padding: 20px 20px 10px;
+    border-bottom: 1px solid var(--border);
+    margin: 0 16px;
+  }
+
+  .ledger {
+    padding: 10px 16px;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .ledger-entry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.75rem;
+    transition: background 0.15s;
+  }
+
+  .ledger-entry:hover {
+    background: var(--surface);
+  }
+
+  .ledger-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ledger-dot.admitted { background: var(--green); }
+  .ledger-dot.rejected { background: var(--red); }
+  .ledger-dot.pending { background: var(--gold); }
+
+  .ledger-path {
+    flex: 1;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ledger-target {
+    color: var(--dim);
+    font-size: 0.65rem;
+    flex-shrink: 0;
+  }
+
+  .ledger-hash {
+    color: var(--gold);
+    font-size: 0.6rem;
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  .ledger-time {
+    color: var(--dim);
+    font-size: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  /* Route Health Grid */
+  .route-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 6px;
+    padding: 10px 16px 30px;
+  }
+
+  .route-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 0.65rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .route-cell:hover {
+    border-color: var(--gold);
+  }
+
+  .route-cell .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .route-cell .dot.live { background: var(--green); }
+  .route-cell .dot.dead { background: var(--red); }
+
+  .route-cell .name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text);
+  }
+
+  /* Footer */
+  .clap-footer {
+    text-align: center;
+    padding: 30px 20px;
+    border-top: 1px solid var(--border);
+    margin: 0 16px;
+  }
+
+  .clap-footer p {
+    font-size: 0.6rem;
+    color: var(--dim);
+    margin: 4px 0;
+  }
+
+  .clap-footer .sig {
+    color: var(--gold);
+    opacity: 0.6;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    .clap-title { font-size: 2.5rem; }
+    .stats-row { gap: 20px; }
+    .stat-value { font-size: 1.4rem; }
+    .route-grid { grid-template-columns: 1fr 1fr; }
+    .ledger-hash { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="clapper-header">
+  <div class="clap-title" id="clapButton" onclick="clap()">CLAP</div>
+  <div class="clap-subtitle">CONTROLLED LEDGERED ADMISSION PROTOCOL</div>
+  <div class="clap-motto">Where there is a gap, there is a gate.</div>
+</div>
+
+<div class="clapper-switch">
+  <div class="clap-state on" id="gateState">GATE OPEN</div>
+  <div class="gate-indicator" id="gateLight"></div>
+</div>
+
+<div class="stats-row">
+  <div class="stat">
+    <div class="stat-value" id="admittedCount">98</div>
+    <div class="stat-label">ADMITTED</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value" id="rejectedCount">13</div>
+    <div class="stat-label">REJECTED</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value" id="pendingCount">0</div>
+    <div class="stat-label">PENDING</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">π/φ</div>
+    <div class="stat-label">GOV_ANGLE</div>
+  </div>
+</div>
+
+<div class="section-header">ADMISSION LEDGER</div>
+<div class="ledger" id="ledger"></div>
+
+<div class="section-header">ROUTE HEALTH — OPERATOR CONSOLE</div>
+<div class="route-grid" id="routeGrid"></div>
+
+<div class="clap-footer">
+  <p>DCGP.AI LLC — Joshua Lopez</p>
+  <p>USPTO 19/555,951 | 19/730,900 | 19/731,016 | 19/732,119</p>
+  <p class="sig">DCGP introduces AGI. AURA Governed Intelligence.</p>
+</div>
+
+<script>
+// Route data from live audit
+const routes = [
+  { path: '/96capital/', status: 200 },
+  { path: '/alzheimers/', status: 200 },
+  { path: '/aura-xi-iss-certificate/', status: 200 },
+  { path: '/aura115-command-simulation/', status: 200 },
+  { path: '/aura115-guard-simulation/', status: 200 },
+  { path: '/authority-6d/', status: 200 },
+  { path: '/bell-pair-circuit/', status: 200 },
+  { path: '/blue-lantern-seven/', status: 200 },
+  { path: '/capital-engines/', status: 200 },
+  { path: '/capital-lane/', status: 200 },
+  { path: '/cavitation-phased-array/', status: 200 },
+  { path: '/chatbase/', status: 200 },
+  { path: '/chatface/', status: 200 },
+  { path: '/cirq-aura-bridge/', status: 200 },
+  { path: '/cirq-index/', status: 200 },
+  { path: '/cirq-main/', status: 200 },
+  { path: '/cirq-orchestrator/', status: 200 },
+  { path: '/cirq-qhp-simulation/', status: 200 },
+  { path: '/cirq-quantum-demonstrator/', status: 404 },
+  { path: '/cirq-runtime-simulation/', status: 200 },
+  { path: '/coin-catalog/', status: 404 },
+  { path: '/comcard/', status: 200 },
+  { path: '/command-center/', status: 404 },
+  { path: '/command-deck/', status: 200 },
+  { path: '/command-report/', status: 200 },
+  { path: '/command-wall/', status: 200 },
+  { path: '/contact-hamiltonian/', status: 404 },
+  { path: '/cron-dashboard/', status: 200 },
+  { path: '/daily-report/', status: 200 },
+  { path: '/daily/', status: 404 },
+  { path: '/david-white-lane/', status: 200 },
+  { path: '/dcgp-mesh/', status: 200 },
+  { path: '/decoherence-defense/', status: 200 },
+  { path: '/docgrokhealth/', status: 200 },
+  { path: '/doctrine/', status: 200 },
+  { path: '/dynamic-structural-map/', status: 200 },
+  { path: '/earth/', status: 404 },
+  { path: '/earthwide-lane-registry/', status: 200 },
+  { path: '/el1/', status: 404 },
+  { path: '/engine-ledger/', status: 200 },
+  { path: '/equilibrium/', status: 200 },
+  { path: '/freedom-audit/', status: 200 },
+  { path: '/genesis-operating-system/', status: 200 },
+  { path: '/ghz-state-demo/', status: 200 },
+  { path: '/go-honeycomb-teleport/', status: 404 },
+  { path: '/governed-tsp/', status: 200 },
+  { path: '/guard/', status: 200 },
+  { path: '/guardian-fuel-tech/', status: 200 },
+  { path: '/guy-massey-shadow-harness/', status: 200 },
+  { path: '/health', status: 200 },
+  { path: '/implementation-receipts/', status: 404 },
+  { path: '/intelligence-report/', status: 200 },
+  { path: '/invention-ledger/', status: 200 },
+  { path: '/invention-reports/', status: 200 },
+  { path: '/jozsef-shadow-harness/', status: 200 },
+  { path: '/jupiter/', status: 200 },
+  { path: '/kerce-darpa-lane/', status: 200 },
+  { path: '/lane-spectral-observer/', status: 200 },
+  { path: '/lgh-quantum-radar/', status: 200 },
+  { path: '/live-inventions/', status: 200 },
+  { path: '/lpc-quikbit/', status: 200 },
+  { path: '/marlana-lane/', status: 200 },
+  { path: '/mars-mission-simulation/', status: 200 },
+  { path: '/mars/', status: 200 },
+  { path: '/mazzy-lane/', status: 200 },
+  { path: '/mc290/', status: 200 },
+  { path: '/medico-vigilance/', status: 200 },
+  { path: '/memory/', status: 404 },
+  { path: '/mercury/', status: 200 },
+  { path: '/michael-lee-lane/', status: 200 },
+  { path: '/mining-reports/', status: 200 },
+  { path: '/moon/', status: 200 },
+  { path: '/neptune/', status: 200 },
+  { path: '/nic-lane/', status: 200 },
+  { path: '/nic-sentry-lane/', status: 200 },
+  { path: '/operator-report-hub/', status: 200 },
+  { path: '/operator-signals/', status: 200 },
+  { path: '/operator-witness/', status: 200 },
+  { path: '/owner-lane/', status: 200 },
+  { path: '/p28-fire/', status: 200 },
+  { path: '/patent-packages/', status: 200 },
+  { path: '/patent-vault/', status: 200 },
+  { path: '/planet-registry/', status: 200 },
+  { path: '/pluto/', status: 200 },
+  { path: '/private-operator/', status: 200 },
+  { path: '/private_operator/', status: 200 },
+  { path: '/qhp/', status: 200 },
+  { path: '/quantum-engine-planets/', status: 200 },
+  { path: '/quantum-machines/', status: 404 },
+  { path: '/quantum-test-137/', status: 200 },
+  { path: '/quirq-nano-echo/', status: 200 },
+  { path: '/quirq-svg-circuit-simulation/', status: 200 },
+  { path: '/recognition/', status: 200 },
+  { path: '/rush-news-network/', status: 200 },
+  { path: '/saturn/', status: 200 },
+  { path: '/session-report/', status: 200 },
+  { path: '/simulations/', status: 200 },
+  { path: '/smc-circuit-3/', status: 200 },
+  { path: '/sonoluminescence-simulation/', status: 200 },
+  { path: '/sopan-bus300/', status: 200 },
+  { path: '/space-lane/', status: 200 },
+  { path: '/special-node-mesh/', status: 200 },
+  { path: '/storefront/', status: 404 },
+  { path: '/structural-light/', status: 200 },
+  { path: '/susan-hirman-lane/', status: 200 },
+  { path: '/susan-quantum-pharma-circuit/', status: 200 },
+  { path: '/symbiosis-runtime/', status: 200 },
+  { path: '/unified-shors-rp-simulation/', status: 200 },
+  { path: '/uranus/', status: 200 },
+  { path: '/venus/', status: 200 },
+  { path: '/white-paper/', status: 404 },
+];
+
+// Generate pseudo-hashes
+function govHash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h).toString(16).padStart(12, 'a').slice(0, 12);
+}
+
+// Build route grid
+const grid = document.getElementById('routeGrid');
+routes.forEach(r => {
+  const cell = document.createElement('div');
+  cell.className = 'route-cell';
+  cell.onclick = () => window.open('https://cloud.aura115.ai' + r.path, '_blank');
+  cell.innerHTML = `
+    <div class="dot ${r.status === 200 ? 'live' : 'dead'}"></div>
+    <div class="name">${r.path.replace(/\//g, '')}</div>
+  `;
+  grid.appendChild(cell);
+});
+
+// Build ledger
+const ledger = document.getElementById('ledger');
+const now = new Date();
+
+// Admitted routes first, then rejected
+const admitted = routes.filter(r => r.status === 200);
+const rejected = routes.filter(r => r.status !== 200);
+
+[...rejected, ...admitted.slice(0, 30)].forEach((r, i) => {
+  const isAdmitted = r.status === 200;
+  const time = new Date(now - (i * 47000));
+  const entry = document.createElement('div');
+  entry.className = 'ledger-entry';
+  entry.innerHTML = `
+    <div class="ledger-dot ${isAdmitted ? 'admitted' : 'rejected'}"></div>
+    <div class="ledger-path">${r.path}</div>
+    <div class="ledger-target">${isAdmitted ? 'dist/' : 'BLOCKED'}</div>
+    <div class="ledger-hash">${govHash(r.path)}</div>
+    <div class="ledger-time">${time.toISOString().slice(11, 19)}Z</div>
+  `;
+  ledger.appendChild(entry);
+});
+
+// Clap interaction
+let clapCount = 0;
+function clap() {
+  clapCount++;
+  const btn = document.getElementById('clapButton');
+  const state = document.getElementById('gateState');
+  const light = document.getElementById('gateLight');
+
+  btn.style.textShadow = '0 0 80px rgba(201, 168, 76, 0.8)';
+  setTimeout(() => btn.style.textShadow = '0 0 40px rgba(201, 168, 76, 0.3)', 150);
+
+  if (clapCount % 2 === 0) {
+    state.className = 'clap-state on';
+    state.textContent = 'GATE OPEN';
+    light.style.background = 'var(--green)';
+    light.style.boxShadow = '0 0 12px rgba(46, 204, 113, 0.5)';
+  } else {
+    state.className = 'clap-state off';
+    state.textContent = 'GATE CLOSED';
+    light.style.background = 'var(--red)';
+    light.style.boxShadow = '0 0 12px rgba(231, 76, 60, 0.5)';
+  }
+}
+</script>
+
+</body>
+</html>
