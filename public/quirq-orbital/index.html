@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QUIRQ Orbital · Node Constellation · DCGP.AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--void:#020409;--surface:rgba(8,12,20,0.95);--edge:rgba(45,212,191,0.1);--teal:#2dd4bf;--gold:#fbbf24;--red:#ef4444;--blue:#3b82f6;--violet:#8b5cf6;--muted:#52525b;--text:#d4d4d8;--bright:#fafafa}
+html,body{height:100%;background:var(--void);color:var(--text);font-family:'JetBrains Mono',monospace;overflow:hidden}
+canvas{display:block}
+.hud{position:fixed;top:0;left:0;right:0;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:rgba(2,4,9,0.85);border-bottom:1px solid var(--edge);z-index:10}
+.hud-left{display:flex;align-items:center;gap:12px}
+.hud-title{font-size:13px;font-weight:700;color:var(--teal);letter-spacing:0.12em}
+.hud-sub{font-size:9px;color:var(--muted);letter-spacing:0.1em}
+.hud-right{display:flex;gap:16px;align-items:center}
+.stat{text-align:center}
+.stat-val{font-size:14px;font-weight:700}
+.stat-label{font-size:8px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase}
+.hot{color:#ef4444}.warm{color:#fbbf24}.cold{color:#3b82f6}.dead{color:#52525b}
+
+.legend{position:fixed;bottom:12px;left:16px;display:flex;gap:14px;font-size:9px;color:var(--muted);z-index:10}
+.leg-item{display:flex;align-items:center;gap:4px}
+.leg-dot{width:8px;height:8px;border-radius:50%}
+
+.info-panel{position:fixed;top:50px;right:12px;width:220px;background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:14px;z-index:10;display:none}
+.info-panel.show{display:block}
+.info-name{font-size:14px;font-weight:700;color:var(--bright);margin-bottom:8px}
+.info-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.info-label{color:var(--muted)}.info-val{color:var(--text)}
+</style>
+</head>
+<body>
+
+<div class="hud">
+  <div class="hud-left">
+    <div class="hud-title">QUIRQ ORBITAL</div>
+    <div class="hud-sub">42,900 NODES · 10 PLANETS · LIVE HEAT MAP</div>
+  </div>
+  <div class="hud-right">
+    <div class="stat"><div class="stat-val hot" id="hotCount">15</div><div class="stat-label">Hot</div></div>
+    <div class="stat"><div class="stat-val warm" id="warmCount">2</div><div class="stat-label">Warm</div></div>
+    <div class="stat"><div class="stat-val cold" id="coldCount">1</div><div class="stat-label">Cold</div></div>
+    <div class="stat"><div class="stat-val dead" id="deadCount">2</div><div class="stat-label">Dead</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--teal)" id="nodeCount">42,900</div><div class="stat-label">Nodes</div></div>
+  </div>
+</div>
+
+<div class="info-panel" id="infoPanel">
+  <div class="info-name" id="infoName">—</div>
+  <div id="infoRows"></div>
+</div>
+
+<div class="legend">
+  <div class="leg-item"><div class="leg-dot" style="background:#ef4444;box-shadow:0 0 8px #ef4444"></div>HOT (&lt;500ms)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#fbbf24;box-shadow:0 0 8px #fbbf24"></div>WARM (&lt;2s)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#3b82f6;box-shadow:0 0 6px #3b82f6"></div>COLD (&gt;2s)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#52525b"></div>DEAD</div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--teal);opacity:0.3"></div>4,290 NODES (per planet)</div>
+</div>
+
+<canvas id="cv"></canvas>
+
+<script>
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let W, H, cx, cy, time = 0, mouse = { x: -999, y: -999 }, hovered = null;
+
+function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; cx = W/2; cy = H/2; }
+resize(); addEventListener('resize', resize);
+
+const planets = [
+  { id:'mercury',name:'Mercury', ms:96,  status:'HOT',  nodes:4290, color:'#a8a29e', angle:0,   orbit:0.22, speed:4.15 },
+  { id:'venus',  name:'Venus',   ms:264, status:'HOT',  nodes:4290, color:'#fbbf24', angle:0.6, orbit:0.28, speed:1.62 },
+  { id:'earth',  name:'Earth',   ms:97,  status:'DEAD', nodes:4290, color:'#22d3ee', angle:1.2, orbit:0.34, speed:1.0  },
+  { id:'moon',   name:'Moon',    ms:103, status:'HOT',  nodes:4290, color:'#94a3b8', angle:1.5, orbit:0.37, speed:0.9  },
+  { id:'mars',   name:'Mars',    ms:4919,status:'COLD', nodes:4290, color:'#ef4444', angle:2.1, orbit:0.42, speed:0.53 },
+  { id:'jupiter',name:'Jupiter', ms:997, status:'WARM', nodes:4290, color:'#fb923c', angle:2.8, orbit:0.52, speed:0.08 },
+  { id:'saturn', name:'Saturn',  ms:97,  status:'HOT',  nodes:4290, color:'#fde68a', angle:3.5, orbit:0.60, speed:0.03 },
+  { id:'uranus', name:'Uranus',  ms:107, status:'HOT',  nodes:4290, color:'#67e8f9', angle:4.2, orbit:0.68, speed:0.01 },
+  { id:'neptune',name:'Neptune', ms:8042,status:'DEAD', nodes:4290, color:'#818cf8', angle:5.0, orbit:0.76, speed:0.006},
+  { id:'pluto',  name:'Pluto',   ms:117, status:'HOT',  nodes:4290, color:'#d4d4d8', angle:5.8, orbit:0.84, speed:0.004},
+];
+
+const statusColor = { HOT:'#ef4444', WARM:'#fbbf24', COLD:'#3b82f6', DEAD:'#52525b' };
+const statusGlow  = { HOT:'rgba(239,68,68,0.4)', WARM:'rgba(251,191,36,0.3)', COLD:'rgba(59,130,246,0.2)', DEAD:'rgba(0,0,0,0)' };
+
+function drawOrbit(r) {
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, r, r * 0.4, 0, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(45,212,191,0.06)';
+  ctx.lineWidth = 0.5;
+  ctx.stroke();
+}
+
+function planetPos(p, t) {
+  const a = p.angle + t * p.speed * 0.3;
+  const rx = Math.min(W, H) * 0.45 * p.orbit;
+  const ry = rx * 0.4;
+  return { x: cx + Math.cos(a) * rx, y: cy + Math.sin(a) * ry };
+}
+
+function drawNodes(px, py, count, status, t, planetAngle) {
+  const sc = statusColor[status] || '#52525b';
+  const nodeRadius = Math.min(W, H) * 0.06;
+  const rings = 5;
+  const nodesPerRing = Math.floor(count / rings);
+
+  for (let ring = 0; ring < rings; ring++) {
+    const r = nodeRadius * (0.3 + ring * 0.18);
+    const n = Math.min(nodesPerRing, 40 + ring * 10);
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 + t * (0.2 + ring * 0.05) + planetAngle;
+      const nx = px + Math.cos(a) * r;
+      const ny = py + Math.sin(a) * r * 0.5;
+      const heat = (Math.sin(t * 2 + i * 0.3 + ring) + 1) * 0.5;
+      const alpha = status === 'DEAD' ? 0.08 : 0.15 + heat * 0.35;
+      ctx.beginPath();
+      ctx.arc(nx, ny, 1 + heat * 0.8, 0, Math.PI * 2);
+      ctx.fillStyle = sc;
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+}
+
+function drawPlanet(p, t) {
+  const pos = planetPos(p, t);
+  const sc = statusColor[p.status];
+  const size = 6 + (p.id === 'jupiter' ? 6 : p.id === 'saturn' ? 4 : 0);
+
+  // Node cloud
+  drawNodes(pos.x, pos.y, p.nodes, p.status, t, p.angle);
+
+  // Glow
+  if (p.status !== 'DEAD') {
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, size + 12, 0, Math.PI * 2);
+    ctx.fillStyle = statusGlow[p.status];
+    ctx.fill();
+  }
+
+  // Planet body
+  ctx.beginPath();
+  ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+  ctx.fillStyle = p.color;
+  ctx.fill();
+  if (p.status !== 'DEAD') {
+    ctx.strokeStyle = sc;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  // Saturn ring
+  if (p.id === 'saturn') {
+    ctx.beginPath();
+    ctx.ellipse(pos.x, pos.y, size + 8, 3, -0.3, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(253,230,138,0.4)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Label
+  ctx.font = '500 9px "JetBrains Mono"';
+  ctx.fillStyle = p.status === 'DEAD' ? '#52525b' : '#d4d4d8';
+  ctx.textAlign = 'center';
+  ctx.fillText(p.name, pos.x, pos.y + size + 14);
+  ctx.font = '300 7px "JetBrains Mono"';
+  ctx.fillStyle = sc;
+  ctx.fillText(p.ms + 'ms · ' + p.nodes.toLocaleString(), pos.x, pos.y + size + 23);
+
+  // Hit detection
+  const dx = mouse.x - pos.x, dy = mouse.y - pos.y;
+  if (dx*dx + dy*dy < (size+20)*(size+20)) hovered = p;
+
+  p._pos = pos;
+}
+
+function drawCenter(t) {
+  // AURA core
+  const pulse = 12 + Math.sin(t * 1.5) * 3;
+  const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, pulse + 20);
+  gradient.addColorStop(0, 'rgba(45,212,191,0.25)');
+  gradient.addColorStop(0.6, 'rgba(139,92,246,0.08)');
+  gradient.addColorStop(1, 'transparent');
+  ctx.beginPath();
+  ctx.arc(cx, cy, pulse + 20, 0, Math.PI * 2);
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, pulse, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(45,212,191,0.15)';
+  ctx.strokeStyle = 'rgba(45,212,191,0.3)';
+  ctx.lineWidth = 1;
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.font = '700 10px "JetBrains Mono"';
+  ctx.fillStyle = '#2dd4bf';
+  ctx.textAlign = 'center';
+  ctx.fillText('AURA', cx, cy + 4);
+  ctx.font = '300 7px "JetBrains Mono"';
+  ctx.fillStyle = '#71717a';
+  ctx.fillText('S* · K=0', cx, cy + 14);
+}
+
+function drawConnections(t) {
+  planets.forEach(p => {
+    if (!p._pos || p.status === 'DEAD') return;
+    const alpha = 0.04 + Math.sin(t + p.angle) * 0.02;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(p._pos.x, p._pos.y);
+    ctx.strokeStyle = `rgba(45,212,191,${alpha})`;
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  });
+}
+
+function frame(ts) {
+  time = ts * 0.001;
+  hovered = null;
+  ctx.clearRect(0, 0, W, H);
+
+  // Orbits
+  planets.forEach(p => drawOrbit(Math.min(W,H) * 0.45 * p.orbit));
+
+  // Connections to center
+  drawConnections(time);
+
+  // Planets with node clouds
+  planets.forEach(p => drawPlanet(p, time));
+
+  // Center
+  drawCenter(time);
+
+  // Info panel
+  const panel = document.getElementById('infoPanel');
+  if (hovered) {
+    panel.classList.add('show');
+    document.getElementById('infoName').textContent = hovered.name;
+    document.getElementById('infoRows').innerHTML = [
+      ['Status', hovered.status],
+      ['Latency', hovered.ms + 'ms'],
+      ['Nodes', hovered.nodes.toLocaleString()],
+      ['QUIRQ Layer', '4,290 Rank-1'],
+      ['Base Reserve', '300,000 Rank-0'],
+      ['QHP', hovered.status === 'DEAD' ? 'OFFLINE' : 'DISTRIBUTED'],
+      ['Capacity', '× 3,000,000'],
+    ].map(([l,v]) => `<div class="info-row"><span class="info-label">${l}</span><span class="info-val">${v}</span></div>`).join('');
+  } else {
+    panel.classList.remove('show');
+  }
+
+  requestAnimationFrame(frame);
+}
+
+cv.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+cv.addEventListener('touchmove', e => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; });
+
+// Live ping
+async function pingAll() {
+  const base = '/api/';
+  const routes = {mercury:'mercury-command',venus:'venus-snapshot',earth:'earth-resolver',moon:'moon-projection',
+    mars:'mars-relay',jupiter:'jupiter-universal-intake',saturn:'saturn-telemetry',uranus:'uranus-clip',
+    neptune:'neptune-relay',pluto:'pluto-memory'};
+  for (const p of planets) {
+    const route = routes[p.id];
+    if (!route) continue;
+    const t0 = performance.now();
+    try {
+      const r = await fetch(base + route, {cache:'no-store',signal:AbortSignal.timeout(8000)});
+      p.ms = Math.round(performance.now() - t0);
+      p.status = p.ms < 500 ? 'HOT' : p.ms < 2000 ? 'WARM' : 'COLD';
+    } catch {
+      p.ms = Math.round(performance.now() - t0);
+      p.status = 'DEAD';
+    }
+  }
+  const h = planets.filter(p=>p.status==='HOT').length;
+  const w = planets.filter(p=>p.status==='WARM').length;
+  const c = planets.filter(p=>p.status==='COLD').length;
+  const d = planets.filter(p=>p.status==='DEAD').length;
+  document.getElementById('hotCount').textContent = h;
+  document.getElementById('warmCount').textContent = w;
+  document.getElementById('coldCount').textContent = c;
+  document.getElementById('deadCount').textContent = d;
+}
+setInterval(pingAll, 30000);
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
