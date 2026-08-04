@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QUIRQ Production · Live Constellation Monitor · DCGP.AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--void:#020409;--card:rgba(8,12,20,0.92);--edge:rgba(45,212,191,0.1);--teal:#2dd4bf;--gold:#fbbf24;--red:#ef4444;--blue:#3b82f6;--violet:#8b5cf6;--green:#22c55e;--muted:#52525b;--text:#d4d4d8;--bright:#fafafa}
+html,body{height:100%;background:var(--void);color:var(--text);font-family:'JetBrains Mono',monospace;overflow-x:hidden}
+.hdr{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--edge);position:sticky;top:0;background:rgba(2,4,9,0.95);z-index:10}
+.hdr-t{font-size:12px;font-weight:700;color:var(--teal);letter-spacing:0.1em}
+.hdr-s{font-size:8px;color:var(--muted);letter-spacing:0.08em}
+.hdr-live{display:flex;align-items:center;gap:6px;font-size:9px;color:var(--green)}
+.hdr-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;padding:8px}
+.panel{background:var(--card);border:1px solid var(--edge);border-radius:10px;padding:12px;min-height:160px}
+.panel-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.panel-t{font-size:10px;font-weight:700;color:var(--bright);letter-spacing:0.08em}
+.panel-badge{font-size:8px;padding:2px 6px;border-radius:4px;font-weight:500}
+.badge-hot{background:rgba(239,68,68,0.15);color:var(--red)}
+.badge-warm{background:rgba(251,191,36,0.15);color:var(--gold)}
+.badge-cold{background:rgba(59,130,246,0.15);color:var(--blue)}
+.badge-dead{background:rgba(82,82,91,0.15);color:var(--muted)}
+.badge-ok{background:rgba(34,197,94,0.15);color:var(--green)}
+.metric-row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.02)}
+.metric-l{color:var(--muted)}.metric-v{color:var(--text)}
+.graph{width:100%;height:50px;margin-top:6px;position:relative}
+.graph canvas{width:100%;height:100%;border-radius:4px;background:rgba(0,0,0,0.3)}
+.planet-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:6px}
+.planet-card{background:rgba(0,0,0,0.3);border:1px solid var(--edge);border-radius:6px;padding:6px;text-align:center;cursor:pointer;transition:border-color 0.3s}
+.planet-card:hover{border-color:var(--teal)}
+.planet-icon{font-size:16px}
+.planet-name{font-size:8px;color:var(--text);margin-top:2px}
+.planet-ms{font-size:7px;margin-top:1px}
+.planet-nodes{font-size:7px;color:var(--muted)}
+.bar-wrap{height:4px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden;margin-top:3px}
+.bar-fill{height:100%;border-radius:2px;transition:width 1s}
+.feed{max-height:200px;overflow-y:auto;font-size:9px;line-height:1.6}
+.feed-line{padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.02)}
+.feed-ts{color:var(--teal);opacity:0.5;margin-right:6px}
+.full-width{grid-column:1/-1}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <div class="hdr-t">QUIRQ PRODUCTION MONITOR</div>
+    <div class="hdr-s">42,900 NODES · 10 PLANETS · 160 LANES · LIVE PROJECTION</div>
+  </div>
+  <div class="hdr-live"><div class="hdr-dot"></div>LIVE · <span id="lastUpdate">—</span></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const ALB = '';  // relative — served from same origin
+const $ = id => document.getElementById(id);
+const grid = $('grid');
+
+const PLANETS = [
+  {id:'mercury',name:'Mercury',icon:'☿',api:'mercury-command'},
+  {id:'venus',name:'Venus',icon:'♀',api:'venus-snapshot'},
+  {id:'earth',name:'Earth',icon:'🌍',api:'earth-resolver'},
+  {id:'moon',name:'Moon',icon:'🌙',api:'moon-projection'},
+  {id:'mars',name:'Mars',icon:'♂',api:'mars-relay'},
+  {id:'jupiter',name:'Jupiter',icon:'♃',api:'jupiter-universal-intake'},
+  {id:'saturn',name:'Saturn',icon:'♄',api:'saturn-telemetry'},
+  {id:'uranus',name:'Uranus',icon:'♅',api:'uranus-clip'},
+  {id:'neptune',name:'Neptune',icon:'♆',api:'neptune-relay'},
+  {id:'pluto',name:'Pluto',icon:'⯓',api:'pluto-memory'},
+];
+
+// Time-series buffers for graphs
+const history = {};
+const MAX_POINTS = 60;
+
+function pushHistory(key, val) {
+  if (!history[key]) history[key] = [];
+  history[key].push(val);
+  if (history[key].length > MAX_POINTS) history[key].shift();
+}
+
+function drawGraph(canvas, data, color) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width = canvas.offsetWidth * 2;
+  const h = canvas.height = canvas.offsetHeight * 2;
+  ctx.clearRect(0,0,w,h);
+  if (!data || data.length < 2) return;
+  const min = Math.min(...data) * 0.9;
+  const max = Math.max(...data) * 1.1 || 1;
+  ctx.beginPath();
+  data.forEach((v,i) => {
+    const x = (i/(data.length-1))*w;
+    const y = h - ((v-min)/(max-min))*h;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  // Fill under
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+  ctx.fillStyle = color.replace(')', ',0.08)').replace('rgb','rgba');
+  ctx.fill();
+}
+
+function badge(status) {
+  const cls = {HOT:'badge-hot',WARM:'badge-warm',COLD:'badge-cold',DEAD:'badge-dead',OK:'badge-ok'};
+  return `<span class="panel-badge ${cls[status]||'badge-ok'}">${status}</span>`;
+}
+
+function metricRow(l,v) { return `<div class="metric-row"><span class="metric-l">${l}</span><span class="metric-v">${v}</span></div>`; }
+
+function bar(val, max, color) {
+  const pct = Math.min(100, Math.round((val/max)*100));
+  return `<div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>`;
+}
+
+// Build panels
+function buildLayout() {
+  grid.innerHTML = `
+    <div class="panel" id="panelPlanets">
+      <div class="panel-hdr"><span class="panel-t">CONSTELLATION</span><span class="panel-badge badge-ok">10 PLANETS</span></div>
+      <div class="planet-grid" id="planetGrid"></div>
+    </div>
+    <div class="panel" id="panelCollider">
+      <div class="panel-hdr"><span class="panel-t">MC290 COLLIDER</span><span id="colliderBadge"></span></div>
+      <div id="colliderMetrics"></div>
+      <div class="graph"><canvas id="graphCollider"></canvas></div>
+    </div>
+    <div class="panel" id="panelCoherence">
+      <div class="panel-hdr"><span class="panel-t">GLOBAL COHERENCE</span><span id="coherenceBadge"></span></div>
+      <div id="coherenceMetrics"></div>
+      <div class="graph"><canvas id="graphCoherence"></canvas></div>
+    </div>
+    <div class="panel" id="panelMining">
+      <div class="panel-hdr"><span class="panel-t">PLANETARY MINING</span><span id="miningBadge"></span></div>
+      <div id="miningMetrics"></div>
+      <div class="graph"><canvas id="graphMining"></canvas></div>
+    </div>
+    <div class="panel" id="panelHealth">
+      <div class="panel-hdr"><span class="panel-t">GOVERNANCE HEALTH</span><span id="healthBadge"></span></div>
+      <div id="healthMetrics"></div>
+      <div class="graph"><canvas id="graphHealth"></canvas></div>
+    </div>
+    <div class="panel" id="panelNodes">
+      <div class="panel-hdr"><span class="panel-t">NODE MESH · 42,900</span><span id="nodesBadge"></span></div>
+      <div id="nodesMetrics"></div>
+      <div class="graph"><canvas id="graphNodes"></canvas></div>
+    </div>
+    <div class="panel full-width" id="panelFeed">
+      <div class="panel-hdr"><span class="panel-t">PRODUCTION FEED</span><span class="panel-badge badge-ok">LIVE</span></div>
+      <div class="feed" id="feed"></div>
+    </div>
+  `;
+}
+buildLayout();
+
+const feed = $('feed');
+function addFeed(msg) {
+  const ts = new Date().toLocaleTimeString('en',{hour12:false});
+  feed.innerHTML = `<div class="feed-line"><span class="feed-ts">${ts}</span>${msg}</div>` + feed.innerHTML;
+  if (feed.children.length > 50) feed.removeChild(feed.lastChild);
+}
+
+// Ping planets
+async function pingPlanets() {
+  const pg = $('planetGrid');
+  let html = '';
+  for (const p of PLANETS) {
+    const t0 = performance.now();
+    let ms, status;
+    try {
+      await fetch('/api/' + p.api, {cache:'no-store', signal:AbortSignal.timeout(6000)});
+      ms = Math.round(performance.now() - t0);
+      status = ms < 500 ? 'HOT' : ms < 2000 ? 'WARM' : 'COLD';
+    } catch {
+      ms = Math.round(performance.now() - t0);
+      status = 'DEAD';
+    }
+    const color = {HOT:'var(--red)',WARM:'var(--gold)',COLD:'var(--blue)',DEAD:'var(--muted)'}[status];
+    pushHistory('planet_'+p.id, ms);
+    html += `<div class="planet-card" style="border-color:${status==='DEAD'?'var(--muted)':color}">
+      <div class="planet-icon">${p.icon}</div>
+      <div class="planet-name">${p.name}</div>
+      <div class="planet-ms" style="color:${color}">${ms}ms · ${status}</div>
+      <div class="planet-nodes">4,290 nodes</div>
+      ${bar(status==='DEAD'?0:Math.max(0,1000-ms), 1000, color)}
+    </div>`;
+    addFeed(`${p.icon} ${p.name} → ${ms}ms ${status}`);
+  }
+  pg.innerHTML = html;
+}
+
+// Fetch collider
+async function fetchCollider() {
+  try {
+    const r = await (await fetch('/api/collider-run',{cache:'no-store'})).json();
+    $('colliderBadge').innerHTML = badge(r.ch_gate?.admitted ? 'OK' : 'DEAD');
+    $('colliderMetrics').innerHTML =
+      metricRow('Run ID', r.run_id||'—') +
+      metricRow('Ledger', r.total_ledger||0) +
+      metricRow('CH Gate', r.ch_gate?.admitted ? 'ADMITTED' : 'REJECTED') +
+      metricRow('Drift', (r.ch_gate?.drift||0).toFixed(4)) +
+      metricRow('Targets', r.targets_evaluated||0);
+    pushHistory('collider_ledger', r.total_ledger||0);
+    pushHistory('collider_drift', r.ch_gate?.drift||0);
+    drawGraph(document.querySelector('#graphCollider'), history.collider_drift, 'rgb(251,191,36)');
+    addFeed(`⚡ MC290 ${r.run_id} ledger=${r.total_ledger} drift=${(r.ch_gate?.drift||0).toFixed(3)}`);
+  } catch(e) { $('colliderBadge').innerHTML = badge('DEAD'); }
+}
+
+// Fetch coherence
+async function fetchCoherence() {
+  try {
+    const r = await (await fetch('/api/global-coherence-report',{cache:'no-store'})).json();
+    $('coherenceBadge').innerHTML = badge(r.ok ? 'OK' : 'DEAD');
+    const s = r.summary||{};
+    $('coherenceMetrics').innerHTML =
+      metricRow('Total Routes', s.total||0) +
+      metricRow('Published', s.published||0) +
+      metricRow('Authority', r.authority?.payload?.authorityOnline ? 'ONLINE' : 'OFFLINE') +
+      metricRow('Write Auth', r.authority?.payload?.writeAuthority ? 'YES' : 'NO');
+    pushHistory('coherence_total', s.total||0);
+    drawGraph(document.querySelector('#graphCoherence'), history.coherence_total, 'rgb(45,212,191)');
+  } catch(e) { $('coherenceBadge').innerHTML = badge('DEAD'); }
+}
+
+// Fetch mining
+async function fetchMining() {
+  try {
+    const r = await (await fetch('/api/planet-mining-report',{cache:'no-store'})).json();
+    $('miningBadge').innerHTML = badge(r.ok ? 'OK' : 'DEAD');
+    $('miningMetrics').innerHTML =
+      metricRow('Planets', r.total_planets||0) +
+      metricRow('Lanes', r.total_lanes||0) +
+      metricRow('Pipeline', (r.pipeline||'').slice(0,50));
+    pushHistory('mining_lanes', r.total_lanes||0);
+    drawGraph(document.querySelector('#graphMining'), history.mining_lanes, 'rgb(139,92,246)');
+  } catch(e) { $('miningBadge').innerHTML = badge('DEAD'); }
+}
+
+// Fetch health
+async function fetchHealth() {
+  try {
+    const r = await (await fetch('/api/health',{cache:'no-store'})).json();
+    $('healthBadge').innerHTML = badge(r.ok ? 'OK' : 'DEAD');
+    $('healthMetrics').innerHTML =
+      metricRow('System', r.system||'—') +
+      metricRow('Status', r.status||'—') +
+      metricRow('GitHub', r.github ? '✓' : '✗') +
+      metricRow('Operator', r.operator ? '✓' : '✗') +
+      metricRow('LLM', r.llm ? '✓' : '✗');
+    pushHistory('health_ok', r.ok ? 1 : 0);
+    drawGraph(document.querySelector('#graphHealth'), history.health_ok, 'rgb(34,197,94)');
+  } catch(e) { $('healthBadge').innerHTML = badge('DEAD'); }
+}
+
+// Fetch node mesh
+async function fetchNodes() {
+  try {
+    const r = await (await fetch('/api/special-node-mesh',{cache:'no-store'})).json();
+    $('nodesBadge').innerHTML = badge('OK');
+    const mesh = r.mesh || r;
+    $('nodesMetrics').innerHTML =
+      metricRow('Canonical Nodes', (mesh.canonicalNodeCount||4290).toLocaleString()) +
+      metricRow('Planets', '10') +
+      metricRow('Total Mesh', '42,900') +
+      metricRow('Base Reserve', '3,000,000') +
+      metricRow('QHP', 'DISTRIBUTED');
+    pushHistory('nodes_active', mesh.canonicalNodeCount||4290);
+    drawGraph(document.querySelector('#graphNodes'), history.nodes_active, 'rgb(45,212,191)');
+  } catch(e) { $('nodesBadge').innerHTML = badge('DEAD'); }
+}
+
+// Initial + interval
+async function refresh() {
+  $('lastUpdate').textContent = new Date().toLocaleTimeString('en',{hour12:false});
+  await Promise.allSettled([pingPlanets(), fetchCollider(), fetchCoherence(), fetchMining(), fetchHealth(), fetchNodes()]);
+}
+refresh();
+setInterval(refresh, 15000);
+</script>
+</body>
+</html>
