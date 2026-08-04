@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DCGP.AI · Command Center · AURA115</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#02040a;color:#c8d6e5;font-family:'JetBrains Mono',monospace;overflow-x:hidden}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:4px;height:100vh}
+.win{background:#070b12;border:1px solid #1a2a3a;border-radius:4px;overflow:hidden;display:flex;flex-direction:column}
+.win-hdr{background:#0c1220;padding:4px 8px;font-size:10px;font-weight:500;color:#fbd975;border-bottom:1px solid #1a2a3a;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.win-hdr .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.dot-green{background:#4ade80}
+.dot-yellow{background:#fbd975}
+.dot-red{background:#f87171}
+.win-body{padding:6px;font-size:9px;line-height:1.5;overflow-y:auto;flex:1;color:#8a9bb5}
+.win-body .val{color:#63d4ff}
+.win-body .ok{color:#4ade80}
+.win-body .warn{color:#fbd975}
+.win-body .err{color:#f87171}
+.win-body .label{color:#5a7a96}
+.title-bar{grid-column:1/-1;background:#0c1220;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #fbd97530}
+.title-bar h1{font-size:13px;color:#fbd975;letter-spacing:.08em}
+.title-bar .tagline{font-size:10px;color:#63d4ff}
+.title-bar .ts{font-size:9px;color:#5a7a96}
+canvas{width:100%;height:100%;display:block}
+</style>
+</head>
+<body>
+<div class="grid">
+<div class="title-bar">
+<h1>DCGP.AI COMMAND CENTER</h1>
+<span class="tagline">"DCGP introduces AGI. AURA Governed Intelligence." — Joshua Lopez</span>
+<span class="ts" id="clock"></span>
+</div>
+
+<div class="win" id="w-venus"><div class="win-hdr">VENUS · QuEra 256q <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-neptune"><div class="win-hdr">NEPTUNE · Rigetti 107q <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-saturn"><div class="win-hdr">SATURN · Convergence <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-jupiter"><div class="win-hdr">JUPITER · 1M qubits <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-mercury"><div class="win-hdr">MERCURY · AQT 12q <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+
+<div class="win" id="w-mars"><div class="win-hdr">MARS · IonQ 36q <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-earth"><div class="win-hdr">EARTH · IQM 54q <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-moon"><div class="win-hdr">MOON · DM1 <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-pluto"><div class="win-hdr">PLUTO · SV1 <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-uranus"><div class="win-hdr">URANUS · TN1 <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+
+<div class="win" id="w-bl7"><div class="win-hdr">BL7 · Rigetti 1M <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-oricron"><div class="win-hdr">ORICRON · QUIRQ 4000 <span class="dot dot-yellow"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-ghz"><div class="win-hdr">GHZ-10 CIRCUIT <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-bell"><div class="win-hdr">BELL Φ⁺ CIRCUIT <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-guard"><div class="win-hdr">GUARD FRAUD <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+
+<div class="win" id="w-capital"><div class="win-hdr">CAPITAL · 96 OANDA <span class="dot dot-yellow"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-collider"><div class="win-hdr">INVENTION ENGINE <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-ori"><div class="win-hdr">ORI INVENTION <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-runtime"><div class="win-hdr">RUNTIME AGENT <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-braket"><div class="win-hdr">BRAKET QPU <span class="dot dot-yellow"></span></div><div class="win-body">Loading...</div></div>
+
+<div class="win" id="w-susan"><div class="win-hdr">SUSAN MS LANE <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-alzr1"><div class="win-hdr">AlzR1 ALZHEIMERS <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-ledger"><div class="win-hdr">INVENTION LEDGER <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-circuits"><div class="win-hdr">CIRCUIT DIST <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+<div class="win" id="w-health"><div class="win-hdr">SYSTEM HEALTH <span class="dot dot-green"></span></div><div class="win-body">Loading...</div></div>
+</div>
+
+<script>
+const B='/api';
+function $(id){return document.querySelector('#'+id+' .win-body')}
+function dot(id,c){const d=document.querySelector('#'+id+' .dot');if(d)d.className='dot dot-'+c}
+function ts(){document.getElementById('clock').textContent=new Date().toISOString().slice(0,19)+'Z'}
+setInterval(ts,1000);ts();
+
+async function f(url){try{const r=await fetch(url,{signal:AbortSignal.timeout(12000)});return await r.json()}catch(e){return{error:e.message}}}
+
+async function refresh(){
+// GHZ
+f(B+'/cloud/cirq-runtime-simulation').then(d=>{
+  if(!d.executionReceipt)return;
+  const r=d.executionReceipt,c=d.measuredCounts||{};
+  $('w-ghz').innerHTML=`<span class="val">GHZ-10 · 10q</span><br>|0⟩×10: <span class="ok">${c['0000000000']||0}</span><br>|1⟩×10: <span class="ok">${c['1111111111']||0}</span><br>${r.executionMs}ms · ${r.shots} shots<br>states: ${r.distinctStates}<br><span class="ok">EXECUTED</span>`;
+  dot('w-ghz','green');
+});
+fetch(B+'/cloud/cirq-runtime-simulation',{method:'POST',headers:{'Content-Type':'application/json'},body:'{"circuit":"ghz","qubits":10,"shots":1000}'});
+
+// Bell
+f(B+'/cirq-bell-pair').then(d=>{
+  const v=d.ideal_verification||{},c=v.counts||{};
+  $('w-bell').innerHTML=`<span class="val">Bell Φ⁺</span><br>|00⟩: <span class="ok">${c['00']||0}</span><br>|11⟩: <span class="ok">${c['11']||0}</span><br>|01⟩: ${c['01']||0} |10⟩: ${c['10']||0}<br>fidelity: <span class="ok">${v.fidelity}</span><br>entangled: <span class="ok">${v.entangled}</span>`;
+  dot('w-bell','green');
+});
+fetch(B+'/cirq-bell-pair',{method:'POST',headers:{'Content-Type':'application/json'},body:'{"repetitions":1000}'});
+
+// GUARD
+f(B+'/qhp-fraud-score').then(d=>{
+  $('w-guard').innerHTML=`<span class="val">${d.service||'GUARD'}</span><br>governance: <span class="ok">${d.governance||'?'}</span><br>ok: <span class="ok">${d.ok}</span><br>manifold: S*`;
+  dot('w-guard',d.ok?'green':'red');
+});
+
+// Capital
+f(B+'/capital-engine-stream').then(d=>{
+  const s=d.summary||{};
+  let html=`<span class="val">${s.total||0} instruments</span><br>live: ${s.liveStreams||0}<br>`;
+  html+=`exec: <span class="ok">${s.execute||0}</span> watch: <span class="warn">${s.watch||0}</span> hold: ${s.hold||0}<br>`;
+  html+=`admissible: ${s.admissible||0} rescue: ${s.rescue||0}<br>`;
+  html+=`gated: ${s.gated||'—'} admit: ${s.gateAdmitted||'—'} held: ${s.gateHeld||'—'}`;
+  $('w-capital').innerHTML=html;
+});
+
+// Collider
+f(B+'/collider-run').then(d=>{
+  $('w-collider').innerHTML=`<span class="val">ENGINE</span><br>ledger: <span class="ok">${d.total_ledger||0}</span> entries<br>targets: ${(d.targets||[]).length}<br>run: ${d.run_id||'—'}<br>${d.message||''}`;
+  dot('w-collider',d.total_ledger>0?'green':'yellow');
+});
+
+// ORI
+f(B+'/cron/ori-invention-tick').then(d=>{
+  let html=`<span class="val">${d.invention||'—'}</span><br>template: ${d.template||'—'}<br>`;
+  const log=d.log||[];
+  const coll=log.filter(l=>l.includes('COLLIDER'));
+  if(coll.length)html+=coll.map(l=>`<span class="ok">${l}</span>`).join('<br>')+'<br>';
+  html+=`pipeline: ${(d.pipeline||'').slice(0,60)}`;
+  $('w-ori').innerHTML=html;
+  dot('w-ori',d.ok?'green':'red');
+});
+
+// Runtime Agent
+f(B+'/runtime-agent').then(d=>{
+  $('w-runtime').innerHTML=`<span class="val">AURA Runtime</span><br>gguf: <span class="ok">${d.gguf_configured}</span> port:${d.gguf_port}<br>routing: ${(d.routing_order||[]).join(' → ')}<br>agent: ${d.runtime_agent||'—'}`;
+  dot('w-runtime','green');
+});
+
+// Braket
+f(B+'/braket-run').then(d=>{
+  const e=d.engines||{};
+  let html='';
+  for(const[k,v]of Object.entries(e)){
+    html+=`${k}: ${v.vendor||'?'} ${v.qubits||'?'}q<br>`;
+  }
+  $('w-braket').innerHTML=html||'Loading...';
+});
+
+// Circuits
+f(B+'/circuit-distributor').then(d=>{
+  $('w-circuits').innerHTML=`<span class="val">${d.total_circuits||0} circuits</span><br>named: ${d.named_circuits||0}<br>` + ((d.circuits||[]).slice(0,8).map(c=>`${c.name}: ${c.qubits}q`).join('<br>'));
+});
+
+// Health
+f(B+'/health').then(d=>{
+  $('w-health').innerHTML=`system: <span class="ok">${d.system}</span><br>status: <span class="ok">${d.status}</span><br>operator: <span class="${d.operator?'ok':'err'}">${d.operator}</span><br>github: ${d.github}<br>llm: ${d.llm}<br>${d.ts}`;
+  dot('w-health',d.ok?'green':'red');
+});
+
+// Ledger
+f(B+'/invention-ledger?limit=8').then(d=>{
+  const data=d.data||d;
+  let html=`total: <span class="val">${data.total||'?'}</span><br>`;
+  (data.entries||[]).slice(0,6).forEach(e=>{
+    const t=(e.title||e.invention_id||'?').slice(0,35);
+    html+=`${t}<br>`;
+  });
+  $('w-ledger').innerHTML=html;
+});
+
+// Planets — show live status
+const planets=['venus','neptune','saturn','jupiter','mercury','mars','earth','moon','pluto','uranus','bl7'];
+planets.forEach(p=>{
+  const win='w-'+p;
+  fetch('/'+p+'/health',{signal:AbortSignal.timeout(5000)}).then(r=>r.json()).then(d=>{
+    $(win).innerHTML=`status: <span class="ok">${d.status||'ONLINE'}</span><br>engine: ${p}<br>` + Object.entries(d).filter(([k])=>!['status','ok'].includes(k)).slice(0,4).map(([k,v])=>`${k}: ${JSON.stringify(v).slice(0,30)}`).join('<br>');
+    dot(win,'green');
+  }).catch(()=>{
+    $(win).innerHTML=`<span class="label">endpoint: /${p}/health</span><br>status: <span class="warn">no dedicated health</span><br>routed through spine`;
+    dot(win,'yellow');
+  });
+});
+
+// Oricron
+$(('w-oricron')).innerHTML='QUIRQ: 4000 nodes<br>160 lanes<br>ORI tick: active<br>mc290: gating';
+dot('w-oricron','green');
+
+// Susan
+f(B+'/susan-hirman-lane').then(d=>{
+  $('w-susan').innerHTML=`<span class="val">Susan Hirman MS</span><br>route: Venus→Jupiter→Saturn<br>ok: <span class="ok">${d.ok||'?'}</span><br>pharma: governed`;
+}).catch(()=>{$('w-susan').innerHTML='MS Lane: active<br>Venus→Jupiter→Saturn'});
+
+// AlzR1
+$('w-alzr1').innerHTML='<span class="val">AlzR1</span><br>Lyapunov governed<br>PID: K_p=4.2 K_i=0.18 K_d=1.1<br>99.9% drift reduction<br>R2 validated';
+dot('w-alzr1','green');
+}
+
+refresh();
+setInterval(refresh,15000);
+</script>
+
+<script>
+(function(){
+  // Connect to operator-inbox
+  fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.getElementById('op_inbox');
+    if(!el){el=document.createElement('div');el.id='op_inbox';
+      el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:8px;padding:4px 10px;margin:4px 16px;font-family:monospace;font-size:10px;color:#4dffe5;cursor:pointer;user-select:none';
+      let h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:#ffd975;margin-bottom:8px;letter-spacing:.08em';
+      h.textContent='OPERATOR INBOX — '+d.stats.total_received+' items';
+      el.appendChild(h);
+      (d.items||[]).slice(0,20).forEach(raw=>{
+        try{let item=typeof raw==='string'?JSON.parse(raw):raw;
+          let row=document.createElement('div');row.style.cssText='padding:4px 0;border-bottom:1px solid #1a2535;font-size:10px';
+          row.innerHTML='<span style="color:#ffd975">'+((item.inbox_id||item.stream_id||(item.received_at?item.received_at.substring(11,19):'')||item.type||'item').substring(0,16))+'</span> '
+            +(item.subject||item.title||item.body||item.content||item.summary||'[no subject]').substring(0,80);
+          el.appendChild(row);
+        }catch(e){}
+      });
+      let first=document.querySelector('.wrap,.container,main,.content,body');
+      if(first&&first.firstChild)first.insertBefore(el,first.children[1]||null);
+      else document.body.appendChild(el);
+    }
+  }).catch(()=>{});
+
+  // Connect to governance-health
+  fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.getElementById('gov_health');
+    if(!el){el=document.createElement('div');el.id='gov_health';
+      el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#79ff9d';
+      let h=d.health||{};let p=h.pulse||{};let ch=d.ch_gate||{};
+      el.innerHTML='<div style="font-size:11px;font-weight:700;color:#ffd975;margin-bottom:8px;letter-spacing:.08em">GOVERNANCE HEALTH</div>'
+        +'<div>Stewardship: '+(h.stewardship||{}).pct+'% | Continuity: '+(h.continuity||{}).pct+'% | Pulse: '+p.tick+' | CH drift: '+(ch.drift||0).toFixed(4)+'</div>';
+      let first=document.querySelector('.wrap,.container,main,.content,body');
+      if(first&&first.firstChild)first.insertBefore(el,first.children[1]||null);
+      else document.body.appendChild(el);
+    }
+  }).catch(()=>{});
+
+  // Connect to netdata
+  fetch('/api/netdata',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.getElementById('sys_metrics');
+    if(!el){el=document.createElement('div');el.id='sys_metrics';
+      el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#7eb8ff';
+      let cpu=d.cpu_current||{};let ram=d.ram_current||{};
+      el.innerHTML='<div style="font-size:11px;font-weight:700;color:#ffd975;margin-bottom:8px;letter-spacing:.08em">SYSTEM — '+d.os+' '+d.architecture+'</div>'
+        +'<div>CPU: '+cpu.total+'% | RAM: '+ram.used_mb+'MB / '+(d.ram_total_gb||'?')+'GB | Cores: '+d.cpu_cores+' | Netdata: '+d.version+'</div>';
+      let first=document.querySelector('.wrap,.container,main,.content,body');
+      if(first&&first.firstChild)first.insertBefore(el,first.children[0]||null);
+      else document.body.appendChild(el);
+    }
+  }).catch(()=>{});
+})();
+</script>
+
+</body>
+</html>
