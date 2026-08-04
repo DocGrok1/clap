@@ -1,0 +1,23 @@
+{
+  "circuit": "MH66",
+  "name": "Constitutional Hardware Measurement Array",
+  "qubits": 8,
+  "shots": 1000,
+  "execution_time": 0.061316490173339844,
+  "faces": {
+    "F1:Coherence": 0.525,
+    "F2:GateFidelity": 0.486,
+    "F3:SPAM": 0.483,
+    "F4:Crosstalk": 0.474,
+    "F5:SpectralDrift": 0.485
+  },
+  "all_faces_clean": 0.05,
+  "p_admissible": 0.518,
+  "p_projection": 0.482,
+  "p_mh66_readout": 0.491,
+  "unique_states": 248,
+  "proof_hash": "804968f67bb5fb0527f4eccf82bfdb0dde436591c65cfbc5ef4d0441adb889d1",
+  "gov_angle": 1.9416110387254664,
+  "patent_figure": "FIG3_MH66_Measurement_Array",
+  "timestamp": "2026-08-04T13:44:59Z"
+}
