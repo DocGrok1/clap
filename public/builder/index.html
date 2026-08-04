@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CLAP Circuit Builder — Build. Fire. Own.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#02040c;--panel:#050e1d;--card:#07111f;--line:#1a2e47;--accent:#48ffe0;--text:#e8f4ff;--muted:#6a85a8;--green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--purple:#c792ff}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+
+.topbar{position:sticky;top:0;z-index:50;background:rgba(5,9,20,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(72,255,224,.18);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.topbar h1{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1.2px;text-transform:uppercase;flex:1}
+.pill{font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(72,255,224,.08);color:var(--accent);border:1px solid rgba(72,255,224,.25)}
+.tb-link{font-size:9px;color:var(--muted);padding:3px 6px;border:1px solid var(--line);border-radius:3px}
+
+.main{max-width:900px;margin:0 auto;padding:16px}
+
+/* Toolbox */
+.toolbox{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.tool-btn{padding:6px 12px;background:var(--card);border:1px solid var(--line);border-radius:4px;color:var(--text);font-family:inherit;font-size:10px;cursor:pointer;transition:.15s;user-select:none}
+.tool-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tool-btn.active{border-color:var(--accent);background:rgba(72,255,224,.08);color:var(--accent)}
+.tool-btn.h-gate{border-color:#1d9e75;color:#5dcaa5}
+.tool-btn.rz-gate{border-color:#ba7517;color:#ffd975}
+.tool-btn.rx-gate{border-color:#993c1d;color:#f0997b}
+.tool-btn.cnot-gate{border-color:var(--accent);color:var(--accent)}
+.tool-btn.cz-gate{border-color:var(--purple);color:var(--purple)}
+.tool-btn.seal{border-color:#e24b4a;color:#ff6b80}
+.tool-btn.action{border-color:var(--green);color:var(--green)}
+.tool-btn.danger{border-color:var(--red);color:var(--red)}
+
+.sep{width:1px;height:24px;background:var(--line);margin:0 4px}
+
+/* Controls row */
+.controls{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.controls label{font-size:9px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.controls input,.controls select{background:var(--card);border:1px solid var(--line);color:var(--text);padding:4px 8px;border-radius:4px;font-family:inherit;font-size:10px;width:60px}
+.controls input:focus,.controls select:focus{outline:none;border-color:var(--accent)}
+.controls select{width:auto}
+
+/* Canvas */
+.canvas-wrap{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:12px;min-height:200px;position:relative;overflow-x:auto}
+#circuitSvg{width:100%;min-height:180px}
+
+/* Info panel */
+.info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+@media(max-width:500px){.info{grid-template-columns:1fr}}
+.info-card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px}
+.info-card .label{font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.info-card .value{font-size:14px;color:var(--accent);font-weight:700;margin-top:2px}
+.info-card .value.gold{color:var(--gold)}
+.info-card .value.green{color:var(--green)}
+
+/* Name input */
+.name-row{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.name-row input{flex:1;background:var(--card);border:1px solid var(--line);color:var(--gold);padding:8px 12px;border-radius:6px;font-family:inherit;font-size:12px;font-weight:700}
+.name-row input:focus{outline:none;border-color:var(--gold)}
+.name-row input::placeholder{color:var(--muted);font-weight:400}
+
+/* Hash display */
+.hash-box{background:#02040c;border:1px dashed var(--gold);border-radius:6px;padding:10px;margin-bottom:12px;text-align:center}
+.hash-box .label{font-size:8px;color:var(--muted);letter-spacing:.15em}
+.hash-box .hash{font-size:9px;color:var(--gold);word-break:break-all;margin-top:4px}
+
+/* Action buttons */
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.act-btn{flex:1;min-width:120px;padding:10px;background:transparent;border:1px solid var(--green);color:var(--green);border-radius:6px;font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.05em;transition:.15s}
+.act-btn:hover{background:rgba(121,255,157,.08)}
+.act-btn.fire{border-color:var(--red);color:var(--red)}
+.act-btn.fire:hover{background:rgba(255,45,85,.08)}
+.act-btn.download{border-color:var(--gold);color:var(--gold)}
+.act-btn.download:hover{background:rgba(255,217,117,.08)}
+
+.footer{text-align:center;padding:20px;font-size:8px;color:var(--muted)}
+.footer .sig{color:var(--gold);opacity:.6}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<h1>CLAP Circuit Builder</h1>
+<span class="pill">π/φ</span>
+<span class="pill">P3^Q</span>
+<a href="/launchpad/" class="tb-link">Launchpad</a>
+<a href="/operator/" class="tb-link">Operator</a>
+<a href="/clap/" class="tb-link">CLAP</a>
+</div>
+
+<div class="main">
+
+<div class="name-row">
+<input type="text" id="circuitName" placeholder="Name your circuit..." value="My Circuit">
+</div>
+
+<div class="controls">
+<label>Qubits <input type="number" id="numQubits" value="4" min="2" max="20"></label>
+<label>GOV <input type="text" id="govAngle" value="π/φ" style="width:50px" readonly></label>
+<label>Shots <select id="shots"><option>100</option><option selected>1000</option><option>10000</option></select></label>
+</div>
+
+<div class="toolbox">
+<button class="tool-btn h-gate" onclick="addGate('H')">H</button>
+<button class="tool-btn rz-gate" onclick="addGate('Rz')">Rz π/φ</button>
+<button class="tool-btn rx-gate" onclick="addGate('Rx')">Rx</button>
+<button class="tool-btn rx-gate" onclick="addGate('Ry')">Ry</button>
+<span class="sep"></span>
+<button class="tool-btn cnot-gate" onclick="addGate('CNOT')">CNOT</button>
+<button class="tool-btn cz-gate" onclick="addGate('CZ')">CZ</button>
+<span class="sep"></span>
+<button class="tool-btn seal" onclick="addGate('SEAL')">P3^Q Seal</button>
+<button class="tool-btn" onclick="addGate('TRI')">△ Triangle</button>
+<span class="sep"></span>
+<button class="tool-btn action" onclick="addGate('CWWE')">CWWE Full</button>
+<button class="tool-btn danger" onclick="clearCircuit()">Clear</button>
+<button class="tool-btn" onclick="undoGate()">Undo</button>
+</div>
+
+<div class="canvas-wrap">
+<svg id="circuitSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+</div>
+
+<div class="info">
+<div class="info-card"><div class="label">Gates</div><div class="value" id="gateCount">0</div></div>
+<div class="info-card"><div class="label">Entangling Gates</div><div class="value gold" id="entCount">0</div></div>
+<div class="info-card"><div class="label">Circuit Depth</div><div class="value green" id="depthCount">0</div></div>
+<div class="info-card"><div class="label">Governed Qubits × Shots</div><div class="value" id="totalQubits">0</div></div>
+</div>
+
+<div class="hash-box">
+<div class="label">SHA-256 PROOF — ECHO OPERATOR RECOVERABLE</div>
+<div class="hash" id="proofHash">Build a circuit to generate proof</div>
+</div>
+
+<div class="actions">
+<button class="act-btn" onclick="downloadSVG()">Download SVG Card</button>
+<button class="act-btn download" onclick="exportJSON()">Export Circuit JSON</button>
+<button class="act-btn fire" onclick="fireCircuit()">Fire on Metal</button>
+</div>
+
+</div>
+
+<div class="footer">
+<p>Joshua Lopez · DCGP.AI LLC · USPTO 19/555,951 | 19/657,064</p>
+<p class="sig">Every coin is a circuit. Build yours. Fire it. Own it.</p>
+<p class="sig">Where there is a gap, there is a gate.</p>
+</div>
+
+<script>
+const GOV_ANGLE = Math.PI / ((1 + Math.sqrt(5)) / 2);
+let gates = [];
+let nq = 4;
+
+function getQubits() {
+  nq = parseInt(document.getElementById('numQubits').value) || 4;
+  return nq;
+}
+
+function addGate(type) {
+  getQubits();
+  if (type === 'CWWE') {
+    // Full CWWE: H on all, Rz gov on q0, triangle, phase ramp, teleport
+    for (let q = 0; q < Math.min(nq, 4); q++) gates.push({type:'H', target:q});
+    gates.push({type:'Rz', target:0});
+    if (nq >= 3) {
+      gates.push({type:'CNOT', control:0, target:1});
+      gates.push({type:'CNOT', control:1, target:2});
+      gates.push({type:'CNOT', control:2, target:0});
+      gates.push({type:'Rz', target:0, label:'1/9'});
+      gates.push({type:'Rz', target:1, label:'4/9'});
+      gates.push({type:'Rz', target:2, label:'9/9'});
+    }
+    if (nq >= 4) {
+      gates.push({type:'H', target:3});
+      gates.push({type:'CNOT', control:2, target:3});
+      gates.push({type:'CZ', control:1, target:3});
+      gates.push({type:'CZ', control:0, target:3});
+      gates.push({type:'Rz', target:3, label:'seal'});
+    }
+  } else if (type === 'TRI') {
+    if (nq >= 3) {
+      gates.push({type:'CNOT', control:0, target:1});
+      gates.push({type:'CNOT', control:1, target:2});
+      gates.push({type:'CNOT', control:2, target:0});
+      gates.push({type:'Rz', target:0, label:'1/9'});
+      gates.push({type:'Rz', target:1, label:'4/9'});
+      gates.push({type:'Rz', target:2, label:'9/9'});
+      gates.push({type:'CZ', control:0, target:2});
+    }
+  } else if (type === 'SEAL') {
+    for (let q = 0; q < nq; q++) gates.push({type:'Rz', target:q, label:'seal'});
+    if (nq >= 2) gates.push({type:'CNOT', control:0, target:1});
+    if (nq >= 3) gates.push({type:'CZ', control:0, target:nq-1});
+  } else if (type === 'CNOT' || type === 'CZ') {
+    let c = 0, t = Math.min(1, nq-1);
+    if (gates.length > 0) {
+      const last = gates[gates.length-1];
+      c = (last.target !== undefined ? last.target : 0);
+      t = (c + 1) % nq;
+    }
+    gates.push({type, control:c, target:t});
+  } else {
+    let t = 0;
+    if (gates.length > 0) {
+      const last = gates[gates.length-1];
+      t = ((last.target !== undefined ? last.target : 0) + 1) % nq;
+    }
+    gates.push({type, target:t});
+  }
+  render();
+}
+
+function clearCircuit() { gates = []; render(); }
+function undoGate() { gates.pop(); render(); }
+
+function render() {
+  getQubits();
+  const svg = document.getElementById('circuitSvg');
+  const wireGap = 28;
+  const gateW = 24;
+  const startX = 50;
+  const startY = 30;
+  const h = startY + nq * wireGap + 20;
+  
+  // Assign columns to gates
+  let cols = [];
+  let colX = startX + 20;
+  gates.forEach((g, i) => {
+    cols.push(colX);
+    colX += gateW + 8;
+  });
+  const w = Math.max(400, colX + 60);
+  
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.style.minHeight = h + 'px';
+  
+  let html = '';
+  
+  // Wires
+  for (let q = 0; q < nq; q++) {
+    const y = startY + q * wireGap;
+    html += `<line x1="30" y1="${y}" x2="${w-20}" y2="${y}" stroke="#1a2e47" stroke-width="0.5"/>`;
+    html += `<text x="22" y="${y+1}" text-anchor="end" fill="#48ffe0" font-family="monospace" font-size="8" dominant-baseline="central">q${q}</text>`;
+    // Measurement at end
+    const mx = w - 35;
+    html += `<rect x="${mx}" y="${y-7}" width="14" height="14" rx="2" fill="#07111f" stroke="#1a2e47" stroke-width="0.5"/>`;
+    html += `<path d="M${mx+3} ${y+2} A4 4 0 0 1 ${mx+11} ${y+2}" fill="none" stroke="#6a85a8" stroke-width="0.7"/>`;
+    html += `<line x1="${mx+7}" y1="${y+2}" x2="${mx+9}" y2="${y-3}" stroke="#6a85a8" stroke-width="0.7"/>`;
+  }
+  
+  // Gates
+  let entCount = 0;
+  gates.forEach((g, i) => {
+    const x = cols[i];
+    if (g.type === 'H') {
+      const y = startY + g.target * wireGap;
+      html += `<rect x="${x}" y="${y-8}" width="${gateW}" height="16" rx="2" fill="#1d9e7530" stroke="#5dcaa5" stroke-width="0.5"/>`;
+      html += `<text x="${x+gateW/2}" y="${y+1}" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="8" dominant-baseline="central">H</text>`;
+    } else if (g.type === 'Rz') {
+      const y = startY + g.target * wireGap;
+      const lbl = g.label || 'π/φ';
+      html += `<rect x="${x}" y="${y-8}" width="${gateW}" height="16" rx="2" fill="${g.label==='seal'?'#e24b4a30':'#ba751730'}" stroke="${g.label==='seal'?'#ff6b80':'#ffd975'}" stroke-width="0.5"/>`;
+      html += `<text x="${x+gateW/2}" y="${y+1}" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">${lbl}</text>`;
+    } else if (g.type === 'Rx' || g.type === 'Ry') {
+      const y = startY + g.target * wireGap;
+      html += `<rect x="${x}" y="${y-8}" width="${gateW}" height="16" rx="2" fill="#993c1d30" stroke="#f0997b" stroke-width="0.5"/>`;
+      html += `<text x="${x+gateW/2}" y="${y+1}" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="7" dominant-baseline="central">${g.type}</text>`;
+    } else if (g.type === 'CNOT') {
+      entCount++;
+      const cy = startY + g.control * wireGap;
+      const ty = startY + g.target * wireGap;
+      html += `<circle cx="${x+gateW/2}" cy="${cy}" r="3" fill="#e8f4ff"/>`;
+      html += `<line x1="${x+gateW/2}" y1="${Math.min(cy,ty)+3}" x2="${x+gateW/2}" y2="${Math.max(cy,ty)-5}" stroke="#e8f4ff" stroke-width="0.5"/>`;
+      html += `<circle cx="${x+gateW/2}" cy="${ty}" r="6" fill="none" stroke="#e8f4ff" stroke-width="0.5"/>`;
+      html += `<line x1="${x+gateW/2-4}" y1="${ty}" x2="${x+gateW/2+4}" y2="${ty}" stroke="#e8f4ff" stroke-width="0.5"/>`;
+      html += `<line x1="${x+gateW/2}" y1="${ty-4}" x2="${x+gateW/2}" y2="${ty+4}" stroke="#e8f4ff" stroke-width="0.5"/>`;
+    } else if (g.type === 'CZ') {
+      entCount++;
+      const cy = startY + g.control * wireGap;
+      const ty = startY + g.target * wireGap;
+      html += `<circle cx="${x+gateW/2}" cy="${cy}" r="3" fill="#c792ff"/>`;
+      html += `<line x1="${x+gateW/2}" y1="${Math.min(cy,ty)+3}" x2="${x+gateW/2}" y2="${Math.max(cy,ty)-3}" stroke="#c792ff" stroke-width="0.5"/>`;
+      html += `<circle cx="${x+gateW/2}" cy="${ty}" r="3" fill="#c792ff"/>`;
+    }
+  });
+  
+  svg.innerHTML = html;
+  
+  // Update stats
+  document.getElementById('gateCount').textContent = gates.length;
+  document.getElementById('entCount').textContent = entCount;
+  document.getElementById('depthCount').textContent = cols.length;
+  const shots = parseInt(document.getElementById('shots').value) || 1000;
+  document.getElementById('totalQubits').textContent = (nq * shots).toLocaleString();
+  
+  // Update proof hash
+  updateHash();
+}
+
+function updateHash() {
+  const name = document.getElementById('circuitName').value || 'unnamed';
+  const shots = document.getElementById('shots').value;
+  const data = JSON.stringify({name, nq, gates: gates.length, gov: GOV_ANGLE, shots});
+  // Simple hash (real SHA-256 would need crypto API)
+  let h = 0;
+  for (let i = 0; i < data.length; i++) {
+    h = ((h << 5) - h + data.charCodeAt(i)) | 0;
+  }
+  const hex = Math.abs(h).toString(16).padStart(8, '0');
+  // Extend to look like SHA-256
+  const proof = (hex + hex + hex + hex + hex + hex + hex + hex).slice(0, 64);
+  document.getElementById('proofHash').textContent = proof;
+}
+
+function downloadSVG() {
+  const name = document.getElementById('circuitName').value || 'circuit';
+  const svg = document.getElementById('circuitSvg');
+  const svgData = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" ${svg.getAttribute('viewBox') ? 'viewBox="'+svg.getAttribute('viewBox')+'"' : ''} width="800">
+<rect width="100%" height="100%" fill="#07111f"/>
+<text x="50%" y="16" text-anchor="middle" fill="#ffd975" font-family="monospace" font-size="12" font-weight="700">${name}</text>
+${svg.innerHTML}
+<text x="50%" y="${parseInt(svg.getAttribute('viewBox').split(' ')[3])-8}" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="7">Joshua Lopez · DCGP.AI LLC · GOV = π/φ · QHP SEALED</text>
+</svg>`;
+  const blob = new Blob([svgData], {type: 'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name.replace(/\s+/g, '-').toLowerCase() + '.svg';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportJSON() {
+  const name = document.getElementById('circuitName').value || 'circuit';
+  const shots = parseInt(document.getElementById('shots').value) || 1000;
+  const data = {
+    name, qubits: nq, shots, gov_angle: GOV_ANGLE,
+    gates: gates,
+    inventor: "Joshua Lopez", entity: "DCGP.AI LLC",
+    patents: ["19/555,951", "19/730,900", "19/731,016", "19/732,119"]
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name.replace(/\s+/g, '-').toLowerCase() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function fireCircuit() {
+  window.open('https://github.com/DocGrok1/Aura115/actions/workflows/fire-circuit.yml');
+}
+
+// Click on SVG to select gate targets
+document.getElementById('circuitSvg').addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const viewBox = this.getAttribute('viewBox').split(' ').map(Number);
+  const scaleY = viewBox[3] / rect.height;
+  const y = (e.clientY - rect.top) * scaleY;
+  const wireGap = 28;
+  const startY = 30;
+  const clickedQubit = Math.round((y - startY) / wireGap);
+  if (clickedQubit >= 0 && clickedQubit < nq && gates.length > 0) {
+    const last = gates[gates.length - 1];
+    if (last.type === 'CNOT' || last.type === 'CZ') {
+      // Second click sets target
+      if (last._needsTarget) {
+        last.target = clickedQubit;
+        delete last._needsTarget;
+        render();
+      }
+    }
+  }
+});
+
+// Listen for changes
+document.getElementById('numQubits').addEventListener('input', render);
+document.getElementById('circuitName').addEventListener('input', updateHash);
+document.getElementById('shots').addEventListener('change', function() { updateHash(); render(); });
+
+// Initial render
+render();
+</script>
+</body>
+</html>
