@@ -1,0 +1,154 @@
+{
+  "circuit": "LUNA_BRIDGE",
+  "name": "Governed Quantum Launch Sequence \u2014 CWWE Priming to LEO Insertion",
+  "inventor": "Joshua Lopez",
+  "entity": "DCGP.AI LLC",
+  "patents": [
+    "19/657,064",
+    "19/645,168",
+    "19/555,951",
+    "19/730,900",
+    "19/731,025"
+  ],
+  "gov_angle": 1.9416110387254664,
+  "phi": 1.618033988749895,
+  "qubits": {
+    "q0": "ARM",
+    "q1": "MH66",
+    "q2": "CAVITATION",
+    "q3": "TURBINE",
+    "q4": "ESCAPE",
+    "q5": "PAYLOAD"
+  },
+  "stages": [
+    "Accelerator Init",
+    "Revolution Sequence",
+    "Quadratic Triangle Priming",
+    "Bubble Lock + Simultaneous Ignition"
+  ],
+  "total_circuits": 11,
+  "total_measurements": 11000,
+  "sweep": [
+    {
+      "revolution": 1,
+      "p_leo": 0.493,
+      "p_cavitation": 0.508,
+      "p_bubble_lock": 0.508,
+      "p_turbine": 0.508,
+      "p_escape": 0.508,
+      "unique_states": 16,
+      "proof_hash": "1369fd3b5dbc77"
+    },
+    {
+      "revolution": 2,
+      "p_leo": 0.472,
+      "p_cavitation": 0.457,
+      "p_bubble_lock": 0.457,
+      "p_turbine": 0.457,
+      "p_escape": 0.457,
+      "unique_states": 16,
+      "proof_hash": "b7ffe7263e7fc5"
+    },
+    {
+      "revolution": 3,
+      "p_leo": 0.51,
+      "p_cavitation": 0.426,
+      "p_bubble_lock": 0.426,
+      "p_turbine": 0.426,
+      "p_escape": 0.426,
+      "unique_states": 16,
+      "proof_hash": "2d8ede4c75432b"
+    },
+    {
+      "revolution": 4,
+      "p_leo": 0.49,
+      "p_cavitation": 0.363,
+      "p_bubble_lock": 0.363,
+      "p_turbine": 0.363,
+      "p_escape": 0.363,
+      "unique_states": 16,
+      "proof_hash": "6ee4bc81a54187"
+    },
+    {
+      "revolution": 5,
+      "p_leo": 0.473,
+      "p_cavitation": 0.399,
+      "p_bubble_lock": 0.399,
+      "p_turbine": 0.399,
+      "p_escape": 0.399,
+      "unique_states": 16,
+      "proof_hash": "a4611bd14558c4"
+    },
+    {
+      "revolution": 6,
+      "p_leo": 0.468,
+      "p_cavitation": 0.445,
+      "p_bubble_lock": 0.445,
+      "p_turbine": 0.445,
+      "p_escape": 0.445,
+      "unique_states": 16,
+      "proof_hash": "988486a75059ba"
+    },
+    {
+      "revolution": 7,
+      "p_leo": 0.472,
+      "p_cavitation": 0.345,
+      "p_bubble_lock": 0.345,
+      "p_turbine": 0.345,
+      "p_escape": 0.345,
+      "unique_states": 16,
+      "proof_hash": "5292bf4c5b9b69"
+    },
+    {
+      "revolution": 8,
+      "p_leo": 0.477,
+      "p_cavitation": 0.141,
+      "p_bubble_lock": 0.141,
+      "p_turbine": 0.141,
+      "p_escape": 0.141,
+      "unique_states": 15,
+      "proof_hash": "cc1acc0b376e5f"
+    },
+    {
+      "revolution": 9,
+      "p_leo": 0.493,
+      "p_cavitation": 0.287,
+      "p_bubble_lock": 0.287,
+      "p_turbine": 0.287,
+      "p_escape": 0.287,
+      "unique_states": 16,
+      "proof_hash": "5cc01dd8eed409"
+    },
+    {
+      "revolution": 10,
+      "p_leo": 0.478,
+      "p_cavitation": 0.703,
+      "p_bubble_lock": 0.703,
+      "p_turbine": 0.703,
+      "p_escape": 0.703,
+      "unique_states": 16,
+      "proof_hash": "6a2d85f01bda9c"
+    },
+    {
+      "revolution": 11,
+      "p_leo": 0.489,
+      "p_cavitation": 0.779,
+      "p_bubble_lock": 0.779,
+      "p_turbine": 0.779,
+      "p_escape": 0.779,
+      "unique_states": 16,
+      "proof_hash": "2357b1098278b7"
+    }
+  ],
+  "peak": {
+    "revolution": 3,
+    "p_leo": 0.51,
+    "p_cavitation": 0.426,
+    "p_bubble_lock": 0.426,
+    "p_turbine": 0.426,
+    "p_escape": 0.426,
+    "unique_states": 16,
+    "proof_hash": "2d8ede4c75432b"
+  },
+  "timestamp": "2026-08-04T10:16:23Z"
+}
