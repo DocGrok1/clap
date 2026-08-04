@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quantum Engine Planets · AURA115</title>
+  <style>
+    :root { --bg:#040913; --panel:#0b1528; --line:#233c66; --text:#e5f3ff; --muted:#86a3c6; --cyan:#57f7e9; --green:#76ff8f; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: radial-gradient(circle at top,#08162e 0,#040913 55%); color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 14px 28px; }
+    .nav { display:flex; gap:10px; margin-bottom:12px; }
+    .btn { border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:11px; color: var(--muted); background: rgba(11,21,40,.9); }
+    .btn:hover { color: var(--cyan); border-color: var(--cyan); }
+    .card { background: rgba(11,21,40,.95); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:12px; }
+    h1 { font-size: 24px; color: var(--cyan); margin-bottom: 8px; }
+    .sub { color: var(--muted); font-size: 12px; line-height: 1.5; margin-bottom: 10px; }
+    .grid { display:grid; gap:8px; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); }
+    .item { border:1px solid var(--line); border-radius:10px; padding:10px; background:#081225; }
+    .k { color: var(--muted); font-size:10px; text-transform: uppercase; letter-spacing: .05em; margin-bottom:4px; }
+    .v { font-size: 13px; line-height: 1.35; }
+    .ok { color: var(--green); font-weight: 700; }
+    pre { background:#050d1b; border:1px solid var(--line); border-radius:10px; padding:12px; font-size:11px; overflow:auto; max-height:420px; color: var(--cyan); white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="nav">
+      <a class="btn" href="/">← Home</a>
+      <a class="btn" href="/planet-registry">Planet Registry</a>
+      <a class="btn" href="/api/quantum-engine-planets" target="_blank">Raw API ↗</a>
+    </div>
+
+    <section class="card">
+      <h1>Quantum Engine Planets</h1>
+      <p class="sub">
+        Canonical model for planet runtime scope, governance routing, telemetry, API/UI surfaces, validation targets, and phased delivery.
+      </p>
+      <div class="grid">
+        <div class="item"><div class="k">Definition Mode</div><div class="v" id="mode">—</div></div>
+        <div class="item"><div class="k">Planet Count</div><div class="v" id="planetCount">—</div></div>
+        <div class="item"><div class="k">Validation Targets</div><div class="v" id="validationCount">—</div></div>
+        <div class="item"><div class="k">Phases</div><div class="v" id="phaseCount">—</div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="k">Success Criteria</div>
+      <div class="v" id="criteria">Loading…</div>
+    </section>
+
+    <section class="card">
+      <div class="k">Phases</div>
+      <div class="v" id="phases">Loading…</div>
+    </section>
+
+    <section class="card">
+      <div class="k">Model JSON</div>
+      <pre id="raw">Loading /api/quantum-engine-planets…</pre>
+    </section>
+  </div>
+
+  <script>
+    async function loadModel() {
+      const raw = document.getElementById('raw');
+      try {
+        const res = await fetch('/api/quantum-engine-planets', { cache: 'no-store' });
+        const data = await res.json();
+        const model = data.model || {};
+
+        document.getElementById('mode').textContent = model.mode || '—';
+        document.getElementById('planetCount').textContent = (model.scope && model.scope.planet_set ? model.scope.planet_set.length : 0) + ' planets';
+        document.getElementById('validationCount').textContent = (model.validation_targets || []).length + ' targets';
+        document.getElementById('phaseCount').textContent = (model.phases || []).length + ' phases';
+
+        const criteria = (model.scope && model.scope.success_criteria) || [];
+        document.getElementById('criteria').innerHTML = criteria.map(x => '<div class="ok">✓ ' + x + '</div>').join('') || '—';
+
+        const phases = model.phases || [];
+        document.getElementById('phases').innerHTML = phases.map(p =>
+          '<div style="margin-bottom:8px"><strong>' + p.title + '</strong> · <span class="ok">' + p.status + '</span><br>' +
+          '<span style="color:var(--muted)">' + p.goal + '</span></div>'
+        ).join('') || '—';
+
+        raw.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        raw.textContent = 'Failed to load model: ' + error.message;
+      }
+    }
+    loadModel();
+  </script>
+  <script src="/aura-embodiment-bootstrap.js"></script>
+<script>
+(function(){
+  fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    if(document.getElementById('op_inbox'))return;
+    let el=document.createElement('div');el.id='op_inbox';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:8px;padding:4px 10px;margin:4px 16px;font-family:monospace;font-size:10px;color:#4dffe5;cursor:pointer;user-select:none';
+    let cnt=(d.stats||{}).total_received||0,unrd=(d.stats||{}).unread||0;
+    let h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:#ffd975;display:flex;align-items:center;gap:8px';
+    h.innerHTML='<span id="op_inbox_arrow">▶</span><span>OPERATOR INBOX</span><span style="color:#4dffe5;font-weight:400">'+cnt+' received'+(unrd?' · <span style="color:#ff6b6b">'+unrd+' unread</span>':'')+'</span>';
+    el.appendChild(h);
+    let body=document.createElement('div');body.id='op_inbox_body';body.style.cssText='display:none;max-height:280px;overflow:auto;margin-top:6px;border-top:1px solid #1a2535;padding-top:4px';
+    (d.items||[]).slice(0,15).forEach(raw=>{try{let item=typeof raw==='string'?JSON.parse(raw):raw;
+      let row=document.createElement('div');row.style.cssText='padding:3px 0;border-bottom:1px solid #1a2535;font-size:10px';
+      let id=item.inbox_id||item.stream_id||(item.received_at?item.received_at.substring(11,19):'')|| item.type||'item';
+      row.innerHTML='<span style="color:#ffd975">'+String(id).substring(0,16)+'</span> '+(item.subject||item.title||item.body||item.content||item.summary||'[no subject]').substring(0,80);
+      body.appendChild(row);}catch(e){}});
+    el.appendChild(body);
+    el.addEventListener('click',function(){let open=body.style.display==='block';body.style.display=open?'none':'block';document.getElementById('op_inbox_arrow').textContent=open?'▶':'▼';});
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.firstChild);
+  }).catch(()=>{});
+  fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.createElement('div');el.id='gov';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:10px 14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#79ff9d';
+    let h=d.health||{},p=h.pulse||{},ch=d.ch_gate||{};
+    el.innerHTML='<span style="color:#ffd975;font-weight:700">GOV</span> Stewardship:'+(h.stewardship||{}).pct+'% Continuity:'+(h.continuity||{}).pct+'% Pulse:'+p.tick+' CH:'+(ch.drift||0).toFixed(4);
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.children[0]||null);
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>
