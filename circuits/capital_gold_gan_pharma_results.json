@@ -1,0 +1,51 @@
+{
+  "circuit": "CAPITAL_GOLD_GAN_HONEYCOMB_PHARMA",
+  "qubits": 17,
+  "shots": 1000,
+  "execution_time": 3.626413583755493,
+  "unique_states": 998,
+  "p_coin": 0.484,
+  "p_both_streams": 0.239,
+  "proof": "6173ec9ab13f18a04d2540f6a8543dc1ba4ca46fa8f6f1c7d37bafc160c06945",
+  "stages": {
+    "Capital Engine": {
+      "qubits": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "Au-197 Gold Gate": {
+      "qubits": [
+        5,
+        6,
+        7
+      ]
+    },
+    "GaN-38 Scaffold": {
+      "qubits": [
+        8,
+        9,
+        10
+      ]
+    },
+    "Honeycomb Lattice": {
+      "qubits": [
+        11,
+        12,
+        13
+      ]
+    },
+    "Pharma Collider": {
+      "qubits": [
+        14,
+        15,
+        16
+      ]
+    }
+  },
+  "gov_angle": 1.9416110387254664,
+  "timestamp": "2026-08-04T14:24:53Z"
+}
