@@ -1,0 +1,39 @@
+{
+  "circuit": "GOLD_CAPITAL",
+  "name": "Au-197 Gold Through Agent Field Capital Engine",
+  "inventor": "Joshua Lopez",
+  "entity": "DCGP.AI LLC",
+  "qubits": 12,
+  "shots": 1000,
+  "execution_time": 3.5033531188964844,
+  "z_gold": 79,
+  "unique_states": 882,
+  "p_admit": 0.5,
+  "gold_coherence": 0.059,
+  "capital_coherence": 0.032,
+  "correlation": 0.485,
+  "transfer_efficiency": 0.021,
+  "agent_activation": {
+    "mom252": 0.52,
+    "mom126": 0.492,
+    "mom63": 0.493,
+    "mom21": 0.499,
+    "vol63": 0.489,
+    "meanrev5": 0.535
+  },
+  "governance": {
+    "C": 0.5,
+    "S": 0.9410000000000001,
+    "O": 0.032,
+    "Phi": -0.4212229123600034,
+    "h_L": 0.7125175876399966,
+    "drift": 0.7125175876399966,
+    "sigma": 0.001,
+    "admitted": true,
+    "on_S_star": false
+  },
+  "gov_angle": 1.9416110387254664,
+  "lambda": 0.6180339887498948,
+  "proof_hash": "d58f43a142943c850c1d4a44f5c3f14ef78732f4e9ce6fa1ac96248bbbf67808",
+  "timestamp": "2026-08-04T13:21:27Z"
+}
