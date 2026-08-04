@@ -1,0 +1,27 @@
+{
+  "circuit": "CWWE_25Q",
+  "name": "8 Quadratic Triangles \u2192 Emerge \u2014 25 Qubits",
+  "inventor": "Joshua Lopez",
+  "entity": "DCGP.AI LLC",
+  "qubits": 25,
+  "triangles": 8,
+  "shots": 1000,
+  "execution_time": 30.81155753135681,
+  "p_emerge": 0.478,
+  "triangle_coherence": [
+    0.245,
+    0.257,
+    0.266,
+    0.254,
+    0.272,
+    0.262,
+    0.219,
+    0.228
+  ],
+  "avg_coherence": 0.250375,
+  "unique_states": 1000,
+  "proof_hash": "968a6564db276fd44212d9fa6a69baee566279c4d74b6df21acbea65918e65b2",
+  "gov_angle": 1.9416110387254664,
+  "note": "Full 44-qubit (11 triangles + emerge) requires QPU: IQM Emerald 54q, IBM Eagle 127q, or equivalent",
+  "timestamp": "2026-08-04T10:29:03Z"
+}
