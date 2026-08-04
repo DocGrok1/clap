@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pb-82 Lead — CLAP Circuit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#02040c;color:#e8f4ff;font-family:'JetBrains Mono',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px}
+a{color:#48ffe0;text-decoration:none}
+.card{width:min(400px,94vw);background:#07111f;border:1px solid #9aa9c930;border-radius:14px;overflow:hidden}
+.card-head{padding:14px 16px;border-bottom:1px solid #1a2e47}
+.card-head .name{font-size:1.1rem;font-weight:700;color:#9aa9c9}
+.card-head .desc{font-size:0.65rem;color:#6a85a8;margin-top:2px}
+.orbital-wrap{position:relative;height:220px;background:#02040c}
+canvas#orbital{width:100%;height:100%}
+.z-label{position:absolute;bottom:8px;right:12px;font-size:0.6rem;color:#3a506b}
+.metrics{padding:12px 16px;border-top:1px solid #1a2e47;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.m{background:#050e1d;border:1px solid #1a2e47;border-radius:6px;padding:8px}
+.m .l{font-size:0.55rem;color:#6a85a8;letter-spacing:.1em;text-transform:uppercase}
+.m .v{font-size:1rem;color:#9aa9c9;font-weight:700;margin-top:2px}
+.circuit-box{padding:12px 16px;border-top:1px solid #1a2e47}
+.circuit-box .label{font-size:0.55rem;color:#6a85a8;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.wire{height:1px;background:#1a2e47;margin:6px 0;position:relative}
+.wire::after{content:'';position:absolute;right:0;top:-3px;width:6px;height:6px;border:1px solid #9aa9c9;border-radius:50%}
+.gate{display:inline-block;padding:1px 6px;border:1px solid #9aa9c950;border-radius:2px;font-size:0.55rem;color:#9aa9c9;margin:1px}
+.hash{padding:10px 16px;border-top:1px solid #1a2e47;text-align:center}
+.hash .l{font-size:0.5rem;color:#6a85a8;letter-spacing:.1em}
+.hash .h{font-size:0.55rem;color:#ffd975;word-break:break-all;margin-top:3px}
+.actions{padding:10px 16px;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.ab{padding:7px;background:transparent;border:1px solid #79ff9d;color:#79ff9d;border-radius:4px;font-family:inherit;font-size:0.6rem;cursor:pointer;text-align:center;text-decoration:none;display:block}
+.ab:hover{background:rgba(121,255,157,.06)}
+.ab.fire{border-color:#ff2d55;color:#ff2d55}
+.ab.enc{border-color:#c792ff;color:#c792ff}
+.ab.buy{border-color:#ffd975;color:#ffd975}
+.nav{padding:8px 16px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;border-top:1px solid #1a2e47}
+.nav a{font-size:0.55rem;color:#6a85a8;padding:3px 6px;border:1px solid #1a2e47;border-radius:3px}
+.nav a:hover{color:#48ffe0;border-color:#48ffe0}
+.footer{padding:10px 16px;text-align:center;font-size:0.5rem;color:#3a506b;border-top:1px solid #1a2e47}
+</style></head><body>
+<div class="card">
+<div class="card-head">
+<div class="name">Pb-82 Lead</div>
+<div class="desc">Doubly magic · Z=82 · GOV = π/φ = 1.941611 · 5 qubits · P3^Q governed</div>
+</div>
+
+<div class="orbital-wrap">
+<canvas id="orbital" height="220"></canvas>
+<div class="z-label">Z=82 · 5Q · π/φ</div>
+</div>
+
+<div class="metrics">
+<div class="m"><div class="l">Atomic Z</div><div class="v">82</div></div>
+<div class="m"><div class="l">Qubits</div><div class="v">5</div></div>
+<div class="m"><div class="l">Gov Angle</div><div class="v">π/φ</div></div>
+<div class="m"><div class="l">Shells</div><div class="v">5</div></div>
+</div>
+
+<div class="circuit-box">
+<div class="label">Governed Circuit</div>
+<div class="wire"></div><div class="wire"></div><div class="wire"></div><div class="wire"></div><div class="wire"></div>
+<div style="margin-top:6px">
+<span class="gate">H</span><span class="gate">CNOT</span><span class="gate">Rz π/φ·82/118</span><span class="gate">CZ</span><span class="gate">Rz seal</span>
+</div>
+</div>
+
+<div class="hash">
+<div class="l">SHA-256 · ECHO OPERATOR RECOVERABLE</div>
+<div class="h">7e0eebfdf80a297dfa66592ec53e6b4bcb88caf0fba41cb059a5bda3f51e206f</div>
+</div>
+
+<div class="actions">
+<a class="ab" href="/builder/">Build</a>
+<a class="ab enc" href="/quirq-svg-circuit-simulation/">Encode</a>
+<a class="ab fire" href="https://github.com/DocGrok1/Aura115/actions/workflows/fire-circuit.yml" target="_blank">Fire QPU</a>
+<a class="ab buy" href="/storefront/">ComCard</a>
+</div>
+
+<div class="nav">
+<a href="/launchpad/">Launch</a>
+<a href="/operator/">Operator</a>
+<a href="/clap/">CLAP</a>
+<a href="/contact-hamiltonian/">CH Gate</a>
+<a href="/simulations/">Sims</a>
+<a href="/el1/">EL1</a>
+<a href="/guard/">Guard</a>
+<a href="/storefront/">Store</a>
+</div>
+
+<div class="footer">
+Joshua Lopez · DCGP.AI LLC · USPTO 19/555,951 | 19/657,064<br>
+Every coin is a circuit. Fire one. · Where there is a gap, there is a gate.
+</div>
+</div>
+
+<script>
+const shells=[{"r": 22, "c": "#9aa9c9", "n": 2}, {"r": 38, "c": "#48ffe0", "n": 8}, {"r": 54, "c": "#c792ff", "n": 18}, {"r": 70, "c": "#ffd975", "n": 32}, {"r": 86, "c": "#79ff9d", "n": 22}];
+let T=0;
+const canvas=document.getElementById('orbital');
+function draw(){
+  const ctx=canvas.getContext('2d');if(!ctx)return;
+  const W=canvas.offsetWidth,H=canvas.offsetHeight;
+  canvas.width=W*2;canvas.height=H*2;ctx.scale(2,2);ctx.clearRect(0,0,W,H);
+  const cx=W/2,cy=H/2;
+  // Nucleus
+  ctx.beginPath();ctx.arc(cx,cy,12,0,Math.PI*2);
+  ctx.fillStyle='rgba(154,169,201,0.5)';ctx.fill();
+  ctx.fillStyle='#9aa9c9';ctx.font='bold 10px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('82',cx,cy);
+  // Shells + electrons
+  shells.forEach(function(s,si){
+    ctx.beginPath();ctx.arc(cx,cy,s.r,0,Math.PI*2);ctx.strokeStyle=s.c;ctx.globalAlpha=0.15;ctx.lineWidth=0.5;ctx.stroke();ctx.globalAlpha=1;
+    for(let j=0;j<s.n;j++){
+      const a=(j/s.n)*Math.PI*2+T*0.008*(1+si*0.25);
+      const wobble=Math.sin(a*3+T*0.015)*2;
+      const ex=cx+Math.cos(a)*(s.r+wobble);
+      const ey=cy+Math.sin(a)*(s.r+wobble);
+      ctx.beginPath();ctx.arc(ex,ey,1.8,0,Math.PI*2);
+      ctx.fillStyle=s.c;ctx.globalAlpha=0.5+Math.sin(T*0.02+j)*0.35;ctx.fill();ctx.globalAlpha=1;
+    }
+  });
+  T++;requestAnimationFrame(draw);
+}
+draw();
+</script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+</body></html>
