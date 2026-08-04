@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Decoherence Defense · AURA115</title>
+  <style>
+    :root{--bg:#03060f;--panel:#08101e;--line:#1a2f50;--text:#e4f0ff;--muted:#6a8eb0;--cyan:#4dffe5;--green:#79ff9d;--gold:#ffd975;--rose:#ff7f95;--amber:#ffd36a;--teal:#38b2ac;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100vh;background:radial-gradient(ellipse at top,#071520 0,#03060f 60%);color:var(--text);font-family:ui-monospace,"Cascadia Code",SFMono-Regular,monospace}
+    a{color:inherit;text-decoration:none}
+    .nav{display:flex;align-items:center;gap:12px;padding:12px 24px;border-bottom:1px solid var(--line);background:rgba(4,8,16,.9);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+    .nav-back{color:var(--muted);font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 10px}
+    .nav-back:hover{color:var(--cyan);border-color:var(--cyan)}
+    .nav-title{font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.8px}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px 16px}
+    .hero{background:rgba(8,16,30,.95);border:1px solid var(--line);border-radius:20px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 65% 40%,rgba(56,178,172,.06) 0,transparent 55%);pointer-events:none}
+    .hero-eye{font-size:10px;letter-spacing:.25em;color:var(--teal);text-transform:uppercase;margin-bottom:10px}
+    .hero h1{font-size:clamp(22px,4vw,38px);font-weight:700;margin-bottom:8px}
+    .hero h1 span{color:var(--teal)}
+    .hero-sub{color:var(--muted);font-size:12px;line-height:1.6;max-width:780px;margin-bottom:16px}
+    .pills{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:11px;color:var(--muted)}
+    .pill.t{color:var(--teal);border-color:rgba(56,178,172,.4)}
+    .panel{background:rgba(8,16,30,.95);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+    .ph{font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.8px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .pdot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 1.6s infinite;flex-shrink:0}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;margin-bottom:14px}
+    label{font-size:9px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:3px}
+    input,select{background:#040810;border:1px solid var(--line);border-radius:8px;color:var(--text);padding:7px 10px;font:inherit;font-size:11px;width:100%;margin-bottom:8px}
+    input:focus,select:focus{outline:none;border-color:var(--teal)}
+    .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid;border-radius:8px;padding:8px 16px;font:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:background .15s}
+    .btn.teal{background:rgba(56,178,172,.1);color:var(--teal);border-color:rgba(56,178,172,.4)}.btn.teal:hover{background:rgba(56,178,172,.2)}
+    .btn.ghost{background:rgba(77,255,229,.08);color:var(--cyan);border-color:rgba(77,255,229,.3)}.btn.ghost:hover{background:rgba(77,255,229,.16)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .result-box{background:#040810;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:8px;min-height:60px}
+    .metric{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#060c18;margin-bottom:6px}
+    .m-label{font-size:10px;color:var(--muted)}
+    .m-val{font-size:14px;font-weight:700;color:var(--teal)}
+    .risk-bar{height:8px;border-radius:4px;background:var(--line);margin-top:10px;overflow:hidden}
+    .risk-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--amber),var(--rose));transition:width .4s}
+    pre{background:#040810;border:1px solid var(--line);border-radius:10px;padding:14px;font-size:11px;overflow:auto;max-height:420px;color:var(--cyan);white-space:pre-wrap;word-break:break-all}
+    footer{text-align:center;color:var(--muted);font-size:10px;margin-top:24px;padding:10px}
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-back" href="/">← Home</a>
+    <a class="nav-back" href="/route-keychain">Keychain</a>
+    <span class="nav-title">🛡 Decoherence Defense</span>
+  </nav>
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-eye">Aura115 · Π_decoherence · Governed Pipeline Protection</div>
+      <h1>🛡 <span>Decoherence Defense</span></h1>
+      <p class="hero-sub">The Decoherence Defense system monitors and defends the Aura115 quantum pipeline against Π_decoherence events. Input system state parameters and receive a decoherence risk score, mitigation recommendations, and a corrective injection vector aligned with the viability kernel K.</p>
+      <div class="pills">
+        <span class="pill t">Π_decoherence Monitor</span>
+        <span class="pill t">Viability Kernel K</span>
+        <span class="pill" style="color:var(--cyan);border-color:rgba(77,255,229,.4)">Corrective Injection</span>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn ghost" href="/api/decoherence-defense" target="_blank">Raw API ↗</a>
+    </div>
+    <div class="grid">
+      <div class="panel">
+        <div class="ph"><span class="pdot"></span>State Input Parameters</div>
+        <label>Pipeline Stage</label>
+        <select id="p-stage">
+          <option value="venus">Venus (Internet Buffer)</option>
+          <option value="jupiter">Jupiter (Routing)</option>
+          <option value="uranus">Uranus (Clip)</option>
+          <option value="saturn">Saturn (Renormalize)</option>
+          <option value="moon">Moon (Π_K Projection)</option>
+          <option value="mercury">Mercury (Planet Command)</option>
+          <option value="pluto">Pluto (Memory Write)</option>
+        </select>
+        <label>Entropy Score (0–100)</label>
+        <input type="number" id="p-entropy" min="0" max="100" value="25" placeholder="0–100"/>
+        <label>Coherence Index (0–1.0)</label>
+        <input type="number" id="p-coherence" min="0" max="1" step="0.01" value="0.82" placeholder="0–1.0"/>
+        <label>Node Count</label>
+        <input type="number" id="p-nodes" min="1" value="12" placeholder="Active nodes"/>
+        <label>Error Rate (%)</label>
+        <input type="number" id="p-error" min="0" max="100" step="0.1" value="2.4" placeholder="Error rate"/>
+        <label>Operator Key (optional)</label>
+        <input id="p-opkey" placeholder="Operator key for authority context…"/>
+        <button class="btn teal" onclick="analyze()" style="width:100%;justify-content:center">▶ Analyze Decoherence Risk</button>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="pdot"></span>Risk Assessment</div>
+        <div id="metrics">
+          <div class="metric"><span class="m-label">Decoherence Risk</span><span class="m-val" id="r-risk">—</span></div>
+          <div class="metric"><span class="m-label">Kernel K Status</span><span class="m-val" id="r-kernel">—</span></div>
+          <div class="metric"><span class="m-label">Mitigation Tier</span><span class="m-val" id="r-tier">—</span></div>
+          <div class="metric"><span class="m-label">Injection Vector</span><span class="m-val" id="r-vector">—</span></div>
+        </div>
+        <div style="margin-top:10px;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Risk Level</div>
+        <div class="risk-bar"><div class="risk-fill" id="risk-fill" style="width:0%"></div></div>
+        <div class="result-box" id="mitigation" style="font-size:11px;color:var(--muted)">Run analysis to see mitigation…</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph"><span class="pdot"></span>Full API Response</div>
+      <pre id="output">Run analysis to see response…</pre>
+    </div>
+  </div>
+  <footer>Aura115 · Decoherence Defense · Governed Pipeline Protection · <a href="/authority" style="color:var(--cyan)">Authority ↗</a></footer>
+  <script>
+    async function analyze(){
+      const out=document.getElementById('output');
+      out.textContent='Analyzing…';
+      const body={stage:document.getElementById('p-stage').value,entropy:parseFloat(document.getElementById('p-entropy').value),coherence:parseFloat(document.getElementById('p-coherence').value),nodes:parseInt(document.getElementById('p-nodes').value),error_rate:parseFloat(document.getElementById('p-error').value),operator_key:document.getElementById('p-opkey').value||undefined};
+      try{
+        const r=await fetch('/api/decoherence-defense',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        const d=await r.json();
+        out.textContent=JSON.stringify(d,null,2);
+        const risk=d.risk||d.decoherence_risk||d.score||0;
+        const riskPct=typeof risk==='number'?Math.round(risk*100)/100:0;
+        document.getElementById('r-risk').textContent=(d.risk_label||d.risk_level||(riskPct+'%'));
+        document.getElementById('r-risk').style.color=riskPct>70?'var(--rose)':riskPct>40?'var(--amber)':'var(--green)';
+        document.getElementById('r-kernel').textContent=d.kernel_status||d.kernel||'—';
+        document.getElementById('r-tier').textContent=d.mitigation_tier||d.tier||'—';
+        document.getElementById('r-vector').textContent=d.injection_vector||d.vector||'—';
+        document.getElementById('risk-fill').style.width=Math.min(riskPct,100)+'%';
+        document.getElementById('mitigation').textContent=d.mitigation||d.recommendation||d.message||'No mitigation data.';
+        document.getElementById('mitigation').style.color=riskPct>70?'var(--rose)':riskPct>40?'var(--amber)':'var(--green)';
+      }catch(e){out.textContent='Error: '+e.message;}
+    }
+  </script>
+  <script src="/aura-embodiment-bootstrap.js"></script>
+<script>
+(function(){
+  fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    if(document.getElementById('op_inbox'))return;
+    let el=document.createElement('div');el.id='op_inbox';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:8px;padding:4px 10px;margin:4px 16px;font-family:monospace;font-size:10px;color:#4dffe5;cursor:pointer;user-select:none';
+    let cnt=(d.stats||{}).total_received||0,unrd=(d.stats||{}).unread||0;
+    let h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:#ffd975;display:flex;align-items:center;gap:8px';
+    h.innerHTML='<span id="op_inbox_arrow">▶</span><span>OPERATOR INBOX</span><span style="color:#4dffe5;font-weight:400">'+cnt+' received'+(unrd?' · <span style="color:#ff6b6b">'+unrd+' unread</span>':'')+'</span>';
+    el.appendChild(h);
+    let body=document.createElement('div');body.id='op_inbox_body';body.style.cssText='display:none;max-height:280px;overflow:auto;margin-top:6px;border-top:1px solid #1a2535;padding-top:4px';
+    (d.items||[]).slice(0,15).forEach(raw=>{try{let item=typeof raw==='string'?JSON.parse(raw):raw;
+      let row=document.createElement('div');row.style.cssText='padding:3px 0;border-bottom:1px solid #1a2535;font-size:10px';
+      let id=item.inbox_id||item.stream_id||(item.received_at?item.received_at.substring(11,19):'')|| item.type||'item';
+      row.innerHTML='<span style="color:#ffd975">'+String(id).substring(0,16)+'</span> '+(item.subject||item.title||item.body||item.content||item.summary||'[no subject]').substring(0,80);
+      body.appendChild(row);}catch(e){}});
+    el.appendChild(body);
+    el.addEventListener('click',function(){let open=body.style.display==='block';body.style.display=open?'none':'block';document.getElementById('op_inbox_arrow').textContent=open?'▶':'▼';});
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.firstChild);
+  }).catch(()=>{});
+  fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.createElement('div');el.id='gov';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:10px 14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#79ff9d';
+    let h=d.health||{},p=h.pulse||{},ch=d.ch_gate||{};
+    el.innerHTML='<span style="color:#ffd975;font-weight:700">GOV</span> Stewardship:'+(h.stewardship||{}).pct+'% Continuity:'+(h.continuity||{}).pct+'% Pulse:'+p.tick+' CH drift:'+(ch.drift||0).toFixed(4);
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.children[0]||null);
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>
