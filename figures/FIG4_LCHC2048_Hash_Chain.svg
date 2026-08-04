@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" width="900" height="700" font-family="Arial, sans-serif">
+  <rect width="900" height="700" fill="#0a0a12"/>
+  <text x="450" y="36" font-size="15" font-weight="bold" fill="#00cc44" text-anchor="middle">FIG. 4 — LCHC-2048 CRYPTOGRAPHIC BINDING DIAGRAM</text>
+  <text x="450" y="56" font-size="10" fill="#408040" text-anchor="middle">Lopez Constitutional Hash Chain · Quad-Context 256-byte (2048-bit) Chain Digest</text>
+  <line x1="40" y1="66" x2="860" y2="66" stroke="#2a2a50" stroke-width="1"/>
+
+  <!-- Genesis block -->
+  <rect x="310" y="90" width="280" height="90" rx="8" fill="#0a2010" stroke="#00cc44" stroke-width="2.5"/>
+  <text x="450" y="114" font-size="11" fill="#00cc44" text-anchor="middle" font-weight="bold">GENESIS BLOCK (index 0)</text>
+  <text x="450" y="132" font-size="8" fill="#40a060" text-anchor="middle">type: GENESIS · system: Aura115 Constitutional Intelligence</text>
+  <text x="450" y="148" font-size="8" fill="#40a060" text-anchor="middle">prevHash: 000...000 (512 zeros)</text>
+  <text x="450" y="164" font-size="8" fill="#00cc44" text-anchor="middle">inventor: Joshua Lopez / DCGP.AI LLC</text>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="180" x2="450" y2="210" stroke="#00cc44" stroke-width="2" marker-end="url(#arr_g)"/>
+
+  <!-- Four context boxes -->
+  <text x="450" y="232" font-size="10" fill="#ffffff" text-anchor="middle" font-weight="bold">LCHC-2048 QUAD-CONTEXT ENGINE</text>
+
+  <rect x="80" y="248" width="168" height="100" rx="6" fill="#081808" stroke="#00cc44" stroke-width="1.5"/>
+  <text x="164" y="268" font-size="9" fill="#00cc44" text-anchor="middle" font-weight="bold">CONTEXT A</text>
+  <text x="164" y="284" font-size="8" fill="#40a060" text-anchor="middle">Canonical State</text>
+  <text x="164" y="298" font-size="7" fill="#408040" text-anchor="middle">SHA-512('LCHC-A:' + state)</text>
+  <text x="164" y="312" font-size="7" fill="#408040" text-anchor="middle">64 bytes · 512 bits</text>
+  <text x="164" y="326" font-size="7" fill="#00cc44" text-anchor="middle">domain: constitutional state</text>
+  <text x="164" y="340" font-size="7" fill="#408040" text-anchor="middle">CtxA: [hex64...]</text>
+
+  <rect x="262" y="248" width="168" height="100" rx="6" fill="#081808" stroke="#44aaff" stroke-width="1.5"/>
+  <text x="346" y="268" font-size="9" fill="#44aaff" text-anchor="middle" font-weight="bold">CONTEXT B</text>
+  <text x="346" y="284" font-size="8" fill="#4080a0" text-anchor="middle">Governance Authority</text>
+  <text x="346" y="298" font-size="7" fill="#406080" text-anchor="middle">SHA-512('LCHC-B:' + state)</text>
+  <text x="346" y="312" font-size="7" fill="#406080" text-anchor="middle">64 bytes · 512 bits</text>
+  <text x="346" y="326" font-size="7" fill="#44aaff" text-anchor="middle">domain: operator identity</text>
+  <text x="346" y="340" font-size="7" fill="#406080" text-anchor="middle">CtxB: [hex64...]</text>
+
+  <rect x="444" y="248" width="168" height="100" rx="6" fill="#081808" stroke="#ffaa00" stroke-width="1.5"/>
+  <text x="528" y="268" font-size="9" fill="#ffaa00" text-anchor="middle" font-weight="bold">CONTEXT C</text>
+  <text x="528" y="284" font-size="8" fill="#a07030" text-anchor="middle">Temporal Integrity</text>
+  <text x="528" y="298" font-size="7" fill="#806020" text-anchor="middle">SHA-512('LCHC-C:' + ts + state)</text>
+  <text x="528" y="312" font-size="7" fill="#806020" text-anchor="middle">64 bytes · 512 bits</text>
+  <text x="528" y="326" font-size="7" fill="#ffaa00" text-anchor="middle">domain: timestamp-seeded</text>
+  <text x="528" y="340" font-size="7" fill="#806020" text-anchor="middle">CtxC: [hex64...]</text>
+
+  <rect x="626" y="248" width="168" height="100" rx="6" fill="#081808" stroke="#cc44cc" stroke-width="1.5"/>
+  <text x="710" y="268" font-size="9" fill="#cc44cc" text-anchor="middle" font-weight="bold">CONTEXT D</text>
+  <text x="710" y="284" font-size="8" fill="#804080" text-anchor="middle">Constitutional Provenance</text>
+  <text x="710" y="298" font-size="7" fill="#603060" text-anchor="middle">SHA-512('LCHC-D:' + inv + state)</text>
+  <text x="710" y="312" font-size="7" fill="#603060" text-anchor="middle">64 bytes · 512 bits</text>
+  <text x="710" y="326" font-size="7" fill="#cc44cc" text-anchor="middle">domain: inventor-seeded</text>
+  <text x="710" y="340" font-size="7" fill="#603060" text-anchor="middle">CtxD: [hex64...]</text>
+
+  <!-- Combine arrows -->
+  <line x1="164" y1="348" x2="380" y2="390" stroke="#00cc44" stroke-width="1.5"/>
+  <line x1="346" y1="348" x2="400" y2="390" stroke="#44aaff" stroke-width="1.5"/>
+  <line x1="528" y1="348" x2="500" y2="390" stroke="#ffaa00" stroke-width="1.5"/>
+  <line x1="710" y1="348" x2="520" y2="390" stroke="#cc44cc" stroke-width="1.5"/>
+
+  <!-- Chain digest box -->
+  <rect x="280" y="390" width="340" height="70" rx="6" fill="#0a1a18" stroke="#00cc44" stroke-width="2"/>
+  <text x="450" y="412" font-size="10" fill="#00cc44" text-anchor="middle" font-weight="bold">CHAIN DIGEST: CtxA + CtxB + CtxC + CtxD</text>
+  <text x="450" y="430" font-size="9" fill="#ffffff" text-anchor="middle">256 bytes = 2048 bits (RSA-equivalent strength)</text>
+  <text x="450" y="448" font-size="8" fill="#40a060" text-anchor="middle">chain: [hex256...] · length: chain.length × 4 bits</text>
+
+  <!-- Arrow to next block -->
+  <line x1="450" y1="460" x2="450" y2="490" stroke="#00cc44" stroke-width="2" marker-end="url(#arr_g)"/>
+  <text x="460" y="478" font-size="8" fill="#40a060">prevHash → next block</text>
+
+  <!-- Delta block -->
+  <rect x="280" y="490" width="340" height="80" rx="6" fill="#081808" stroke="#00cc44" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="450" y="514" font-size="10" fill="#00cc44" text-anchor="middle" font-weight="bold">DELTA BLOCK (index N)</text>
+  <text x="450" y="530" font-size="8" fill="#40a060" text-anchor="middle">type: DELTA · timestamp: ISO8601</text>
+  <text x="450" y="546" font-size="8" fill="#40a060" text-anchor="middle">hash: LCHC-2048(delta + prevHash)</text>
+  <text x="450" y="562" font-size="8" fill="#00cc44" text-anchor="middle">prevHash: chain[N-1] · improvements: []</text>
+
+  <!-- Audit chain -->
+  <rect x="80" y="600" width="740" height="60" rx="6" fill="#0a1a28" stroke="#4a90d9" stroke-width="1.5"/>
+  <text x="450" y="622" font-size="10" fill="#4a90d9" text-anchor="middle" font-weight="bold">auditChain() — Full Integrity Verification</text>
+  <text x="450" y="640" font-size="8" fill="#304080" text-anchor="middle">Walks every entry · verifies hash recomputation · verifies prevHash linkage · returns {allValid, activeBlocks, results}</text>
+  <text x="450" y="656" font-size="8" fill="#4a90d9" text-anchor="middle">Saturn Ring 4 target · Pluto write destination · LCHC-2048 tamper-evident ledger</text>
+
+  <!-- Footer -->
+  <text x="450" y="694" font-size="8" fill="#404060" text-anchor="middle">DCGP.AI · Joshua L. Lopez · Patent Pending · structuralMemory.js Exhibit A · June 20, 2026</text>
+
+  <defs>
+    <marker id="arr_g" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00cc44"/></marker>
+  </defs>
+</svg>
