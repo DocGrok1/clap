@@ -1,0 +1,118 @@
+{
+  "chains": [
+    {
+      "name": "Thermodynamic",
+      "desc": "S_Q \u2192 \u03a6 \u2192 O \u2192 E",
+      "qubits": 12,
+      "modules": 4,
+      "labels": [
+        "S_Q",
+        "\u03a6",
+        "O",
+        "E"
+      ],
+      "outputs": [
+        0.49,
+        0.49,
+        0.52,
+        0.41
+      ],
+      "p_final": 0.41,
+      "unique": 98,
+      "proof": "ff027b9b2fc248e86110f8a1c3c41afc573b4eda9e4a2283d1b3f55a87ed7edf"
+    },
+    {
+      "name": "Authority",
+      "desc": "S_Q \u2192 K \u2192 \u03a0_A \u2192 G_H",
+      "qubits": 12,
+      "modules": 4,
+      "labels": [
+        "S_Q",
+        "K",
+        "\u03a0_A",
+        "G_H"
+      ],
+      "outputs": [
+        0.5,
+        0.41,
+        0.61,
+        0.47
+      ],
+      "p_final": 0.47,
+      "unique": 100,
+      "proof": "ab9c0f54767c97ab248b917d4cc8022d1d27596b8bd0a259cb59b8adcdf6698f"
+    },
+    {
+      "name": "Photonic Bandgap",
+      "desc": "\u03a6_photon \u2192 Au_gate \u2192 Fork \u2192 E",
+      "qubits": 12,
+      "modules": 4,
+      "labels": [
+        "\u03a6_photon",
+        "Au_gate",
+        "Fork",
+        "E"
+      ],
+      "outputs": [
+        0.53,
+        0.53,
+        0.51,
+        0.49
+      ],
+      "p_final": 0.49,
+      "unique": 97,
+      "proof": "441a7ecab13b5d085bdd78b35034a17c71863747b0102a1198cae029b1646d56"
+    },
+    {
+      "name": "Capital Governance",
+      "desc": "K \u2192 O \u2192 \u03a6 \u2192 G_H",
+      "qubits": 12,
+      "modules": 4,
+      "labels": [
+        "K_cap",
+        "O_cost",
+        "\u03a6_yield",
+        "G_H"
+      ],
+      "outputs": [
+        0.44,
+        0.57,
+        0.43,
+        0.41
+      ],
+      "p_final": 0.41,
+      "unique": 99,
+      "proof": "91425e0e0b39a2b5dd6eda390bd1808f0b32aacebc3c24e0f027cff9420b0af2"
+    },
+    {
+      "name": "Full Lyapunov",
+      "desc": "S_Q \u2192 K \u2192 \u03a6 \u2192 O \u2192 \u03a0_A \u2192 G_H \u2192 E",
+      "qubits": 21,
+      "modules": 7,
+      "labels": [
+        "S_Q",
+        "K",
+        "\u03a6",
+        "O",
+        "\u03a0_A",
+        "G_H",
+        "E"
+      ],
+      "outputs": [
+        0.49,
+        0.38,
+        0.57,
+        0.47,
+        0.61,
+        0.37,
+        0.49
+      ],
+      "p_final": 0.49,
+      "unique": 100,
+      "proof": "ac0971fd757fa8babbf40be4221b03fab1a9482f4324ec2b5362623b5c5da5a7"
+    }
+  ],
+  "master": "e5322e7597d2f44fc069609ddaa6dfe0108b9b801745a71b00d8ff512f9cee09",
+  "gov": 1.9416110387254664,
+  "timestamp": "2026-08-04T13:24:39Z"
+}
