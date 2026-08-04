@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GHZ™ State Generator — Aura115™ QUIRQ™ Quantum Demo</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#030711;
+      --panel:#0c1424;
+      --card:#0f1d35;
+      --line:rgba(138,182,255,.22);
+      --text:#ecf4ff;
+      --muted:#9cb3d3;
+      --cyan:#59f4ff;
+      --green:#74ffb8;
+      --gold:#ffd966;
+      --purple:#b084ff;
+    }
+    body{
+      margin:0;
+      min-height:100vh;
+      background:radial-gradient(circle at top,rgba(89,244,255,.13),transparent 44%),var(--bg);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+      display:grid;
+      place-items:start center;
+      padding:22px;
+    }
+    .shell{width:min(780px,100%)}
+
+    /* ── AURA™ BRAND CARD ── */
+    .aura-brand-card{
+      background:linear-gradient(135deg,#0d1f3c 0%,#091528 60%,#030e1e 100%);
+      border:1px solid rgba(89,244,255,.38);
+      border-radius:18px;
+      padding:18px 22px;
+      margin-bottom:22px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .aura-brand-card .brand-left{display:flex;align-items:center;gap:14px}
+    .aura-brand-card .brand-logo{
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:-.03em;
+      color:var(--cyan);
+      text-shadow:0 0 18px rgba(89,244,255,.55);
+      white-space:nowrap;
+    }
+    .aura-brand-card .brand-logo sup{font-size:14px;vertical-align:super}
+    .aura-brand-card .brand-divider{width:1px;height:38px;background:rgba(89,244,255,.28)}
+    .aura-brand-card .brand-meta{display:flex;flex-direction:column;gap:3px}
+    .aura-brand-card .brand-title{
+      font-size:13px;font-weight:700;color:var(--green);letter-spacing:.06em;text-transform:uppercase
+    }
+    .aura-brand-card .brand-owner{font-size:11px;color:var(--muted)}
+    .aura-brand-card .brand-right{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .brand-badge{
+      font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+      padding:4px 10px;border-radius:999px;border:1px solid;white-space:nowrap;
+    }
+    .badge-quirq{color:var(--purple);border-color:rgba(176,132,255,.45);background:rgba(176,132,255,.1)}
+    .badge-mc290{color:var(--gold);border-color:rgba(255,217,102,.38);background:rgba(255,217,102,.08)}
+    .badge-live{color:var(--green);border-color:rgba(116,255,184,.38);background:rgba(116,255,184,.08)}
+    .brand-nav-links{font-size:11px;display:flex;gap:10px;color:var(--muted)}
+    .brand-nav-links a{color:var(--cyan);text-decoration:none;opacity:.8}
+    .brand-nav-links a:hover{opacity:1;text-decoration:underline}
+
+    /* ── MAIN PANEL ── */
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:24px;
+      margin-bottom:16px;
+    }
+    h1{margin:0 0 6px;font-size:clamp(20px,4vw,30px);color:var(--cyan)}
+    h1 sup{font-size:.45em;vertical-align:super;color:var(--muted)}
+    .subtitle{margin:0 0 18px;color:var(--muted);font-size:14px;line-height:1.6}
+    .section-label{
+      font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+      color:var(--muted);margin:0 0 10px;
+    }
+
+    /* ── PART 1: CONFIG ── */
+    .config-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+    .config-row label{font-size:13px;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:8px}
+    input[type="number"]{
+      background:rgba(3,7,17,.75);color:var(--text);
+      border:1px solid var(--line);border-radius:10px;
+      padding:8px 12px;font:inherit;width:80px;font-size:15px;
+    }
+    input[type="number"]:focus{outline:none;border-color:var(--cyan)}
+    .formula-box{
+      background:rgba(89,244,255,.05);border:1px solid rgba(89,244,255,.18);
+      border-radius:12px;padding:14px 18px;margin-bottom:0;
+      font-size:14px;line-height:1.7;color:var(--muted)
+    }
+    .formula-box .dirac{font-size:1.25em;color:var(--green);font-weight:700}
+    .formula-box .tm{font-size:.65em;vertical-align:super;color:var(--muted)}
+
+    /* ── PART 2: OUTPUT ── */
+    .output-block{
+      background:rgba(3,7,17,.8);border:1px solid var(--line);border-radius:12px;
+      padding:14px 16px;margin-bottom:12px;font-size:14px;color:#d9ecff;
+    }
+    .output-block b{color:var(--cyan)}
+    .dirac-out{font-size:1.18em;color:var(--green);margin-top:6px}
+
+    /* ── AMPLITUDE TABLE ── */
+    .table-wrap{overflow-x:auto;margin-top:0}
+    table{border-collapse:collapse;width:100%;font-size:13px}
+    th{
+      background:#091a2e;color:var(--muted);font-weight:700;letter-spacing:.06em;
+      text-transform:uppercase;padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;
+    }
+    td{padding:7px 12px;border-bottom:1px solid rgba(138,182,255,.09);color:#c8dcf5}
+    tr:last-child td{border-bottom:none}
+    tr.active td{color:var(--green)}
+    .vis-bar{
+      display:inline-block;height:10px;border-radius:99px;
+      background:linear-gradient(90deg,var(--cyan),var(--green));
+      vertical-align:middle;min-width:2px;transition:width .2s;
+    }
+
+    /* ── FOOTER CARD ── */
+    .aura-footer-card{
+      background:linear-gradient(135deg,#091528 0%,#060e1c 100%);
+      border:1px solid rgba(89,244,255,.2);border-radius:14px;
+      padding:14px 20px;display:flex;align-items:center;
+      justify-content:space-between;flex-wrap:wrap;gap:10px;
+      font-size:11px;color:var(--muted);
+    }
+    .aura-footer-card .fc-brand{font-weight:700;color:var(--cyan);font-size:12px}
+    .aura-footer-card a{color:var(--cyan);text-decoration:none}
+    .aura-footer-card a:hover{text-decoration:underline}
+
+    @media(max-width:540px){
+      .aura-brand-card{flex-direction:column;align-items:flex-start}
+      .config-row{flex-direction:column;align-items:flex-start}
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ══ AURA™ BRAND CARD ══ -->
+  <div class="aura-brand-card">
+    <div class="brand-left">
+      <div class="brand-logo">Aura115<sup>™</sup></div>
+      <div class="brand-divider"></div>
+      <div class="brand-meta">
+        <div class="brand-title">QUIRQ™ Quantum Runtime</div>
+        <div class="brand-owner">© Joshua Lopez — Sole Creator &amp; Owner</div>
+      </div>
+    </div>
+    <div class="brand-right">
+      <span class="brand-badge badge-quirq">QUIRQ™</span>
+      <span class="brand-badge badge-mc290">GE-115™</span>
+      <span class="brand-badge badge-live">Live Demo</span>
+    </div>
+    <div class="brand-nav-links">
+      <a href="/">Home</a>
+      <a href="/cirq-runtime-simulation">QUIRQ™ Runtime</a>
+      <a href="/route-keychain">Route Keychain</a>
+    </div>
+  </div>
+
+  <!-- ══ PART 1: INPUT / CONFIG ══ -->
+  <div class="panel">
+    <div class="section-label">Part 1 — Configuration</div>
+    <h1>GHZ<sup>™</sup> State Generator</h1>
+    <p class="subtitle">
+      Greenberger–Horne–Zeilinger (GHZ™) entangled quantum state for arbitrary N qubits —
+      powered by the Aura115™ QUIRQ™ constitutional quantum runtime. Advisory simulation only.
+    </p>
+    <div class="config-row">
+      <label for="nqubits">
+        Number of Qubits (N):
+        <input type="number" id="nqubits" min="2" max="10" value="3" />
+        <span style="font-size:11px;color:var(--muted)">(2 – 10)</span>
+      </label>
+    </div>
+    <div class="formula-box">
+      The GHZ<span class="tm">™</span> state is a maximally entangled N-qubit quantum superposition:<br>
+      <span class="dirac">
+        |GHZ<span class="tm">™</span><sub>N</sub>⟩ = ( |00…0⟩ + |11…1⟩ ) / √2
+      </span><br>
+      <span style="font-size:12px">
+        Governed under Aura115™ QUIRQ™ provenance — USPTO filings 19/555,951 · 19/567,678 · 19/569,785.
+        Ergo Polaritron™ quasi-light substrate binding. QuikBit™ admissible projection compatible.
+      </span>
+    </div>
+  </div>
+
+  <!-- ══ PART 2: OUTPUT / INTERACTIVITY ══ -->
+  <div class="panel">
+    <div class="section-label">Part 2 — Result &amp; Interactivity</div>
+    <div class="output-block" id="stateDirac">—</div>
+    <div class="output-block" id="stateVector">—</div>
+    <div class="output-block" style="padding:12px 16px">
+      <b>State Amplitudes — GHZ™ Basis</b>
+      <div class="table-wrap">
+        <table id="ampTable"><tr><td>—</td></tr></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AURA™ FOOTER CARD ══ -->
+  <div class="aura-footer-card">
+    <span>
+      <span class="fc-brand">Aura115™</span> &nbsp;·&nbsp;
+      GHZ™ State Demo &nbsp;·&nbsp;
+      QUIRQ™ Quantum Runtime &nbsp;·&nbsp;
+      GE-115™ Constitutional Intelligence
+    </span>
+    <span>
+      © Joshua Lopez — All Rights Reserved &nbsp;·&nbsp;
+      <a href="/route-keychain">Routes</a> &nbsp;·&nbsp;
+      <a href="/authority">Authority</a> &nbsp;·&nbsp;
+      <a href="/cirq-runtime-simulation">QUIRQ™ Runtime</a>
+    </span>
+  </div>
+
+</div>
+<script>
+(function(){
+  'use strict';
+
+  function pad(str,len){ return '0'.repeat(len-str.length)+str; }
+
+  function renderGHZ(N){
+    const ket0 = '|'+'0'.repeat(N)+'⟩';
+    const ket1 = '|'+'1'.repeat(N)+'⟩';
+
+    // Dirac notation
+    document.getElementById('stateDirac').innerHTML =
+      '<b>Dirac Notation — GHZ™ State:</b>'+
+      '<div class="dirac-out">( '+ket0+' + '+ket1+' ) / √2</div>'+
+      '<div style="font-size:11px;color:#6a8aaa;margin-top:6px">'+
+        'N = '+N+' qubits &nbsp;·&nbsp; Aura115™ QUIRQ™ &nbsp;·&nbsp; '+
+        'Hilbert space dimension: 2<sup>'+N+'</sup> = '+(1<<N)+
+      '</div>';
+
+    // Vector form
+    const size = 1 << N;
+    const amp  = 1/Math.sqrt(2);
+    const v0   = amp.toFixed(6)+' × '+ket0;
+    const v1   = amp.toFixed(6)+' × '+ket1;
+    document.getElementById('stateVector').innerHTML =
+      '<b>Vector Form:</b>'+
+      '<div style="margin-top:6px;color:#74ffb8;font-size:1.08em">'+v0+' &nbsp;+&nbsp; '+v1+'</div>'+
+      '<div style="font-size:11px;color:#6a8aaa;margin-top:6px">'+
+        'Non-zero amplitudes: 2 / '+size+' basis states &nbsp;·&nbsp; '+
+        'QuikBit™ admissible &nbsp;·&nbsp; Ergo Polaritron™ substrate binding'+
+      '</div>';
+
+    // Amplitude table
+    let rows =
+      '<tr>'+
+        '<th>Basis State</th>'+
+        '<th>Amplitude</th>'+
+        '<th>Probability</th>'+
+        '<th>Visual</th>'+
+      '</tr>';
+    for(let i=0;i<size;++i){
+      const bin  = pad(i.toString(2),N);
+      const a    = (i===0||i===size-1)?amp:0;
+      const prob = (a*a).toFixed(6);
+      const isActive = a!==0;
+      rows += '<tr'+(isActive?' class="active"':'')+'>'+
+        '<td>|'+bin+'⟩</td>'+
+        '<td>'+(isActive?a.toFixed(6):'0.000000')+'</td>'+
+        '<td>'+(isActive?prob:'0.000000')+'</td>'+
+        '<td><span class="vis-bar" style="width:'+(isActive?Math.round(a*120+4):2)+'px"></span></td>'+
+      '</tr>';
+    }
+    document.getElementById('ampTable').innerHTML = rows;
+  }
+
+  const input = document.getElementById('nqubits');
+  input.addEventListener('input', function(){
+    let n = parseInt(this.value,10)||3;
+    n = Math.max(2,Math.min(10,n));
+    this.value = n;
+    renderGHZ(n);
+  });
+  renderGHZ(parseInt(input.value,10)||3);
+})();
+</script>
+<script>
+(function(){
+  fetch('/api/operator-inbox',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    if(document.getElementById('op_inbox'))return;
+    let el=document.createElement('div');el.id='op_inbox';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:8px;padding:4px 10px;margin:4px 16px;font-family:monospace;font-size:10px;color:#4dffe5;cursor:pointer;user-select:none';
+    let cnt=(d.stats||{}).total_received||0,unrd=(d.stats||{}).unread||0;
+    let h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:#ffd975;display:flex;align-items:center;gap:8px';
+    h.innerHTML='<span id="op_inbox_arrow">▶</span><span>OPERATOR INBOX</span><span style="color:#4dffe5;font-weight:400">'+cnt+' received'+(unrd?' · <span style="color:#ff6b6b">'+unrd+' unread</span>':'')+'</span>';
+    el.appendChild(h);
+    let body=document.createElement('div');body.id='op_inbox_body';body.style.cssText='display:none;max-height:280px;overflow:auto;margin-top:6px;border-top:1px solid #1a2535;padding-top:4px';
+    (d.items||[]).slice(0,15).forEach(raw=>{try{let item=typeof raw==='string'?JSON.parse(raw):raw;
+      let row=document.createElement('div');row.style.cssText='padding:3px 0;border-bottom:1px solid #1a2535;font-size:10px';
+      let id=item.inbox_id||item.stream_id||(item.received_at?item.received_at.substring(11,19):'')|| item.type||'item';
+      row.innerHTML='<span style="color:#ffd975">'+String(id).substring(0,16)+'</span> '+(item.subject||item.title||item.body||item.content||item.summary||'[no subject]').substring(0,80);
+      body.appendChild(row);}catch(e){}});
+    el.appendChild(body);
+    el.addEventListener('click',function(){let open=body.style.display==='block';body.style.display=open?'none':'block';document.getElementById('op_inbox_arrow').textContent=open?'▶':'▼';});
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.firstChild);
+  }).catch(()=>{});
+  fetch('/api/governance-health',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+    let el=document.createElement('div');el.id='gov';
+    el.style.cssText='background:#06090f;border:1px solid #1a2535;border-radius:12px;padding:10px 14px;margin:12px 16px;font-family:monospace;font-size:10px;color:#79ff9d';
+    let h=d.health||{},p=h.pulse||{},ch=d.ch_gate||{};
+    el.innerHTML='<span style="color:#ffd975;font-weight:700">GOV</span> Stewardship:'+(h.stewardship||{}).pct+'% Continuity:'+(h.continuity||{}).pct+'% Pulse:'+p.tick+' CH drift:'+(ch.drift||0).toFixed(4);
+    let t=document.querySelector('.wrap,.container,main,body');if(t)t.insertBefore(el,t.children[0]||null);
+  }).catch(()=>{});
+})();
+</script>
+</body>
+</html>
