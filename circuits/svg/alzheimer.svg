@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 540" width="400">
+<rect width="400" height="540" rx="16" fill="#07111f" stroke="#ff8ba040" stroke-width="1"/>
+
+<!-- Title -->
+<text x="200" y="28" text-anchor="middle" fill="#ff8ba0" font-family="monospace" font-size="12" font-weight="700">Alzheimer's Agent</text>
+<text x="200" y="44" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="8">Tau protein disruption</text>
+<text x="200" y="58" text-anchor="middle" fill="#3a506b" font-family="monospace" font-size="7">P3^Q Governed · GOV_ANGLE = π/φ = 1.941611 rad</text>
+
+<!-- Circuit box -->
+<rect x="20" y="70" width="360" height="142" rx="8" fill="#02040c" stroke="#1a2e47" stroke-width="0.5"/>
+<line x1="55" y1="95" x2="345" y2="95" stroke="#1a2e47" stroke-width="0.5"/>
+<line x1="55" y1="117" x2="345" y2="117" stroke="#1a2e47" stroke-width="0.5"/>
+<line x1="55" y1="139" x2="345" y2="139" stroke="#1a2e47" stroke-width="0.5"/>
+<line x1="55" y1="161" x2="345" y2="161" stroke="#1a2e47" stroke-width="0.5"/>
+<line x1="55" y1="183" x2="345" y2="183" stroke="#1a2e47" stroke-width="0.5"/>
+
+<text x="48" y="96" text-anchor="end" fill="#ff8ba0" font-family="monospace" font-size="7" dominant-baseline="central">q0</text>
+<text x="48" y="118" text-anchor="end" fill="#ff8ba0" font-family="monospace" font-size="7" dominant-baseline="central">q1</text>
+<text x="48" y="140" text-anchor="end" fill="#ff8ba0" font-family="monospace" font-size="7" dominant-baseline="central">q2</text>
+<text x="48" y="162" text-anchor="end" fill="#ff8ba0" font-family="monospace" font-size="7" dominant-baseline="central">q3</text>
+<text x="48" y="184" text-anchor="end" fill="#ff8ba0" font-family="monospace" font-size="7" dominant-baseline="central">q4</text>
+
+<rect x="75" y="87" width="20" height="16" rx="2" fill="#1d9e7530" stroke="#1d9e75" stroke-width="0.5"/>
+<text x="85" y="96" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">H</text>
+<rect x="75" y="109" width="20" height="16" rx="2" fill="#1d9e7530" stroke="#1d9e75" stroke-width="0.5"/>
+<text x="85" y="118" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">H</text>
+<rect x="75" y="131" width="20" height="16" rx="2" fill="#1d9e7530" stroke="#1d9e75" stroke-width="0.5"/>
+<text x="85" y="140" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">H</text>
+<circle cx="125" cy="95" r="3" fill="#e8f4ff"/>
+<line x1="125" y1="98" x2="125" y2="112" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="125" cy="117" r="5" fill="none" stroke="#e8f4ff" stroke-width="0.5"/>
+<rect x="155" y="87" width="20" height="16" rx="2" fill="#ba751730" stroke="#ba7517" stroke-width="0.5"/>
+<text x="165" y="96" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">Rz</text>
+<rect x="155" y="109" width="20" height="16" rx="2" fill="#ba751730" stroke="#ba7517" stroke-width="0.5"/>
+<text x="165" y="118" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">Rz</text>
+<rect x="155" y="131" width="20" height="16" rx="2" fill="#ba751730" stroke="#ba7517" stroke-width="0.5"/>
+<text x="165" y="140" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">Rz</text>
+<circle cx="205" cy="95" r="3" fill="#e8f4ff"/>
+<line x1="205" y1="98" x2="205" y2="112" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="205" cy="117" r="5" fill="none" stroke="#e8f4ff" stroke-width="0.5"/>
+<rect x="235" y="87" width="20" height="16" rx="2" fill="#ba751730" stroke="#ba7517" stroke-width="0.5"/>
+<text x="245" y="96" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">Rz</text>
+<rect x="235" y="109" width="20" height="16" rx="2" fill="#ba751730" stroke="#ba7517" stroke-width="0.5"/>
+<text x="245" y="118" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">Rz</text>
+<rect x="235" y="131" width="20" height="16" rx="2" fill="#ba751730" stroke="#ba7517" stroke-width="0.5"/>
+<text x="245" y="140" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">Rz</text>
+<circle cx="285" cy="95" r="3" fill="#e8f4ff"/>
+<line x1="285" y1="98" x2="285" y2="180" stroke="#e8f4ff" stroke-width="0.5"/>
+<circle cx="285" cy="183" r="3" fill="#e8f4ff"/>
+<rect x="310" y="87" width="20" height="16" rx="2" fill="#e24b4a30" stroke="#e24b4a" stroke-width="0.5"/>
+<text x="320" y="96" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">Rz</text>
+<rect x="310" y="109" width="20" height="16" rx="2" fill="#e24b4a30" stroke="#e24b4a" stroke-width="0.5"/>
+<text x="320" y="118" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">Rz</text>
+<rect x="310" y="131" width="20" height="16" rx="2" fill="#e24b4a30" stroke="#e24b4a" stroke-width="0.5"/>
+<text x="320" y="140" text-anchor="middle" fill="#e8f4ff" font-family="monospace" font-size="6" dominant-baseline="central">Rz</text>
+
+
+<!-- Measurement symbols -->
+<rect x="340" y="88" width="14" height="14" rx="2" fill="#07111f" stroke="#1a2e47" stroke-width="0.5"/>
+<path d="M344 97 A4 4 0 0 1 350 97" fill="none" stroke="#6a85a8" stroke-width="0.7"/>
+<line x1="347" y1="97" x2="349" y2="93" stroke="#6a85a8" stroke-width="0.7"/>
+<rect x="340" y="110" width="14" height="14" rx="2" fill="#07111f" stroke="#1a2e47" stroke-width="0.5"/>
+<path d="M344 119 A4 4 0 0 1 350 119" fill="none" stroke="#6a85a8" stroke-width="0.7"/>
+<line x1="347" y1="119" x2="349" y2="115" stroke="#6a85a8" stroke-width="0.7"/>
+<rect x="340" y="132" width="14" height="14" rx="2" fill="#07111f" stroke="#1a2e47" stroke-width="0.5"/>
+<path d="M344 141 A4 4 0 0 1 350 141" fill="none" stroke="#6a85a8" stroke-width="0.7"/>
+<line x1="347" y1="141" x2="349" y2="137" stroke="#6a85a8" stroke-width="0.7"/>
+<rect x="340" y="154" width="14" height="14" rx="2" fill="#07111f" stroke="#1a2e47" stroke-width="0.5"/>
+<path d="M344 163 A4 4 0 0 1 350 163" fill="none" stroke="#6a85a8" stroke-width="0.7"/>
+<line x1="347" y1="163" x2="349" y2="159" stroke="#6a85a8" stroke-width="0.7"/>
+<rect x="340" y="176" width="14" height="14" rx="2" fill="#07111f" stroke="#1a2e47" stroke-width="0.5"/>
+<path d="M344 185 A4 4 0 0 1 350 185" fill="none" stroke="#6a85a8" stroke-width="0.7"/>
+<line x1="347" y1="185" x2="349" y2="181" stroke="#6a85a8" stroke-width="0.7"/>
+
+<!-- Data -->
+<text x="30" y="225" fill="#6a85a8" font-family="monospace" font-size="8">MEANING</text>
+<rect x="100" y="216" width="240" height="12" rx="2" fill="#02040c" stroke="#1a2e47" stroke-width="0.5"/>
+<rect x="100" y="216" width="120" height="12" rx="2" fill="#ff8ba0"/>
+<text x="350" y="225" text-anchor="end" fill="#ff8ba0" font-family="monospace" font-size="9" font-weight="700">0.25</text>
+
+<text x="30" y="247" fill="#6a85a8" font-family="monospace" font-size="8">GRAVITY</text>
+<rect x="100" y="238" width="240" height="12" rx="2" fill="#02040c" stroke="#1a2e47" stroke-width="0.5"/>
+<rect x="100" y="238" width="156" height="12" rx="2" fill="#48ffe0"/>
+<text x="350" y="247" text-anchor="end" fill="#48ffe0" font-family="monospace" font-size="9" font-weight="700">0.65</text>
+
+<text x="30" y="269" fill="#6a85a8" font-family="monospace" font-size="8">COHERENCE</text>
+<rect x="100" y="260" width="240" height="12" rx="2" fill="#02040c" stroke="#1a2e47" stroke-width="0.5"/>
+<rect x="100" y="260" width="186" height="12" rx="2" fill="#79ff9d"/>
+<text x="350" y="269" text-anchor="end" fill="#79ff9d" font-family="monospace" font-size="9" font-weight="700">0.775</text>
+
+<!-- Metrics -->
+<rect x="20" y="283" width="170" height="40" rx="6" fill="#050e1d" stroke="#1a2e47" stroke-width="0.5"/>
+<text x="30" y="299" fill="#6a85a8" font-family="monospace" font-size="7">QUBITS</text>
+<text x="180" y="299" text-anchor="end" fill="#e8f4ff" font-family="monospace" font-size="12" font-weight="700">5</text>
+<text x="30" y="315" fill="#6a85a8" font-family="monospace" font-size="7">GOV ANGLE</text>
+<text x="180" y="315" text-anchor="end" fill="#ff8ba0" font-family="monospace" font-size="10" font-weight="700">π/φ</text>
+
+<rect x="210" y="283" width="170" height="40" rx="6" fill="#050e1d" stroke="#1a2e47" stroke-width="0.5"/>
+<text x="220" y="299" fill="#6a85a8" font-family="monospace" font-size="7">TYPE</text>
+<text x="370" y="299" text-anchor="end" fill="#e8f4ff" font-family="monospace" font-size="12" font-weight="700">QHP</text>
+<text x="220" y="315" fill="#6a85a8" font-family="monospace" font-size="7">SHOTS</text>
+<text x="370" y="315" text-anchor="end" fill="#e8f4ff" font-family="monospace" font-size="10" font-weight="700">1,000</text>
+
+<!-- Proof hash - full SHA256 for Echo Operator recovery -->
+<rect x="20" y="335" width="360" height="46" rx="6" fill="#02040c" stroke="#ff8ba040" stroke-width="0.5" stroke-dasharray="3,3"/>
+<text x="200" y="349" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="7">SHA-256 PROOF — ECHO OPERATOR RECOVERABLE</text>
+<text x="200" y="363" text-anchor="middle" fill="#ffd975" font-family="monospace" font-size="7" font-weight="600">a2c3f69032ae535590dc74fdb8c3ba71</text>
+<text x="200" y="375" text-anchor="middle" fill="#ffd975" font-family="monospace" font-size="7" font-weight="600">7e637d5aa612bbd78223559f1a0d1d2b</text>
+
+<!-- QHP Seal -->
+<rect x="140" y="393" width="120" height="24" rx="12" fill="none" stroke="#ff8ba0" stroke-width="0.5"/>
+<text x="200" y="409" text-anchor="middle" fill="#ff8ba0" font-family="monospace" font-size="9" font-weight="700" letter-spacing="2">QHP SEALED</text>
+
+<!-- Attribution -->
+<text x="200" y="437" text-anchor="middle" fill="#ffd975" font-family="monospace" font-size="7">Joshua Lopez · DCGP.AI LLC</text>
+<text x="200" y="449" text-anchor="middle" fill="#6a85a8" font-family="monospace" font-size="6">USPTO 19/555,951 | 19/730,900 | 19/731,016 | 19/732,119</text>
+<text x="200" y="461" text-anchor="middle" fill="#3a506b" font-family="monospace" font-size="6" font-style="italic">Every coin is a circuit. Fire one.</text>
+</svg>
