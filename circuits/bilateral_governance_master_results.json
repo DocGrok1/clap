@@ -1,0 +1,18 @@
+{
+  "circuit": "BILATERAL_GOVERNANCE_METRIC_MASTER",
+  "qubits": 21,
+  "shots": 1000,
+  "execution_time": 1.763643503189087,
+  "unique_states": 1000,
+  "p_verdict": 0.488,
+  "p_quasicrystal": 0.545,
+  "p_fibonacci": 0.502,
+  "p_delusion": 0.5,
+  "p_lambda": 0.512,
+  "p_governed": 0.149,
+  "proof": "94ba40c17b11cd12af9994b0c4949ae805c47bd664f3ff4347fd5d51b9398295",
+  "gov_angle": 1.9416110387254664,
+  "lambda_min": 0.02,
+  "brand": "DCGP presents AGI \u2014 Aura Governed Intelligence",
+  "timestamp": "2026-08-05T21:57:11Z"
+}
