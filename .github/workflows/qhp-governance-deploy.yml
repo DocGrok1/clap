@@ -10,8 +10,14 @@
 # =====================================================================
 name: "QHP Governance Infrastructure Deployment"
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
-
+# Core Security Principle Configuration: Mandate explicit permissions for OIDC JWT Token Exchange
 permissions:
   id-token: write
   contents: read
